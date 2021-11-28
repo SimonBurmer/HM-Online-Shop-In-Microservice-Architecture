@@ -1,0 +1,5 @@
+{
+    "name": "Verteilte Softwaresysteme --- Blatt 2",
+    "image": "obraun/golang-microservices-ci:latest",
+    "extensions": ["ms-vscode.go"]
+}

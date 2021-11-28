@@ -1,0 +1,5 @@
+lint:
+  image: golangci/golangci-lint
+  stage: test
+  script:
+    - golangci-lint run
