@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"gitlab.lrz.de/vss/semester/ob-21ws/ob-21ws/Code/microservices/api"
+	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
 	"google.golang.org/grpc"
 )
 
