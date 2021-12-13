@@ -1,5 +1,2 @@
 linters:
-    presets:
-        - bugs
-        - style
-        - unused
+  disable-all: true
