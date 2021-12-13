@@ -34,6 +34,7 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot subscribe")
 	}
+
 	defer subscription.Unsubscribe()
 
 	var wc sync.WaitGroup

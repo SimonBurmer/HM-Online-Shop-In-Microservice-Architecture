@@ -24,7 +24,10 @@ type server struct {
 
 func (s server) SayHello(ctx context.Context, in *api.HelloRequest) (*api.HelloReply, error) {
 	log.Printf("Received: %v", in.GetName())
-	s.nats.Publish("log.greeter", []byte(fmt.Sprintf("received: %v", in.GetName())))
+	err := s.nats.Publish("log.greeter", []byte(fmt.Sprintf("received: %v", in.GetName())))
+	if err != nil {
+		panic(err)
+	}
 	return &api.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
 
