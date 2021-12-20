@@ -24,6 +24,7 @@ type server struct {
 
 func (s server) SayHello(ctx context.Context, in *api.HelloRequest) (*api.HelloReply, error) {
 	log.Printf("Received: %v", in.GetName())
+	// Indirekte Kommunikation über NATS
 	err := s.nats.Publish("log.greeter", []byte(fmt.Sprintf("received: %v", in.GetName())))
 	if err != nil {
 		panic(err)
@@ -61,7 +62,8 @@ func main() {
 	defer nc.Close()
 
 	api.RegisterGreeterServer(s, &server{nats: nc})
-	if err := s.Serve(lis); err != nil {
+	err = s.Serve(lis)
+	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
