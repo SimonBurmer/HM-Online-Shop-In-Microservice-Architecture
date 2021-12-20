@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net"
 	"time"
@@ -10,29 +9,13 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/nats-io/nats.go"
 	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
+	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/customer"
 	"google.golang.org/grpc"
 )
 
 const (
 	port = ":50051"
 )
-
-type server struct {
-	nats *nats.Conn
-	api.UnimplementedGreeterServer
-}
-
-func (s server) SayHello(ctx context.Context, in *api.HelloRequest) (*api.HelloReply, error) {
-	log.Printf("Received: %v", in.GetName())
-	// Indirekte Kommunikation über NATS
-	err := s.nats.Publish("log.greeter", []byte(fmt.Sprintf("received: %v", in.GetName()))) // Stellt Logger einer Nachricht rein!!
-	if err != nil {
-		panic(err)
-	}
-	return &api.HelloReply{Message: "Hello " + in.GetName()}, nil
-}
-
-
 
 func main() {
 	lis, err := net.Listen("tcp", port)
@@ -41,7 +24,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 
-	// Registration im Redis 
+	// Registration im Redis
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
@@ -66,7 +49,7 @@ func main() {
 	defer nc.Close()
 
 	// Erzeugt den fertigen service
-	api.RegisterGreeterServer(s, &server{nats: nc})
+	api.RegisterGreeterServer(s, &customer.Server{Nats: nc})
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

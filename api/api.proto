@@ -13,3 +13,28 @@ message HelloRequest {
 message HelloReply {
   string message = 1;
 }
+
+
+//// Customer Service //////
+service Customer {
+  rpc SetCustomer(NewCustomer) returns (CustomerReply) {}
+  rpc GetCustomer(GetCustomerID) returns (CustomerReply) {}
+}
+
+message NewCustomer {
+  string name = 1;
+  string address = 2;
+}
+
+message CustomerReply {
+  string name = 1;
+  string address = 2;
+}
+
+message GetCustomerID {
+  int32 id = 1;
+}
+
+
+//// Order Service //////
+
