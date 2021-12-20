@@ -38,3 +38,34 @@ message GetCustomerID {
 
 //// Order Service //////
 
+
+
+//// Stock Service /////
+
+service Stock {
+  rpc AddStock(NewStock) returns () {}
+  rpc GetArticle(TakeArticle) returns (GetReply) {}
+  rpc GetStock(ArticleID) returns (GetStockReply) {}
+}
+
+message NewStock {
+  int32 id = 1;
+  int32 amount = 2;
+}
+
+message GetReply {
+  int32 amount = 1;
+}
+
+message TakeArticle {
+  int32 id = 1;
+  int32 amount = 2;
+}
+
+message ArticleID {
+  int32 id = 1;
+}
+
+message GetStockReply {
+  string answer = 1;
+}
