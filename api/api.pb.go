@@ -114,28 +114,436 @@ func (m *HelloReply) GetMessage() string {
 	return ""
 }
 
+type NewCustomerRequest struct {
+	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *NewCustomerRequest) Reset()      { *m = NewCustomerRequest{} }
+func (*NewCustomerRequest) ProtoMessage() {}
+func (*NewCustomerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{2}
+}
+func (m *NewCustomerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NewCustomerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NewCustomerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NewCustomerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewCustomerRequest.Merge(m, src)
+}
+func (m *NewCustomerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *NewCustomerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NewCustomerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NewCustomerRequest proto.InternalMessageInfo
+
+func (m *NewCustomerRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *NewCustomerRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type GetCustomerRequest struct {
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *GetCustomerRequest) Reset()      { *m = GetCustomerRequest{} }
+func (*GetCustomerRequest) ProtoMessage() {}
+func (*GetCustomerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{3}
+}
+func (m *GetCustomerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetCustomerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetCustomerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetCustomerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCustomerRequest.Merge(m, src)
+}
+func (m *GetCustomerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetCustomerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCustomerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetCustomerRequest proto.InternalMessageInfo
+
+func (m *GetCustomerRequest) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+type CustomerReply struct {
+	Id      uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name    string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *CustomerReply) Reset()      { *m = CustomerReply{} }
+func (*CustomerReply) ProtoMessage() {}
+func (*CustomerReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{4}
+}
+func (m *CustomerReply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustomerReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CustomerReply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CustomerReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustomerReply.Merge(m, src)
+}
+func (m *CustomerReply) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustomerReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustomerReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustomerReply proto.InternalMessageInfo
+
+func (m *CustomerReply) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *CustomerReply) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *CustomerReply) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type NewStock struct {
+	Id     int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Amount int32 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *NewStock) Reset()      { *m = NewStock{} }
+func (*NewStock) ProtoMessage() {}
+func (*NewStock) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{5}
+}
+func (m *NewStock) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NewStock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NewStock.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NewStock) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewStock.Merge(m, src)
+}
+func (m *NewStock) XXX_Size() int {
+	return m.Size()
+}
+func (m *NewStock) XXX_DiscardUnknown() {
+	xxx_messageInfo_NewStock.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NewStock proto.InternalMessageInfo
+
+func (m *NewStock) GetId() int32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *NewStock) GetAmount() int32 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type GetReply struct {
+	Amount int32 `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *GetReply) Reset()      { *m = GetReply{} }
+func (*GetReply) ProtoMessage() {}
+func (*GetReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{6}
+}
+func (m *GetReply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetReply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetReply.Merge(m, src)
+}
+func (m *GetReply) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetReply proto.InternalMessageInfo
+
+func (m *GetReply) GetAmount() int32 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type TakeArticle struct {
+	Id     int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Amount int32 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *TakeArticle) Reset()      { *m = TakeArticle{} }
+func (*TakeArticle) ProtoMessage() {}
+func (*TakeArticle) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{7}
+}
+func (m *TakeArticle) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TakeArticle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TakeArticle.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TakeArticle) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TakeArticle.Merge(m, src)
+}
+func (m *TakeArticle) XXX_Size() int {
+	return m.Size()
+}
+func (m *TakeArticle) XXX_DiscardUnknown() {
+	xxx_messageInfo_TakeArticle.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TakeArticle proto.InternalMessageInfo
+
+func (m *TakeArticle) GetId() int32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *TakeArticle) GetAmount() int32 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type ArticleID struct {
+	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *ArticleID) Reset()      { *m = ArticleID{} }
+func (*ArticleID) ProtoMessage() {}
+func (*ArticleID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{8}
+}
+func (m *ArticleID) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ArticleID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ArticleID.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ArticleID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArticleID.Merge(m, src)
+}
+func (m *ArticleID) XXX_Size() int {
+	return m.Size()
+}
+func (m *ArticleID) XXX_DiscardUnknown() {
+	xxx_messageInfo_ArticleID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ArticleID proto.InternalMessageInfo
+
+func (m *ArticleID) GetId() int32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+type GetStockReply struct {
+	Answer string `protobuf:"bytes,1,opt,name=answer,proto3" json:"answer,omitempty"`
+}
+
+func (m *GetStockReply) Reset()      { *m = GetStockReply{} }
+func (*GetStockReply) ProtoMessage() {}
+func (*GetStockReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{9}
+}
+func (m *GetStockReply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetStockReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetStockReply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetStockReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetStockReply.Merge(m, src)
+}
+func (m *GetStockReply) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetStockReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetStockReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetStockReply proto.InternalMessageInfo
+
+func (m *GetStockReply) GetAnswer() string {
+	if m != nil {
+		return m.Answer
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*HelloRequest)(nil), "api.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "api.HelloReply")
+	proto.RegisterType((*NewCustomerRequest)(nil), "api.NewCustomerRequest")
+	proto.RegisterType((*GetCustomerRequest)(nil), "api.GetCustomerRequest")
+	proto.RegisterType((*CustomerReply)(nil), "api.CustomerReply")
+	proto.RegisterType((*NewStock)(nil), "api.NewStock")
+	proto.RegisterType((*GetReply)(nil), "api.GetReply")
+	proto.RegisterType((*TakeArticle)(nil), "api.TakeArticle")
+	proto.RegisterType((*ArticleID)(nil), "api.ArticleID")
+	proto.RegisterType((*GetStockReply)(nil), "api.GetStockReply")
 }
 
 func init() { proto.RegisterFile("api.proto", fileDescriptor_00212fb1f9d3bf1c) }
 
 var fileDescriptor_00212fb1f9d3bf1c = []byte{
-	// 201 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4c, 0x2c, 0xc8, 0xd4,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x4e, 0x2c, 0xc8, 0x54, 0x52, 0xe2, 0xe2, 0xf1, 0x48,
-	0xcd, 0xc9, 0xc9, 0x0f, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d, 0x2e, 0x11, 0x12, 0xe2, 0x62, 0xc9, 0x4b,
-	0xcc, 0x4d, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x02, 0xb3, 0x95, 0xd4, 0xb8, 0xb8, 0xa0,
-	0x6a, 0x0a, 0x72, 0x2a, 0x85, 0x24, 0xb8, 0xd8, 0x73, 0x53, 0x8b, 0x8b, 0x13, 0xd3, 0x61, 0x8a,
-	0x60, 0x5c, 0x23, 0x6b, 0x2e, 0x76, 0xf7, 0xa2, 0xd4, 0xd4, 0x92, 0xd4, 0x22, 0x21, 0x03, 0x2e,
-	0x8e, 0xe0, 0xc4, 0x4a, 0xb0, 0x2e, 0x21, 0x41, 0x3d, 0x90, 0x9d, 0xc8, 0xb6, 0x48, 0xf1, 0x23,
-	0x0b, 0x15, 0xe4, 0x54, 0x2a, 0x31, 0x38, 0x59, 0x5f, 0x78, 0x28, 0xc7, 0x70, 0xe3, 0xa1, 0x1c,
-	0xc3, 0x87, 0x87, 0x72, 0x8c, 0x0d, 0x8f, 0xe4, 0x18, 0x57, 0x3c, 0x92, 0x63, 0x3c, 0xf1, 0x48,
-	0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x5f, 0x3c, 0x92, 0x63, 0xf8, 0xf0,
-	0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88,
-	0x62, 0xd5, 0xb3, 0x4e, 0x2c, 0xc8, 0x4c, 0x62, 0x03, 0xfb, 0xc8, 0x18, 0x10, 0x00, 0x00, 0xff,
-	0xff, 0x87, 0xd3, 0x4a, 0x90, 0xde, 0x00, 0x00, 0x00,
+	// 449 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0xbf, 0x8e, 0xd3, 0x40,
+	0x10, 0xc6, 0x77, 0x7d, 0xf8, 0xce, 0x99, 0xc3, 0xfc, 0xd9, 0x02, 0xa2, 0x20, 0xad, 0xd0, 0x0a,
+	0x01, 0xa2, 0x08, 0x27, 0x23, 0xaa, 0xd0, 0xdc, 0x81, 0x64, 0x28, 0xb8, 0xc2, 0x47, 0x45, 0xb7,
+	0x9c, 0x47, 0xc8, 0x3a, 0x3b, 0x36, 0xf6, 0x46, 0x51, 0x3a, 0x2a, 0x6a, 0x2a, 0x9e, 0x81, 0x47,
+	0xa1, 0x4c, 0x79, 0x25, 0x71, 0x1a, 0xca, 0x3c, 0x02, 0xf2, 0x7a, 0x9d, 0xd8, 0x49, 0x84, 0xe8,
+	0x76, 0xbc, 0xdf, 0x7c, 0xdf, 0x68, 0x7e, 0x6b, 0xe8, 0xc9, 0x2c, 0x1a, 0x66, 0x79, 0xaa, 0x52,
+	0x76, 0x20, 0xb3, 0x48, 0x08, 0xb8, 0xf9, 0x16, 0xe3, 0x38, 0x0d, 0xf0, 0xcb, 0x04, 0x0b, 0xc5,
+	0x18, 0xdc, 0x18, 0xcb, 0x04, 0xfb, 0xf4, 0x21, 0x7d, 0xda, 0x0b, 0xf4, 0x59, 0x3c, 0x06, 0x30,
+	0x9a, 0x2c, 0x9e, 0xb1, 0x3e, 0x1c, 0x25, 0x58, 0x14, 0xf2, 0x73, 0x23, 0x6a, 0x4a, 0x71, 0x06,
+	0xec, 0x1c, 0xa7, 0xaf, 0x27, 0x85, 0x4a, 0x13, 0xcc, 0xff, 0xe1, 0x58, 0x79, 0xc8, 0x30, 0xcc,
+	0xb1, 0x28, 0xfa, 0x56, 0xed, 0x61, 0x4a, 0xf1, 0x08, 0x98, 0x8f, 0x6a, 0xdb, 0xe3, 0x16, 0x58,
+	0x51, 0xa8, 0x1d, 0xdc, 0xc0, 0x8a, 0x42, 0xf1, 0x1e, 0xdc, 0x8d, 0xa4, 0x1a, 0x6a, 0x4b, 0xb0,
+	0x0e, 0xb5, 0xf6, 0x87, 0x1e, 0x74, 0x43, 0x3d, 0x70, 0xce, 0x71, 0x7a, 0xa1, 0xd2, 0xcb, 0xab,
+	0x96, 0x93, 0xad, 0x9d, 0xee, 0xc1, 0xa1, 0x4c, 0xd2, 0xc9, 0x58, 0x69, 0x2f, 0x3b, 0x30, 0x95,
+	0x10, 0xe0, 0xf8, 0xa8, 0xea, 0xf4, 0x8d, 0x86, 0x76, 0x34, 0x2f, 0xe1, 0xf8, 0x83, 0xbc, 0xc2,
+	0xd3, 0x5c, 0x45, 0x97, 0x31, 0xfe, 0xb7, 0xf5, 0x03, 0xe8, 0x99, 0x96, 0x77, 0x6f, 0xb6, 0x9b,
+	0xc4, 0x13, 0x70, 0x7d, 0x54, 0x7a, 0xd6, 0x4d, 0xf8, 0xb8, 0x98, 0x62, 0x6e, 0x36, 0x6c, 0x2a,
+	0x6f, 0x04, 0x47, 0x7e, 0x8e, 0xa8, 0x30, 0x67, 0x27, 0xe0, 0x5c, 0xc8, 0x99, 0x66, 0xc8, 0xee,
+	0x0e, 0xab, 0x17, 0xd0, 0x66, 0x3e, 0xb8, 0xdd, 0xfe, 0x94, 0xc5, 0x33, 0x41, 0xbc, 0x6f, 0x14,
+	0x9c, 0x66, 0xc3, 0xec, 0x15, 0x1c, 0xb7, 0xb8, 0xb2, 0xfb, 0x5a, 0xbe, 0x4b, 0x7a, 0xc0, 0xf4,
+	0x45, 0x07, 0x8c, 0x20, 0x55, 0x77, 0x8b, 0xa8, 0xe9, 0xde, 0x65, 0xbc, 0xbf, 0xdb, 0xfb, 0x41,
+	0xc1, 0xae, 0xc1, 0x3c, 0x03, 0xe7, 0x34, 0x0c, 0xeb, 0xb3, 0xdb, 0x8c, 0xa0, 0xcb, 0x81, 0xdb,
+	0x78, 0x36, 0x99, 0xcf, 0x01, 0x7c, 0x54, 0xcd, 0xde, 0xef, 0xe8, 0xeb, 0x16, 0x89, 0xdd, 0x86,
+	0x13, 0x4d, 0xd3, 0xbc, 0x00, 0x7d, 0xb9, 0x26, 0x60, 0x06, 0xeb, 0x2c, 0x5d, 0x90, 0xb3, 0xd1,
+	0x7c, 0xc1, 0xc9, 0xf5, 0x82, 0x93, 0xd5, 0x82, 0xd3, 0xaf, 0x25, 0xa7, 0x3f, 0x4b, 0x4e, 0x7f,
+	0x95, 0x9c, 0xce, 0x4b, 0x4e, 0x7f, 0x97, 0x9c, 0xfe, 0x29, 0x39, 0x59, 0x95, 0x9c, 0x7e, 0x5f,
+	0x72, 0x32, 0x5f, 0x72, 0x72, 0xbd, 0xe4, 0xe4, 0xa3, 0x3d, 0x1c, 0xc9, 0x2c, 0xfa, 0x74, 0xa8,
+	0xff, 0xc0, 0x17, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0xd1, 0x14, 0x2a, 0xb2, 0x8e, 0x03, 0x00,
+	0x00,
 }
 
 func (this *HelloRequest) Equal(that interface{}) bool {
@@ -186,6 +594,213 @@ func (this *HelloReply) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *NewCustomerRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*NewCustomerRequest)
+	if !ok {
+		that2, ok := that.(NewCustomerRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if this.Address != that1.Address {
+		return false
+	}
+	return true
+}
+func (this *GetCustomerRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*GetCustomerRequest)
+	if !ok {
+		that2, ok := that.(GetCustomerRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	return true
+}
+func (this *CustomerReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*CustomerReply)
+	if !ok {
+		that2, ok := that.(CustomerReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	if this.Address != that1.Address {
+		return false
+	}
+	return true
+}
+func (this *NewStock) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*NewStock)
+	if !ok {
+		that2, ok := that.(NewStock)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	if this.Amount != that1.Amount {
+		return false
+	}
+	return true
+}
+func (this *GetReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*GetReply)
+	if !ok {
+		that2, ok := that.(GetReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Amount != that1.Amount {
+		return false
+	}
+	return true
+}
+func (this *TakeArticle) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*TakeArticle)
+	if !ok {
+		that2, ok := that.(TakeArticle)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	if this.Amount != that1.Amount {
+		return false
+	}
+	return true
+}
+func (this *ArticleID) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ArticleID)
+	if !ok {
+		that2, ok := that.(ArticleID)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Id != that1.Id {
+		return false
+	}
+	return true
+}
+func (this *GetStockReply) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*GetStockReply)
+	if !ok {
+		that2, ok := that.(GetStockReply)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Answer != that1.Answer {
+		return false
+	}
+	return true
+}
 func (this *HelloRequest) GoString() string {
 	if this == nil {
 		return "nil"
@@ -203,6 +818,91 @@ func (this *HelloReply) GoString() string {
 	s := make([]string, 0, 5)
 	s = append(s, "&api.HelloReply{")
 	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *NewCustomerRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&api.NewCustomerRequest{")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	s = append(s, "Address: "+fmt.Sprintf("%#v", this.Address)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *GetCustomerRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&api.GetCustomerRequest{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *CustomerReply) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&api.CustomerReply{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	s = append(s, "Address: "+fmt.Sprintf("%#v", this.Address)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *NewStock) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&api.NewStock{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *GetReply) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&api.GetReply{")
+	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *TakeArticle) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&api.TakeArticle{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ArticleID) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&api.ArticleID{")
+	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *GetStockReply) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&api.GetStockReply{")
+	s = append(s, "Answer: "+fmt.Sprintf("%#v", this.Answer)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -295,6 +995,258 @@ var _Greeter_serviceDesc = grpc.ServiceDesc{
 	Metadata: "api.proto",
 }
 
+// CustomerClient is the client API for Customer service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type CustomerClient interface {
+	NewCustomer(ctx context.Context, in *NewCustomerRequest, opts ...grpc.CallOption) (*CustomerReply, error)
+	GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...grpc.CallOption) (*CustomerReply, error)
+}
+
+type customerClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewCustomerClient(cc *grpc.ClientConn) CustomerClient {
+	return &customerClient{cc}
+}
+
+func (c *customerClient) NewCustomer(ctx context.Context, in *NewCustomerRequest, opts ...grpc.CallOption) (*CustomerReply, error) {
+	out := new(CustomerReply)
+	err := c.cc.Invoke(ctx, "/api.Customer/NewCustomer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *customerClient) GetCustomer(ctx context.Context, in *GetCustomerRequest, opts ...grpc.CallOption) (*CustomerReply, error) {
+	out := new(CustomerReply)
+	err := c.cc.Invoke(ctx, "/api.Customer/GetCustomer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// CustomerServer is the server API for Customer service.
+type CustomerServer interface {
+	NewCustomer(context.Context, *NewCustomerRequest) (*CustomerReply, error)
+	GetCustomer(context.Context, *GetCustomerRequest) (*CustomerReply, error)
+}
+
+// UnimplementedCustomerServer can be embedded to have forward compatible implementations.
+type UnimplementedCustomerServer struct {
+}
+
+func (*UnimplementedCustomerServer) NewCustomer(ctx context.Context, req *NewCustomerRequest) (*CustomerReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NewCustomer not implemented")
+}
+func (*UnimplementedCustomerServer) GetCustomer(ctx context.Context, req *GetCustomerRequest) (*CustomerReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCustomer not implemented")
+}
+
+func RegisterCustomerServer(s *grpc.Server, srv CustomerServer) {
+	s.RegisterService(&_Customer_serviceDesc, srv)
+}
+
+func _Customer_NewCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CustomerServer).NewCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Customer/NewCustomer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CustomerServer).NewCustomer(ctx, req.(*NewCustomerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Customer_GetCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CustomerServer).GetCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Customer/GetCustomer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CustomerServer).GetCustomer(ctx, req.(*GetCustomerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Customer_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "api.Customer",
+	HandlerType: (*CustomerServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "NewCustomer",
+			Handler:    _Customer_NewCustomer_Handler,
+		},
+		{
+			MethodName: "GetCustomer",
+			Handler:    _Customer_GetCustomer_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api.proto",
+}
+
+// StockClient is the client API for Stock service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type StockClient interface {
+	AddStock(ctx context.Context, in *NewStock, opts ...grpc.CallOption) (*GetReply, error)
+	GetArticle(ctx context.Context, in *TakeArticle, opts ...grpc.CallOption) (*GetReply, error)
+	GetStock(ctx context.Context, in *ArticleID, opts ...grpc.CallOption) (*GetStockReply, error)
+}
+
+type stockClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewStockClient(cc *grpc.ClientConn) StockClient {
+	return &stockClient{cc}
+}
+
+func (c *stockClient) AddStock(ctx context.Context, in *NewStock, opts ...grpc.CallOption) (*GetReply, error) {
+	out := new(GetReply)
+	err := c.cc.Invoke(ctx, "/api.Stock/AddStock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stockClient) GetArticle(ctx context.Context, in *TakeArticle, opts ...grpc.CallOption) (*GetReply, error) {
+	out := new(GetReply)
+	err := c.cc.Invoke(ctx, "/api.Stock/GetArticle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stockClient) GetStock(ctx context.Context, in *ArticleID, opts ...grpc.CallOption) (*GetStockReply, error) {
+	out := new(GetStockReply)
+	err := c.cc.Invoke(ctx, "/api.Stock/GetStock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// StockServer is the server API for Stock service.
+type StockServer interface {
+	AddStock(context.Context, *NewStock) (*GetReply, error)
+	GetArticle(context.Context, *TakeArticle) (*GetReply, error)
+	GetStock(context.Context, *ArticleID) (*GetStockReply, error)
+}
+
+// UnimplementedStockServer can be embedded to have forward compatible implementations.
+type UnimplementedStockServer struct {
+}
+
+func (*UnimplementedStockServer) AddStock(ctx context.Context, req *NewStock) (*GetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddStock not implemented")
+}
+func (*UnimplementedStockServer) GetArticle(ctx context.Context, req *TakeArticle) (*GetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticle not implemented")
+}
+func (*UnimplementedStockServer) GetStock(ctx context.Context, req *ArticleID) (*GetStockReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStock not implemented")
+}
+
+func RegisterStockServer(s *grpc.Server, srv StockServer) {
+	s.RegisterService(&_Stock_serviceDesc, srv)
+}
+
+func _Stock_AddStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewStock)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StockServer).AddStock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Stock/AddStock",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StockServer).AddStock(ctx, req.(*NewStock))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Stock_GetArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TakeArticle)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StockServer).GetArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Stock/GetArticle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StockServer).GetArticle(ctx, req.(*TakeArticle))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Stock_GetStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StockServer).GetStock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Stock/GetStock",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StockServer).GetStock(ctx, req.(*ArticleID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Stock_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "api.Stock",
+	HandlerType: (*StockServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AddStock",
+			Handler:    _Stock_AddStock_Handler,
+		},
+		{
+			MethodName: "GetArticle",
+			Handler:    _Stock_GetArticle_Handler,
+		},
+		{
+			MethodName: "GetStock",
+			Handler:    _Stock_GetStock_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api.proto",
+}
+
 func (m *HelloRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -355,6 +1307,265 @@ func (m *HelloReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *NewCustomerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NewCustomerRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NewCustomerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetCustomerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetCustomerRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetCustomerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CustomerReply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CustomerReply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CustomerReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Id != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NewStock) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NewStock) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NewStock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetReply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetReply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TakeArticle) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TakeArticle) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TakeArticle) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ArticleID) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ArticleID) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ArticleID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetStockReply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetStockReply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetStockReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Answer) > 0 {
+		i -= len(m.Answer)
+		copy(dAtA[i:], m.Answer)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Answer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintApi(dAtA []byte, offset int, v uint64) int {
 	offset -= sovApi(v)
 	base := offset
@@ -392,6 +1603,122 @@ func (m *HelloReply) Size() (n int) {
 	return n
 }
 
+func (m *NewCustomerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	return n
+}
+
+func (m *GetCustomerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovApi(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *CustomerReply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovApi(uint64(m.Id))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	return n
+}
+
+func (m *NewStock) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovApi(uint64(m.Id))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovApi(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *GetReply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		n += 1 + sovApi(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *TakeArticle) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovApi(uint64(m.Id))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovApi(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *ArticleID) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovApi(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *GetStockReply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Answer)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	return n
+}
+
 func sovApi(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
@@ -414,6 +1741,91 @@ func (this *HelloReply) String() string {
 	}
 	s := strings.Join([]string{`&HelloReply{`,
 		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *NewCustomerRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&NewCustomerRequest{`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`Address:` + fmt.Sprintf("%v", this.Address) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *GetCustomerRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&GetCustomerRequest{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *CustomerReply) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&CustomerReply{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`Address:` + fmt.Sprintf("%v", this.Address) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *NewStock) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&NewStock{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *GetReply) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&GetReply{`,
+		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *TakeArticle) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&TakeArticle{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ArticleID) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ArticleID{`,
+		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *GetStockReply) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&GetStockReply{`,
+		`Answer:` + fmt.Sprintf("%v", this.Answer) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -568,6 +1980,718 @@ func (m *HelloReply) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NewCustomerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NewCustomerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NewCustomerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetCustomerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetCustomerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetCustomerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CustomerReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CustomerReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CustomerReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NewStock) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NewStock: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NewStock: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TakeArticle) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TakeArticle: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TakeArticle: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ArticleID) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ArticleID: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ArticleID: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetStockReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetStockReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetStockReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Answer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Answer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

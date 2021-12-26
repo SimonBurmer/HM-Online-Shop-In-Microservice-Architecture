@@ -17,23 +17,28 @@ message HelloReply {
 
 //// Customer Service //////
 service Customer {
-  rpc SetCustomer(NewCustomer) returns (CustomerReply) {}
-  rpc GetCustomer(GetCustomerID) returns (CustomerReply) {}
+  rpc NewCustomer(NewCustomerRequest) returns (CustomerReply) {}
+  rpc GetCustomer(GetCustomerRequest) returns (CustomerReply) {}
 }
 
-message NewCustomer {
+message NewCustomerRequest {
   string name = 1;
   string address = 2;
+}
+
+message GetCustomerRequest {
+  uint32 id = 1;
 }
 
 message CustomerReply {
-  string name = 1;
-  string address = 2;
+  uint32 id = 1;
+  string name = 2;
+  string address = 3;
 }
 
-message GetCustomerID {
-  int32 id = 1;
-}
+// message CustomerNotFound { uint32 id = 1; }????
+
+
 
 
 //// Order Service //////
@@ -41,12 +46,12 @@ message GetCustomerID {
 
 
 //// Stock Service /////
-
 service Stock {
-  rpc AddStock(NewStock) returns () {}
+  rpc AddStock(NewStock) returns (GetReply) {}
   rpc GetArticle(TakeArticle) returns (GetReply) {}
   rpc GetStock(ArticleID) returns (GetStockReply) {}
 }
+// asdfsaasdfasd
 
 message NewStock {
   int32 id = 1;

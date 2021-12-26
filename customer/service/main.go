@@ -14,10 +14,11 @@ import (
 )
 
 const (
-	port = ":50051"
+	port = ":50055"
 )
 
 func main() {
+	print("test")
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -32,7 +33,7 @@ func main() {
 
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "greeter", "127.0.0.1"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "customer", "127.0.0.1"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -49,7 +50,7 @@ func main() {
 	defer nc.Close()
 
 	// Erzeugt den fertigen service
-	api.RegisterGreeterServer(s, &customer.Server{Nats: nc})
+	api.RegisterCustomerServer(s, &customer.Server{Nats: nc, Customers: make(map[uint32]*api.NewCustomerRequest), CustomerID: 0})
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

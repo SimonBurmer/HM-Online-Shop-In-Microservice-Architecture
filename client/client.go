@@ -48,4 +48,35 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s", r.GetMessage())
+
+	///////////// CUSTOMER ///////////////
+	print("ASDKJFKLSJDAFDSJAKFAJKSDFDSLA")
+
+	// Von Redis Verbindung zu Greeter aufbauen
+	customer_redisVal := rdb.Get(context.TODO(), "customer")
+	if customer_redisVal == nil {
+		log.Fatal("service not registered")
+	}
+	customer_address, err := customer_redisVal.Result()
+	if err != nil {
+		log.Fatalf("error while trying to get the result %v", err)
+	}
+	customer_conn, err := grpc.Dial(customer_address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer customer_conn.Close()
+
+	// Verbindung mit Customer
+	customer := api.NewCustomerClient(customer_conn)
+
+	customer_ctx, customer_cancel := context.WithTimeout(context.Background(), time.Second)
+	defer customer_cancel()
+
+	// Direkte Kommuniaktion mit Customer
+	customer_r, err := customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "test", Address: "test"})
+	if err != nil {
+		log.Fatalf("direct communication with customer failed: %v", customer_r)
+	}
+	log.Printf("Greeting: %s", r.GetMessage())
 }
