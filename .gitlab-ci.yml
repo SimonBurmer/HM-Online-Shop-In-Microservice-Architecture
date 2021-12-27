@@ -1,22 +1,5 @@
-variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
-
-# Official docker compose image.
-image:
-  name: docker/compose:latest
-
-services:
-  - docker:dind
-
-before_script:
-  - docker version
-  - docker-compose version
-
-build:
-  stage: build
+lint:
+  image: golangci/golangci-lint
+  stage: test
   script:
-    - echo "building..."
-    - docker-compose down
-    - docker-compose build
-    - docker-compose up tester-image
+    - echt "Test"
