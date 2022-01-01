@@ -15,7 +15,9 @@ message HelloReply {
 }
 
 
-//// Customer Service //////
+//////////////////////
+//// Customer Service 
+//////////////////////
 service Customer {
   rpc NewCustomer(NewCustomerRequest) returns (CustomerReply) {}
   rpc GetCustomer(GetCustomerRequest) returns (CustomerReply) {}
@@ -37,6 +39,41 @@ message CustomerReply {
 }
 
 // message CustomerNotFound { uint32 id = 1; }????
+
+//////////////////////
+//// Order Service 
+//////////////////////
+service Payment {
+  rpc NewPayment(NewPaymentRequest) returns (PaymentResponse) {}
+  rpc GetPayment(GetPaymentRequest) returns (PaymentResponse) {}
+  rpc DeletePayment(DeletePaymentRequest) returns (PaymentResponse) {}
+
+  rpc PayPayment(PayPaymentRequest) returns (PaymentResponse) {}
+}
+
+message NewPaymentRequest{
+  uint32  orderId = 1;
+  float  value = 2;
+}
+
+message GetPaymentRequest{
+  uint32  id = 1;
+}
+
+message DeletePaymentRequest{
+  uint32  id = 1;
+}
+
+message PayPaymentRequest{
+  uint32  id = 1;
+  float  value = 2;
+}
+
+message PaymentResponse{
+  uint32          id = 1;
+  float           value = 2;
+}
+
 
 
 

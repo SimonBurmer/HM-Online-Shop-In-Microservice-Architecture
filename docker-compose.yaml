@@ -1,5 +1,7 @@
 version: "3"
 services:
+  # https://docs.docker.com/compose/compose-file/compose-file-v3/#environment
+  # Dependencies
   redis:
     image: "bitnami/redis:latest"
     ports:
@@ -10,4 +12,35 @@ services:
   nats:
     image: nats
     ports:
-        - 4222:4222
+        - 4222:4222 
+
+  # App
+  logger-service:
+    build:
+      context: .
+      dockerfile: logger/Dockerfile
+    image: logger
+    depends_on:
+      - nats 
+
+  customer-service:
+    build:
+      context: .
+      dockerfile: customer/service/Dockerfile
+    image: customer
+    ports:
+      - 50055:50055 
+    depends_on:
+      - redis
+      - nats 
+
+          
+  client:
+    build:
+      context: .
+      dockerfile: client/service/Dockerfile
+    image: client
+    depends_on:
+      - redis
+      - nats
+      - customer-service

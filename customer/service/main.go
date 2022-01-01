@@ -18,22 +18,22 @@ const (
 )
 
 func main() {
-	print("test")
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
 
-	// Registration im Redis
+	// Verbindung zu Redis
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "host.docker.internal:6379",
 		Password: "", // no password set
 	})
 
+	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "customer", "127.0.0.1"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "customer", "host.docker.internal"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -42,8 +42,8 @@ func main() {
 		}
 	}()
 
-	// Verbindung zu NATS aufbauen
-	nc, err := nats.Connect("127.0.0.1:4222")
+	// Verbindung zu NATS
+	nc, err := nats.Connect("host.docker.internal:4222")
 	if err != nil {
 		log.Fatal(err)
 	}

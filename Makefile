@@ -1,9 +1,13 @@
+# usage: make run1
+# docker-compose -f A -f B "merges" A & B
+
 .PHONY: run1 run2 run3 run4 run5 run
 
 run1:
 	@echo "------------------------------------------------------"
 	@echo "-- SZENARIO 1 ----------------------------------------"
 	@echo "------------------------------------------------------"
+	docker-compose -f docker-compose.yaml -f docker-compose.S1.yaml up --abort-on-container-exit
 
 run2:
 	@echo "------------------------------------------------------"

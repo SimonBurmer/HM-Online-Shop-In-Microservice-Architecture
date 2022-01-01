@@ -1,9 +1,9 @@
-FROM obraun/golang-micro-ci as builder
+FROM obraun/golang-microservices-ci as builder
 COPY . /app
 WORKDIR /app
-RUN go build -o customer/service/customer-service customer/service/main.go
+RUN go build -o customer/service/customerservice customer/service/main.go
 
 FROM alpine
-COPY --from=builder /app/customer/service/customer-service /app/customer-service
+COPY --from=builder /app/customer/service/customerservice /app/customerservice
 EXPOSE 8091
-ENTRYPOINT [ "/app/customer-service" ]
+ENTRYPOINT [ "/app/customerservice" ]
