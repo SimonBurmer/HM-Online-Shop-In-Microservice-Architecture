@@ -81,8 +81,10 @@ message PaymentResponse{
 //// Order Service //////
 
 
+///////////////////////
+//// Stock Service 
+///////////////////////
 
-//// Stock Service /////
 service Stock {
   rpc AddStock(NewStock) returns (GetReply) {}
   rpc GetArticle(TakeArticle) returns (GetReply) {}
@@ -109,5 +111,5 @@ message ArticleID {
 }
 
 message GetStockReply {
-  string answer = 1;
+  bool answer = 1;
 }
