@@ -18,13 +18,15 @@ func main() {
 		return strings.ToUpper(fmt.Sprintf("| %-6s|", i))
 	}
 	log.Logger = zerolog.New(output).With().Timestamp().Logger()
-
+	
+	// Verbindung zu Nats aufgaben
 	nc, err := nats.Connect("host.docker.internal:4222")
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot connect to nats")
 	}
 	defer nc.Close()
 
+	// Nats Channel subscriben
 	subscription, err := nc.Subscribe("log.*", func(msg *nats.Msg) {
 		log.Info().
 			Str("subj", msg.Subject).
@@ -34,7 +36,6 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot subscribe")
 	}
-
 	defer subscription.Unsubscribe()
 
 	var wc sync.WaitGroup

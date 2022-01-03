@@ -51,7 +51,7 @@ func main() {
 	defer nc.Close()
 
 	// Erzeugt den fertigen Service
-	api.RegisterPaymentServer(s, &payment.Server{Nats: nc, Payments: make(map[uint32]*api.NewPaymentRequest), PaymentID: 0})
+	api.RegisterPaymentServer(s, &payment.Server{Nats: nc, Payments: make(map[uint32]*api.NewPaymentRequest), PaymentId: 0})
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

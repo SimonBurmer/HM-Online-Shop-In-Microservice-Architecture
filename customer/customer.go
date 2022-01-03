@@ -25,9 +25,9 @@ func (s Server) NewCustomer(ctx context.Context, in *api.NewCustomerRequest) (*a
 		panic(err)
 	}
 
-	s.CustomerID++
+	s.CustomerID++ //GEHT NICHT!!!!!!!!!!!!!!
 	s.Customers[s.CustomerID] = in
-	log.Printf("successfully created new customer: name: %v, address: %v", in.GetName(), in.GetAddress())
+	log.Printf("successfully created new customer: id: %v, name: %v, address: %v", s.CustomerID, in.GetName(), in.GetAddress())
 
 	return &api.CustomerReply{Id: s.CustomerID, Name: in.GetName(), Address: in.GetAddress()}, nil
 }
@@ -44,6 +44,6 @@ func (s Server) GetCustomer(ctx context.Context, in *api.GetCustomerRequest) (*a
 	// Fehlerbehandlung!!
 	//log.Fatalf("No Customer with id: %v", in.GetId())
 
-	log.Printf("successfully loaded customer of: id: %v", in.GetId())
+	log.Printf("successfully loaded customer of: id: %v, name: %v, address: %v", in.GetId(), out.GetName(), out.GetAddress())
 	return &api.CustomerReply{Id: s.CustomerID, Name: out.GetName(), Address: out.GetAddress()}, nil
 }
