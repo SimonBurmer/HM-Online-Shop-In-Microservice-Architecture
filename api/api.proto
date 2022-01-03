@@ -40,15 +40,17 @@ message CustomerReply {
 
 // message CustomerNotFound { uint32 id = 1; }????
 
+
+
 //////////////////////
-//// Order Service 
+//// Payment Service 
 //////////////////////
 service Payment {
-  rpc NewPayment(NewPaymentRequest) returns (PaymentResponse) {}
-  rpc GetPayment(GetPaymentRequest) returns (PaymentResponse) {}
-  rpc DeletePayment(DeletePaymentRequest) returns (PaymentResponse) {}
+  rpc NewPayment(NewPaymentRequest) returns (PaymentReply) {}
+  rpc GetPayment(GetPaymentRequest) returns (PaymentReply) {}
+  rpc DeletePayment(DeletePaymentRequest) returns (PaymentReply) {}
 
-  rpc PayPayment(PayPaymentRequest) returns (PaymentResponse) {}
+  rpc PayPayment(PayPaymentRequest) returns (PaymentReply) {}
 }
 
 message NewPaymentRequest{
@@ -69,16 +71,13 @@ message PayPaymentRequest{
   float  value = 2;
 }
 
-message PaymentResponse{
+message PaymentReply{
   uint32          id = 1;
-  float           value = 2;
+  uint32          orderId = 2;
+  float           value = 3;
 }
 
 
-
-
-
-//// Order Service //////
 
 
 

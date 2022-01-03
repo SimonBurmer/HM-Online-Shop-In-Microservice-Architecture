@@ -9,12 +9,12 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/nats-io/nats.go"
 	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
-	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/customer"
+	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/payment"
 	"google.golang.org/grpc"
 )
 
 const (
-	port = ":50055"
+	port = ":50056"
 )
 
 func main() {
@@ -34,7 +34,7 @@ func main() {
 	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "customer", "host.docker.internal"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "payment", "host.docker.internal"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -51,7 +51,7 @@ func main() {
 	defer nc.Close()
 
 	// Erzeugt den fertigen Service
-	api.RegisterCustomerServer(s, &customer.Server{Nats: nc, Customers: make(map[uint32]*api.NewCustomerRequest), CustomerID: 0})
+	api.RegisterPaymentServer(s, &payment.Server{Nats: nc, Payments: make(map[uint32]*api.NewPaymentRequest), PaymentID: 0})
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

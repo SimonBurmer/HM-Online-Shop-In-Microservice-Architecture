@@ -19,8 +19,7 @@ type Server struct {
 func (s Server) NewCustomer(ctx context.Context, in *api.NewCustomerRequest) (*api.CustomerReply, error) {
 	log.Printf("received new customer request of: name: %v, address: %v", in.GetName(), in.GetAddress())
 
-	// Indirekte Kommunikation über NATS
-	// Stellt Logger einer Nachricht rein!!
+	// Indirekte Kommunikation über NATS (Stellt Logger einer Nachricht rein)
 	err := s.Nats.Publish("log.customer", []byte(fmt.Sprintf("received new customer of: name: %v, address: %v", in.GetName(), in.GetAddress())))
 	if err != nil {
 		panic(err)

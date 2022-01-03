@@ -65,7 +65,7 @@ func main() {
 	}
 	defer nc.Close()
 
-	// Erzeugt den fertigen service
+	// Erzeugt den fertigen Service
 	api.RegisterGreeterServer(s, &server{nats: nc})
 	err = s.Serve(lis)
 	if err != nil {

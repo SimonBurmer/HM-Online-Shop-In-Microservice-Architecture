@@ -70,12 +70,12 @@ func (c *Client) scenario1() {
 		log.Fatalf("Direct communication with customer failed: %v", r)
 	}
 
-	log.Printf("Created customer: %s ", r.GetName())
-	err = c.Nats.Publish("log.client", []byte(fmt.Sprintf("Created customer: %s ", r.GetName())))
+	log.Printf("Created customer: %s,%s,%d", r.GetName(), r.GetAddress(), r.GetId())
+	err = c.Nats.Publish("log.client", []byte(fmt.Sprintf("Created customer: %s,%s,%d", r.GetName(), r.GetAddress(), r.GetId())))
 	if err != nil {
 		panic(err)
 	}
-	
+
 }
 
 func (c *Client) scenario2() {
