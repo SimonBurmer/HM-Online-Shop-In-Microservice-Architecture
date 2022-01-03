@@ -13,7 +13,7 @@ import (
 )
 
 type Client struct {
-	Nats  *nats.Conn
+	Nats  *nats.EncodedConn
 	Redis *redis.Client
 }
 
@@ -123,13 +123,18 @@ func (c *Client) scenario1() {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
 	log.Printf("deleted payment: Id:%v, OrderId:%v, Value:%v", payment_r.GetId(), payment_r.GetOrderId(), payment_r.GetValue())
+
+	err = c.Nats.Publish("customer", &api.NewCustomerRequest{Name: "der", Address: "sf"})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (c *Client) scenario2() {
 	// Standartfall: Kund Bestellt lagernde Produkte
 	// 1. Kunde erstellen
 	// 2. Bestellung erstellen
-	// 3. Aufversandbestägung warten
+	// 3. Auf Versandbestätigung warten
 
 	log.Printf("Send xx to xx")
 
