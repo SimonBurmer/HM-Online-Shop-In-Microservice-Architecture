@@ -116,3 +116,86 @@ message ArticleID {
 message GetStockReply {
   bool answer = 1;
 }
+
+
+///////////////////////
+//// Supplier Service
+///////////////////////
+
+// work in progress
+service Supplier {
+  rpc DeliveredArticle(NewArticles) returns (GetSupplierReply) {}
+}
+
+message NewArticles {
+  uint32 id = 1;
+  uint32 amount = 2;
+}
+
+message GetSupplierReply {
+  string answer = 1;
+}
+
+
+//////////////////////
+//// Catalog Service
+//////////////////////
+
+service Catalog {
+  rpc GetCatalogInfo(GetCatalog) returns (CatalogReply) {}
+  rpc NewCatalogArticle(NewCatalog) returns (CatalogReply) {}
+  rpc UpdateCatalog(UpdatedData) returns(CatalogReply) {}
+  rpc DeleteCatalog(GetCatalog) returns (CatalogReply) {}
+}
+
+message GetCatalog {
+  uint32 id = 1;
+}
+
+message CatalogReply {
+  uint32 id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+}
+
+message NewCatalog {
+  string name = 1;
+  string description = 2;
+  double price = 3;
+}
+
+message UpdatedData {
+  uint32 id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+}
+
+
+////////////////////////
+//// Shipment Service
+////////////////////////
+// work in progress
+service Shipment {
+ rpc NewShipment(NewShipmentRequest) returns (ShipmentReply) {}
+ rpc SendShipment(GetShipmentRequest) returns (ShipmentReply) {}
+ rpc ReturnedShipment(GetShipmentRequest) returns (ShipmentReply) {}
+}
+
+message NewShipmentRequest {
+  map<uint32, uint32> articles = 1;
+  map<uint32, bool> ready = 2;
+}
+
+message ShipmentReply {
+  uint32 id = 1;
+  map<uint32, uint32> articles = 2;
+  map<uint32, bool> ready = 3;
+}
+
+message GetShipmentRequest {
+  uint32 id = 1;
+  map<uint32, uint32> articles = 2;
+  map<uint32, bool> ready = 3;
+}
