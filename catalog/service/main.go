@@ -33,7 +33,7 @@ func main() {
 	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "catalog", "host.docker.internal"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "catalog", "catalog-service"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
