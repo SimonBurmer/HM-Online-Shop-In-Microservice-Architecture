@@ -10,7 +10,7 @@ import (
 )
 
 type Server struct {
-	Nats       *nats.EncodedConn
+	Nats       *nats.Conn
 	Customers  map[uint32]*api.NewCustomerRequest
 	CustomerID uint32
 	api.UnimplementedCustomerServer
