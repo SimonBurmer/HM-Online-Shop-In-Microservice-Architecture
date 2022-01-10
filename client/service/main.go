@@ -21,8 +21,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	c, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	client := client.Client{Nats: nc, Redis: rdb}
+	client := client.Client{Nats: c, Redis: rdb}
 	log.Printf("Client object successfully created")
 
 	client.Scenarios(os.Getenv("scenario"))

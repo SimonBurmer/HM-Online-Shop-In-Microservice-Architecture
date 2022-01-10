@@ -13,13 +13,13 @@ import (
 )
 
 type Client struct {
-	Nats  *nats.Conn
+	Nats  *nats.EncodedConn
 	Redis *redis.Client
 }
 
 func (c *Client) Scenarios(scenario string) {
 	log.Printf("Run scenario: %s ", scenario)
-	err := c.Nats.Publish("log.client", []byte(fmt.Sprintf("Run scenario: %s", scenario)))
+	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("run scenario: %s", scenario), Subject: "Client.Scenarios"})
 	if err != nil {
 		panic(err)
 	}
@@ -31,19 +31,29 @@ func (c *Client) Scenarios(scenario string) {
 		c.scenario2()
 
 	default:
-		log.Fatalf("No scenario called: %s", scenario)
-		err := c.Nats.Publish("log.client", []byte(fmt.Sprintf("No scenario called: %s", scenario)))
+		log.Fatalf("no scenario called: %s", scenario)
+		err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no scenario called: %s", scenario), Subject: "Client.Scenarios"})
 		if err != nil {
 			panic(err)
 		}
 	}
 }
 
+// 1. Bestellung lagernder Produkte durch einen Neukunden bis zum Verschicken.
+// 2. Bestellung von drei Produkten, von denen nur eines auf Lager ist, bis zum Verschicken.
+//      Die beiden nicht lagernden Produkte werden zu verschiedenen Zeit- punkten, durch verschiedene Zulieferer, geliefert.
+// 3.  Stornieren einer Bestellung, die noch nicht verschickt wurde.
+// 4. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit sofortiger Ersatzlieferung.
+// 5. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit Rückbuchung des entsprechenden Teilbetrages.
+
 func (c *Client) scenario1() {
 	// Testen der einzelnen Komponenten
 	// 1. Customer service
 	// 2. Payment service
 
+	////////////////////////////
+	// Kommunikation mit Customer:
+	////////////////////////////
 	// Mithilfe von Redis Verbindung zu Customer aufbauen
 	customer_redisVal := c.Redis.Get(context.TODO(), "customer")
 	if customer_redisVal == nil {
@@ -62,9 +72,14 @@ func (c *Client) scenario1() {
 	customer_ctx, customer_cancel := context.WithTimeout(context.Background(), time.Second)
 	defer customer_cancel()
 
-	// Kommunikation mit Customer:
 	// - Neuen Kunden erstellen
 	customer_r, customer_err := customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Simon", Address: "Munich"})
+	if customer_err != nil {
+		log.Fatalf("Direct communication with customer failed: %v", customer_r)
+	}
+	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
+
+	customer_r, customer_err = customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Max", Address: "Berlin"})
 	if customer_err != nil {
 		log.Fatalf("Direct communication with customer failed: %v", customer_r)
 	}
@@ -77,6 +92,9 @@ func (c *Client) scenario1() {
 	}
 	log.Printf("Got customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
 
+	////////////////////////////
+	// Kommunikation mit Payment:
+	////////////////////////////
 	// Mithilfe von Redis Verbindung zu Payment aufbauen
 	payment_redisVal := c.Redis.Get(context.TODO(), "payment")
 	if payment_redisVal == nil {
@@ -95,7 +113,6 @@ func (c *Client) scenario1() {
 	payment_ctx, payment_cancel := context.WithTimeout(context.Background(), time.Second)
 	defer payment_cancel()
 
-	// Kommunikation mit Payment:
 	// - Neues Payment erstellen
 	payment_r, payment_err := payment.NewPayment(payment_ctx, &api.NewPaymentRequest{OrderId: 1, Value: 33.98})
 	if payment_err != nil {
@@ -123,6 +140,8 @@ func (c *Client) scenario1() {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
 	log.Printf("deleted payment: Id:%v, OrderId:%v, Value:%v", payment_r.GetId(), payment_r.GetOrderId(), payment_r.GetValue())
+
+	time.Sleep(8 * time.Second)
 }
 
 func (c *Client) scenario2() {

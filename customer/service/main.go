@@ -48,10 +48,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	c, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Erzeugt den fertigen Service
-	api.RegisterCustomerServer(s, &customer.Server{Nats: nc, Customers: make(map[uint32]*api.NewCustomerRequest), CustomerID: 0})
+	customerServer := customer.Server{Nats: c, Customers: make(map[uint32]*api.NewCustomerRequest), CustomerID: 0}
+	api.RegisterCustomerServer(s, &customerServer)
 	err = s.Serve(lis)
+
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
