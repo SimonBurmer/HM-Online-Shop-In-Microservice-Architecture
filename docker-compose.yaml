@@ -4,15 +4,11 @@ services:
   # Dependencies
   redis:
     image: "bitnami/redis:latest"
-    ports:
-      - 6379:6379
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
 
   nats:
     image: nats
-    ports:
-        - 4222:4222 
 
   # App
   # TODO: EXPOSE IN DOCKERFILE LÖschen!
@@ -29,8 +25,6 @@ services:
       context: .
       dockerfile: customer/service/Dockerfile
     image: customer
-    ports:
-      - 50055:50055 
     depends_on:
       - redis
       - nats 
@@ -40,8 +34,6 @@ services:
       context: .
       dockerfile: payment/service/Dockerfile
     image: payment
-    ports:
-      - 50056:50056 
     depends_on:
       - redis
       - nats 

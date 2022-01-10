@@ -20,7 +20,7 @@ func main() {
 	log.Logger = zerolog.New(output).With().Timestamp().Logger()
 	
 	// Verbindung zu Nats aufgaben
-	nc, err := nats.Connect("host.docker.internal:4222")
+	nc, err := nats.Connect("nats:4222")
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot connect to nats")
 	}

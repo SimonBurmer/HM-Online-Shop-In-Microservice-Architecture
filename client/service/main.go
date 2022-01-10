@@ -12,12 +12,12 @@ import (
 func main() {
 	// Verbindung zu Redis
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "host.docker.internal:6379", // 127.0.0.1 / host.docker.internal
-		Password: "",                          // no password set
+		Addr:     "redis:6379", // 127.0.0.1 / host.docker.internal
+		Password: "",           // no password set
 	})
 
 	// Verbindung zu NATS
-	nc, err := nats.Connect("host.docker.internal:4222") // 127.0.0.1
+	nc, err := nats.Connect("nats:4222") // 127.0.0.1
 	if err != nil {
 		log.Fatal(err)
 	}

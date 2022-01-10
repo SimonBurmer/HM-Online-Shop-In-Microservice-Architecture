@@ -32,8 +32,6 @@ func (s server) SayHello(ctx context.Context, in *api.HelloRequest) (*api.HelloR
 	return &api.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
 
-
-
 func main() {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
@@ -41,9 +39,9 @@ func main() {
 	}
 	s := grpc.NewServer()
 
-	// Registration im Redis 
+	// Registration im Redis
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "redis:6379",
 		Password: "", // no password set
 	})
 
@@ -59,7 +57,7 @@ func main() {
 	}()
 
 	// Verbindung zu NATS aufbauen
-	nc, err := nats.Connect("127.0.0.1:4222")
+	nc, err := nats.Connect("nats:4222")
 	if err != nil {
 		log.Fatal(err)
 	}

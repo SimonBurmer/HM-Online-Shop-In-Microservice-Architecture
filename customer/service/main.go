@@ -27,14 +27,14 @@ func main() {
 
 	// Verbindung zu Redis
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "host.docker.internal:6379",
+		Addr:     "redis:6379",
 		Password: "", // no password set
 	})
 
 	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "customer", "host.docker.internal"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "customer", "customer-service"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -44,7 +44,7 @@ func main() {
 	}()
 
 	// Verbindung zu NATS
-	nc, err := nats.Connect("host.docker.internal:4222")
+	nc, err := nats.Connect("nats:4222")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,16 +53,6 @@ func main() {
 		log.Fatal(err)
 	}
 	defer nc.Close()
-
-	// Nats Channel subscriben
-	subscription, err := c.Subscribe("customer", func(p *api.NewCustomerRequest) {
-		log.Printf("Received newCustomerRequest with: name: %v ,adress: %v", p.GetName(),p.GetAddress())
-		
-	})
-	if err != nil {
-		log.Fatalf("cannot subscribe: %v", err)
-	}
-	defer subscription.Unsubscribe()
 
 	// Erzeugt den fertigen Service
 	api.RegisterCustomerServer(s, &customer.Server{Nats: c, Customers: make(map[uint32]*api.NewCustomerRequest), CustomerID: 0})
