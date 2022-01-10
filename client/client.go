@@ -96,6 +96,7 @@ func (c *Client) scenario1() {
 	// Kommunikation mit Payment:
 	////////////////////////////
 	// Mithilfe von Redis Verbindung zu Payment aufbauen
+
 	payment_redisVal := c.Redis.Get(context.TODO(), "payment")
 	if payment_redisVal == nil {
 		log.Fatal("service not registered")
@@ -113,33 +114,30 @@ func (c *Client) scenario1() {
 	payment_ctx, payment_cancel := context.WithTimeout(context.Background(), time.Second)
 	defer payment_cancel()
 
-	// - Neues Payment erstellen
-	payment_r, payment_err := payment.NewPayment(payment_ctx, &api.NewPaymentRequest{OrderId: 1, Value: 33.98})
-	if payment_err != nil {
-		log.Fatalf("direct communication with payment failed: %v", payment_r)
-	}
-	log.Printf("created payment: Id:%v, OrderId:%v, Value:%v", payment_r.GetId(), payment_r.GetOrderId(), payment_r.GetValue())
+	log.Printf("test1")
 
-	// - Payment über ID anfordern
-	payment_r, payment_err = payment.GetPayment(payment_ctx, &api.GetPaymentRequest{Id: payment_r.GetId()})
-	if payment_err != nil {
-		log.Fatalf("Direct communication with payment failed: %v", payment_r)
+	// - Neues Payment erstellen
+	newPayment := &api.NewPaymentRequest{OrderId: 1, Value: 33.33}
+	err = c.Nats.Publish("payment.new", newPayment)
+	if err != nil {
+		panic(err)
 	}
-	log.Printf("got payment: Id:%v, OrderId:%v, Value:%v", payment_r.GetId(), payment_r.GetOrderId(), payment_r.GetValue())
+	log.Printf("created payment: orderId:%v, value:%v", newPayment.GetOrderId(), newPayment.GetValue())
 
 	// - Payment bezahlen
-	payment_r, payment_err = payment.PayPayment(payment_ctx, &api.PayPaymentRequest{Id: payment_r.GetId(), Value: 33.98})
+	payment_r, payment_err := payment.PayPayment(payment_ctx, &api.PayPaymentRequest{OrderId: newPayment.OrderId, Value: 33.98})
 	if payment_err != nil {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
-	log.Printf("payed payment: Id:%v, OrderId:%v, Value:%v", payment_r.GetId(), payment_r.GetOrderId(), payment_r.GetValue())
+	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), payment_r.GetValue())
 
-	// - Payment über ID Löschen
-	payment_r, payment_err = payment.DeletePayment(payment_ctx, &api.DeletePaymentRequest{Id: payment_r.GetId()})
-	if payment_err != nil {
-		log.Fatalf("Direct communication with payment failed: %v", payment_r)
+	// -  Payment zurückerstatten
+	refundPayment := &api.RefundPaymentRequest{OrderId: 1, Value: 33.33}
+	err = c.Nats.Publish("payment.refund", refundPayment)
+	if err != nil {
+		panic(err)
 	}
-	log.Printf("deleted payment: Id:%v, OrderId:%v, Value:%v", payment_r.GetId(), payment_r.GetOrderId(), payment_r.GetValue())
+	log.Printf("refund payment: orderId:%v, value:%v", refundPayment.GetOrderId(), refundPayment.GetValue())
 
 	time.Sleep(8 * time.Second)
 }
