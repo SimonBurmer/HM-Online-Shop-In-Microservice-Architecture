@@ -26,14 +26,14 @@ func main() {
 
 	// Verbindung zu Redis
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "host.docker.internal:6379",
+		Addr:     "redis:6379",
 		Password: "", // no password set
 	})
 
 	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "catalog", "host.docker.internal"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "catalog", "catalog-service"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -43,7 +43,7 @@ func main() {
 	}()
 
 	// Verbindung zu NATS
-	nc, err := nats.Connect("host.docker.internal:4222")
+	nc, err := nats.Connect("nats:4222")
 	if err != nil {
 		log.Fatal(err)
 	}
