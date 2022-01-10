@@ -47,3 +47,13 @@ services:
       - redis
       - nats
       - customer-service
+      - catalog-service
+
+  catalog-service:
+    build:
+      context: .
+      dockerfile: catalog/service/Dockerfile
+    image: catalog
+    depends_on:
+      - redis
+      - nats 
