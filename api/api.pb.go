@@ -516,22 +516,22 @@ func (m *PaymentReply) GetValue() float32 {
 	return 0
 }
 
-type NewStock struct {
-	Id     int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Amount int32 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+type NewStockRequest struct {
+	Amount   int32  `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
+	Reserved uint32 `protobuf:"varint,2,opt,name=reserved,proto3" json:"reserved,omitempty"`
 }
 
-func (m *NewStock) Reset()      { *m = NewStock{} }
-func (*NewStock) ProtoMessage() {}
-func (*NewStock) Descriptor() ([]byte, []int) {
+func (m *NewStockRequest) Reset()      { *m = NewStockRequest{} }
+func (*NewStockRequest) ProtoMessage() {}
+func (*NewStockRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_00212fb1f9d3bf1c, []int{10}
 }
-func (m *NewStock) XXX_Unmarshal(b []byte) error {
+func (m *NewStockRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *NewStock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NewStockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_NewStock.Marshal(b, m, deterministic)
+		return xxx_messageInfo_NewStockRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -541,26 +541,77 @@ func (m *NewStock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *NewStock) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NewStock.Merge(m, src)
+func (m *NewStockRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewStockRequest.Merge(m, src)
 }
-func (m *NewStock) XXX_Size() int {
+func (m *NewStockRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *NewStock) XXX_DiscardUnknown() {
-	xxx_messageInfo_NewStock.DiscardUnknown(m)
+func (m *NewStockRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NewStockRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NewStock proto.InternalMessageInfo
+var xxx_messageInfo_NewStockRequest proto.InternalMessageInfo
 
-func (m *NewStock) GetId() int32 {
+func (m *NewStockRequest) GetAmount() int32 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+func (m *NewStockRequest) GetReserved() uint32 {
+	if m != nil {
+		return m.Reserved
+	}
+	return 0
+}
+
+type AddStockRequest struct {
+	Id     uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Amount int32  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *AddStockRequest) Reset()      { *m = AddStockRequest{} }
+func (*AddStockRequest) ProtoMessage() {}
+func (*AddStockRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{11}
+}
+func (m *AddStockRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AddStockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AddStockRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AddStockRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddStockRequest.Merge(m, src)
+}
+func (m *AddStockRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *AddStockRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddStockRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddStockRequest proto.InternalMessageInfo
+
+func (m *AddStockRequest) GetId() uint32 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *NewStock) GetAmount() int32 {
+func (m *AddStockRequest) GetAmount() int32 {
 	if m != nil {
 		return m.Amount
 	}
@@ -574,7 +625,7 @@ type GetReply struct {
 func (m *GetReply) Reset()      { *m = GetReply{} }
 func (*GetReply) ProtoMessage() {}
 func (*GetReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{11}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{12}
 }
 func (m *GetReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -611,14 +662,14 @@ func (m *GetReply) GetAmount() int32 {
 }
 
 type TakeArticle struct {
-	Id     int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Amount int32 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Id     uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Amount int32  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
 func (m *TakeArticle) Reset()      { *m = TakeArticle{} }
 func (*TakeArticle) ProtoMessage() {}
 func (*TakeArticle) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{12}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{13}
 }
 func (m *TakeArticle) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -647,7 +698,7 @@ func (m *TakeArticle) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TakeArticle proto.InternalMessageInfo
 
-func (m *TakeArticle) GetId() int32 {
+func (m *TakeArticle) GetId() uint32 {
 	if m != nil {
 		return m.Id
 	}
@@ -662,13 +713,13 @@ func (m *TakeArticle) GetAmount() int32 {
 }
 
 type ArticleID struct {
-	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (m *ArticleID) Reset()      { *m = ArticleID{} }
 func (*ArticleID) ProtoMessage() {}
 func (*ArticleID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{13}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{14}
 }
 func (m *ArticleID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -697,7 +748,7 @@ func (m *ArticleID) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ArticleID proto.InternalMessageInfo
 
-func (m *ArticleID) GetId() int32 {
+func (m *ArticleID) GetId() uint32 {
 	if m != nil {
 		return m.Id
 	}
@@ -711,7 +762,7 @@ type GetStockReply struct {
 func (m *GetStockReply) Reset()      { *m = GetStockReply{} }
 func (*GetStockReply) ProtoMessage() {}
 func (*GetStockReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{14}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{15}
 }
 func (m *GetStockReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -755,7 +806,7 @@ type NewArticles struct {
 func (m *NewArticles) Reset()      { *m = NewArticles{} }
 func (*NewArticles) ProtoMessage() {}
 func (*NewArticles) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{15}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{16}
 }
 func (m *NewArticles) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -805,7 +856,7 @@ type GetSupplierReply struct {
 func (m *GetSupplierReply) Reset()      { *m = GetSupplierReply{} }
 func (*GetSupplierReply) ProtoMessage() {}
 func (*GetSupplierReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{16}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{17}
 }
 func (m *GetSupplierReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -848,7 +899,7 @@ type GetCatalog struct {
 func (m *GetCatalog) Reset()      { *m = GetCatalog{} }
 func (*GetCatalog) ProtoMessage() {}
 func (*GetCatalog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{17}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{18}
 }
 func (m *GetCatalog) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -894,7 +945,7 @@ type CatalogReply struct {
 func (m *CatalogReply) Reset()      { *m = CatalogReply{} }
 func (*CatalogReply) ProtoMessage() {}
 func (*CatalogReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{18}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{19}
 }
 func (m *CatalogReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -960,7 +1011,7 @@ type NewCatalog struct {
 func (m *NewCatalog) Reset()      { *m = NewCatalog{} }
 func (*NewCatalog) ProtoMessage() {}
 func (*NewCatalog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{19}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{20}
 }
 func (m *NewCatalog) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1020,7 +1071,7 @@ type UpdatedData struct {
 func (m *UpdatedData) Reset()      { *m = UpdatedData{} }
 func (*UpdatedData) ProtoMessage() {}
 func (*UpdatedData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{20}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{21}
 }
 func (m *UpdatedData) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1085,7 +1136,7 @@ type NewShipmentRequest struct {
 func (m *NewShipmentRequest) Reset()      { *m = NewShipmentRequest{} }
 func (*NewShipmentRequest) ProtoMessage() {}
 func (*NewShipmentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{21}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{22}
 }
 func (m *NewShipmentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1137,7 +1188,7 @@ type ShipmentReply struct {
 func (m *ShipmentReply) Reset()      { *m = ShipmentReply{} }
 func (*ShipmentReply) ProtoMessage() {}
 func (*ShipmentReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{22}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{23}
 }
 func (m *ShipmentReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1185,57 +1236,6 @@ func (m *ShipmentReply) GetReady() map[uint32]bool {
 		return m.Ready
 	}
 	return nil
-}
-
-type ArticleRequest struct {
-	Id     uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Amount uint32 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
-}
-
-func (m *ArticleRequest) Reset()      { *m = ArticleRequest{} }
-func (*ArticleRequest) ProtoMessage() {}
-func (*ArticleRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{23}
-}
-func (m *ArticleRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ArticleRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ArticleRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *ArticleRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ArticleRequest.Merge(m, src)
-}
-func (m *ArticleRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *ArticleRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ArticleRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ArticleRequest proto.InternalMessageInfo
-
-func (m *ArticleRequest) GetId() uint32 {
-	if m != nil {
-		return m.Id
-	}
-	return 0
-}
-
-func (m *ArticleRequest) GetAmount() uint32 {
-	if m != nil {
-		return m.Amount
-	}
-	return 0
 }
 
 type GetShipmentRequest struct {
@@ -1308,7 +1308,8 @@ func init() {
 	proto.RegisterType((*DeletePaymentRequest)(nil), "api.DeletePaymentRequest")
 	proto.RegisterType((*PayPaymentRequest)(nil), "api.PayPaymentRequest")
 	proto.RegisterType((*PaymentReply)(nil), "api.PaymentReply")
-	proto.RegisterType((*NewStock)(nil), "api.NewStock")
+	proto.RegisterType((*NewStockRequest)(nil), "api.NewStockRequest")
+	proto.RegisterType((*AddStockRequest)(nil), "api.AddStockRequest")
 	proto.RegisterType((*GetReply)(nil), "api.GetReply")
 	proto.RegisterType((*TakeArticle)(nil), "api.TakeArticle")
 	proto.RegisterType((*ArticleID)(nil), "api.ArticleID")
@@ -1325,7 +1326,6 @@ func init() {
 	proto.RegisterType((*ShipmentReply)(nil), "api.ShipmentReply")
 	proto.RegisterMapType((map[uint32]uint32)(nil), "api.ShipmentReply.ArticlesEntry")
 	proto.RegisterMapType((map[uint32]bool)(nil), "api.ShipmentReply.ReadyEntry")
-	proto.RegisterType((*ArticleRequest)(nil), "api.ArticleRequest")
 	proto.RegisterType((*GetShipmentRequest)(nil), "api.GetShipmentRequest")
 	proto.RegisterMapType((map[uint32]uint32)(nil), "api.GetShipmentRequest.ArticlesEntry")
 	proto.RegisterMapType((map[uint32]bool)(nil), "api.GetShipmentRequest.ReadyEntry")
@@ -1334,71 +1334,71 @@ func init() {
 func init() { proto.RegisterFile("api.proto", fileDescriptor_00212fb1f9d3bf1c) }
 
 var fileDescriptor_00212fb1f9d3bf1c = []byte{
-	// 1019 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0xcf, 0x8f, 0xdb, 0x44,
-	0x14, 0xb6, 0x9d, 0xa6, 0xeb, 0x7d, 0xbb, 0xde, 0x1f, 0x43, 0x69, 0x43, 0x00, 0x2b, 0x1a, 0xa0,
-	0xac, 0x7a, 0x58, 0xaa, 0x54, 0xad, 0xb6, 0x6c, 0x0b, 0x4a, 0xbb, 0x28, 0xec, 0x81, 0xa8, 0xf2,
-	0x82, 0x84, 0xb8, 0x0d, 0xeb, 0x47, 0x31, 0xeb, 0xc4, 0xc6, 0x76, 0x1a, 0xe5, 0xc6, 0x09, 0x01,
-	0x27, 0x4e, 0x88, 0x3f, 0x81, 0x3f, 0x85, 0xe3, 0x1e, 0x7b, 0x64, 0xb3, 0x17, 0x24, 0x2e, 0xbd,
-	0x73, 0x41, 0x1e, 0xcf, 0x38, 0xe3, 0x1f, 0xc9, 0xae, 0x90, 0x2a, 0xf5, 0x96, 0xe7, 0x79, 0xdf,
-	0xf7, 0xde, 0xbc, 0x79, 0xf3, 0xbe, 0x09, 0xac, 0xb2, 0xd0, 0xdb, 0x0d, 0xa3, 0x20, 0x09, 0x48,
-	0x83, 0x85, 0x1e, 0xa5, 0xb0, 0xfe, 0x29, 0xfa, 0x7e, 0xe0, 0xe0, 0xf7, 0x63, 0x8c, 0x13, 0x42,
-	0xe0, 0xca, 0x88, 0x0d, 0xb1, 0xa5, 0x77, 0xf4, 0x9d, 0x55, 0x87, 0xff, 0xa6, 0x37, 0x01, 0x84,
-	0x4f, 0xe8, 0x4f, 0x49, 0x0b, 0x56, 0x86, 0x18, 0xc7, 0xec, 0xa9, 0x74, 0x92, 0x26, 0x7d, 0x04,
-	0x64, 0x80, 0x93, 0xc7, 0xe3, 0x38, 0x09, 0x86, 0x18, 0x2d, 0x61, 0x4c, 0x39, 0x98, 0xeb, 0x46,
-	0x18, 0xc7, 0x2d, 0x23, 0xe3, 0x10, 0x26, 0x7d, 0x17, 0x48, 0x1f, 0x93, 0x32, 0xc7, 0x06, 0x18,
-	0x9e, 0xcb, 0x19, 0x2c, 0xc7, 0xf0, 0x5c, 0xfa, 0x19, 0x58, 0x73, 0x97, 0x34, 0xa9, 0x92, 0x43,
-	0x1e, 0xd4, 0xa8, 0x0f, 0xda, 0x28, 0x06, 0x7d, 0x0c, 0xdb, 0x03, 0x9c, 0x3c, 0x61, 0xd3, 0x21,
-	0x8e, 0x12, 0x19, 0xb3, 0x05, 0x2b, 0x41, 0xe4, 0x62, 0x74, 0x28, 0x79, 0xa5, 0x49, 0xae, 0x41,
-	0xf3, 0x19, 0xf3, 0xc7, 0x19, 0xbb, 0xe1, 0x64, 0x06, 0x7d, 0x07, 0xb6, 0xfb, 0x98, 0x94, 0x48,
-	0xca, 0x89, 0xdf, 0x84, 0x6b, 0x07, 0xe8, 0x63, 0x82, 0x17, 0xf8, 0xdd, 0x87, 0xed, 0x27, 0x6c,
-	0xba, 0xdc, 0x69, 0x41, 0x1e, 0x03, 0x58, 0xcf, 0x71, 0x75, 0xa5, 0x51, 0xf6, 0x65, 0x2c, 0xd8,
-	0x57, 0x43, 0xe5, 0xeb, 0x82, 0x39, 0xc0, 0xc9, 0x51, 0x12, 0x1c, 0x9f, 0x28, 0x5c, 0x4d, 0xce,
-	0x75, 0x1d, 0xae, 0xb2, 0x61, 0x30, 0x1e, 0x25, 0x9c, 0xaa, 0xe9, 0x08, 0x8b, 0x52, 0x30, 0xfb,
-	0x28, 0xe2, 0xcf, 0x7d, 0xf4, 0x82, 0xcf, 0x5d, 0x58, 0xfb, 0x9c, 0x9d, 0x60, 0x2f, 0x4a, 0xbc,
-	0x63, 0x1f, 0x2f, 0x4d, 0xfd, 0x26, 0xac, 0x0a, 0xc8, 0xe1, 0x41, 0x19, 0x44, 0xdf, 0x07, 0xab,
-	0x8f, 0x09, 0xcf, 0x75, 0x1e, 0x7c, 0x14, 0x4f, 0x30, 0xe2, 0x4e, 0xa6, 0x23, 0xac, 0x34, 0xf8,
-	0x00, 0x27, 0x82, 0x28, 0xae, 0xd4, 0xa8, 0x18, 0xdc, 0xca, 0x83, 0xdf, 0x82, 0xad, 0x94, 0x7f,
-	0x1c, 0x86, 0xbe, 0x27, 0x5b, 0xaf, 0x18, 0x62, 0x35, 0x0f, 0xf1, 0x16, 0x40, 0xda, 0xc9, 0x2c,
-	0x61, 0x7e, 0xf0, 0xb4, 0x72, 0xc0, 0xdf, 0xc1, 0xba, 0x58, 0xba, 0x7c, 0x03, 0x77, 0x60, 0xcd,
-	0xc5, 0xf8, 0x38, 0xf2, 0xc2, 0xc4, 0x0b, 0x46, 0xa2, 0x89, 0xd5, 0x4f, 0xe9, 0x09, 0x86, 0x91,
-	0x77, 0x8c, 0xad, 0x2b, 0x1d, 0x7d, 0x47, 0x77, 0x32, 0x83, 0x7e, 0x09, 0x90, 0xde, 0x4b, 0x91,
-	0x49, 0xdd, 0x7d, 0x2c, 0x31, 0x1b, 0x4b, 0x98, 0x1b, 0x2a, 0xb3, 0x07, 0x6b, 0x5f, 0x84, 0x2e,
-	0x4b, 0xd0, 0x3d, 0x60, 0x09, 0x7b, 0xa9, 0x9b, 0xf8, 0xc9, 0xe0, 0xd3, 0xe5, 0xe8, 0x5b, 0x2f,
-	0x54, 0xef, 0x44, 0x0f, 0x4c, 0x26, 0x4e, 0xb1, 0xa5, 0x77, 0x1a, 0x3b, 0x6b, 0xdd, 0xf7, 0x76,
-	0xd3, 0x11, 0x57, 0x75, 0xdd, 0x95, 0xa7, 0xfd, 0xc9, 0x28, 0x89, 0xa6, 0x4e, 0x0e, 0x23, 0x7b,
-	0xd0, 0x8c, 0x90, 0xb9, 0xd3, 0x96, 0xc1, 0xf1, 0x74, 0x11, 0xde, 0x49, 0x9d, 0x32, 0x70, 0x06,
-	0x68, 0xef, 0x83, 0x55, 0x20, 0x25, 0x5b, 0xd0, 0x38, 0xc1, 0xa9, 0xa8, 0x40, 0xfa, 0xb3, 0x78,
-	0x47, 0x2d, 0x71, 0xa7, 0x3e, 0x34, 0xf6, 0xf4, 0xf6, 0x1e, 0xc0, 0x9c, 0xf1, 0x22, 0xa4, 0xa9,
-	0x20, 0xe9, 0xcf, 0x06, 0x58, 0xf3, 0xe4, 0xea, 0xba, 0xe7, 0x81, 0x52, 0x95, 0x6c, 0x57, 0x1d,
-	0xbe, 0xab, 0x02, 0x6a, 0x61, 0x41, 0xee, 0xc8, 0x82, 0x34, 0x38, 0xf4, 0xed, 0x1a, 0xe8, 0x2b,
-	0x53, 0x8b, 0x3d, 0xd8, 0x10, 0x61, 0x17, 0x4d, 0xc9, 0x45, 0x77, 0xf9, 0x77, 0x83, 0x4b, 0x4d,
-	0xb9, 0xa1, 0xca, 0xf0, 0x5e, 0xa5, 0x94, 0x59, 0x83, 0x55, 0xa1, 0x17, 0x37, 0x58, 0x43, 0x69,
-	0xb0, 0x1a, 0xfc, 0xab, 0x52, 0xd4, 0xee, 0x3e, 0xac, 0xf4, 0x23, 0xc4, 0x04, 0x23, 0x72, 0x1b,
-	0xcc, 0x23, 0x36, 0xe5, 0xf2, 0x4f, 0xb6, 0x79, 0xe2, 0xea, 0x73, 0xa1, 0xbd, 0xa9, 0x7e, 0x0a,
-	0xfd, 0x29, 0xd5, 0xba, 0x3f, 0xea, 0x60, 0x4a, 0x71, 0x26, 0x0f, 0xf8, 0x9c, 0xcd, 0xcd, 0x1b,
-	0xf2, 0x6e, 0x95, 0x04, 0xbe, 0x4d, 0xf8, 0x42, 0x41, 0xd3, 0xa9, 0x96, 0xa2, 0x95, 0xc7, 0x80,
-	0x40, 0x57, 0x9f, 0x07, 0xf5, 0xe8, 0xee, 0xbf, 0x3a, 0xac, 0x08, 0x25, 0x24, 0xf7, 0xf9, 0x08,
-	0x94, 0xd6, 0x75, 0x99, 0x46, 0x51, 0x60, 0xdb, 0xd9, 0x06, 0x55, 0xf5, 0xa4, 0x5a, 0x0a, 0x9d,
-	0xeb, 0xba, 0x80, 0x56, 0x84, 0xbe, 0x1e, 0xfa, 0x31, 0x58, 0x05, 0xb5, 0x27, 0x6f, 0x70, 0xaf,
-	0xba, 0x17, 0xc0, 0xc2, 0xd8, 0xf3, 0x67, 0x80, 0x88, 0x5d, 0x79, 0x17, 0xd4, 0x42, 0xbb, 0xbf,
-	0xe9, 0xd0, 0xcc, 0x44, 0xfb, 0x16, 0x98, 0x3d, 0xd7, 0xcd, 0x7e, 0x5b, 0xf9, 0x70, 0x4b, 0xcd,
-	0xb6, 0x25, 0x77, 0x23, 0x03, 0x7e, 0xc0, 0x37, 0x2b, 0x35, 0x79, 0x8b, 0x2f, 0x2b, 0x2a, 0x5d,
-	0x05, 0xdc, 0xe6, 0x4a, 0x2f, 0x5e, 0x07, 0x7c, 0x31, 0x57, 0x67, 0x71, 0x2c, 0x05, 0x41, 0xa6,
-	0x5a, 0xf7, 0x10, 0x4c, 0x29, 0xa0, 0xe4, 0x21, 0x6c, 0x1d, 0xa0, 0xef, 0x3d, 0xc3, 0x08, 0xdd,
-	0x62, 0x50, 0x45, 0x9d, 0xdb, 0xaf, 0xe7, 0x3c, 0xaa, 0xf0, 0x52, 0xad, 0xfb, 0x8f, 0x0e, 0x2b,
-	0x52, 0xd6, 0xee, 0xc1, 0xc6, 0x5c, 0x6e, 0x0f, 0x47, 0xdf, 0x04, 0x64, 0x33, 0x6f, 0x97, 0xec,
-	0xa3, 0xa8, 0x93, 0x2a, 0xbb, 0xbc, 0xc4, 0xdb, 0x73, 0x71, 0x94, 0x39, 0x6c, 0xe6, 0x7d, 0xba,
-	0x0c, 0x7a, 0x0f, 0xac, 0x4c, 0xfd, 0x64, 0x0e, 0x59, 0xea, 0x8a, 0x22, 0xd6, 0xe3, 0xee, 0xca,
-	0xb6, 0x90, 0xb8, 0x4b, 0x65, 0xda, 0xfd, 0xc5, 0x00, 0x53, 0x8e, 0x0c, 0x71, 0xb1, 0x72, 0xf3,
-	0xc6, 0x02, 0xd1, 0x12, 0x67, 0x50, 0x18, 0xde, 0x54, 0x23, 0x1f, 0xf1, 0xb7, 0xea, 0x00, 0xd1,
-	0xcd, 0xeb, 0x1e, 0x93, 0xd7, 0xd4, 0xe3, 0x5b, 0x8e, 0x7f, 0x08, 0xeb, 0x47, 0x38, 0x72, 0x4b,
-	0xe1, 0xab, 0x23, 0x6d, 0x01, 0xbc, 0x07, 0x5b, 0x0e, 0x26, 0xe3, 0x68, 0x84, 0xff, 0x97, 0xe2,
-	0xd1, 0xfe, 0xe9, 0x99, 0xad, 0x3d, 0x3f, 0xb3, 0xb5, 0x17, 0x67, 0xb6, 0xfe, 0xc3, 0xcc, 0xd6,
-	0xff, 0x98, 0xd9, 0xfa, 0x9f, 0x33, 0x5b, 0x3f, 0x9d, 0xd9, 0xfa, 0x5f, 0x33, 0x5b, 0xff, 0x7b,
-	0x66, 0x6b, 0x2f, 0x66, 0xb6, 0xfe, 0xeb, 0xb9, 0xad, 0x9d, 0x9e, 0xdb, 0xda, 0xf3, 0x73, 0x5b,
-	0xfb, 0xaa, 0xb9, 0xbb, 0xcf, 0x42, 0xef, 0xeb, 0xab, 0xfc, 0x0f, 0xd0, 0x9d, 0xff, 0x02, 0x00,
-	0x00, 0xff, 0xff, 0x9f, 0x3c, 0x8a, 0x20, 0x0d, 0x0d, 0x00, 0x00,
+	// 1024 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0xcf, 0x6f, 0xe3, 0x44,
+	0x14, 0xb6, 0x9d, 0xcd, 0xc6, 0x7d, 0xad, 0x9b, 0x64, 0x54, 0x76, 0x43, 0x00, 0x2b, 0x1a, 0x60,
+	0xa9, 0x38, 0x94, 0xdd, 0xac, 0x76, 0xd5, 0xd2, 0x5d, 0xa1, 0xec, 0x76, 0x15, 0x7a, 0x20, 0x5a,
+	0xb9, 0x20, 0x21, 0x6e, 0xa6, 0x7e, 0x2c, 0xa6, 0x4e, 0x6c, 0x6c, 0xa7, 0x51, 0x6e, 0x9c, 0x10,
+	0xdc, 0x38, 0xf2, 0x27, 0xf0, 0xa7, 0x20, 0x4e, 0x3d, 0xee, 0x91, 0xa6, 0x17, 0x24, 0x2e, 0x7b,
+	0xe7, 0x82, 0x3c, 0x9e, 0x71, 0xc6, 0x3f, 0xd2, 0x56, 0x48, 0x48, 0x7b, 0xcb, 0xf3, 0xbc, 0xef,
+	0x7b, 0x6f, 0xde, 0xbc, 0x37, 0xdf, 0x04, 0xd6, 0xec, 0xc0, 0xdd, 0x09, 0x42, 0x3f, 0xf6, 0x49,
+	0xcd, 0x0e, 0x5c, 0x4a, 0x61, 0xe3, 0x53, 0xf4, 0x3c, 0xdf, 0xc2, 0xef, 0xa7, 0x18, 0xc5, 0x84,
+	0xc0, 0x8d, 0x89, 0x3d, 0xc6, 0x8e, 0xda, 0x53, 0xb7, 0xd7, 0x2c, 0xf6, 0x9b, 0xde, 0x01, 0xe0,
+	0x3e, 0x81, 0x37, 0x27, 0x1d, 0x68, 0x8c, 0x31, 0x8a, 0xec, 0x17, 0xc2, 0x49, 0x98, 0xf4, 0x09,
+	0x90, 0x11, 0xce, 0x9e, 0x4e, 0xa3, 0xd8, 0x1f, 0x63, 0x78, 0x09, 0x63, 0xc2, 0x61, 0x3b, 0x4e,
+	0x88, 0x51, 0xd4, 0xd1, 0x52, 0x0e, 0x6e, 0xd2, 0xf7, 0x80, 0x0c, 0x31, 0x2e, 0x72, 0x6c, 0x82,
+	0xe6, 0x3a, 0x8c, 0xc1, 0xb0, 0x34, 0xd7, 0xa1, 0x9f, 0x81, 0xb1, 0x74, 0x49, 0x92, 0x2a, 0x38,
+	0x64, 0x41, 0xb5, 0xea, 0xa0, 0xb5, 0x7c, 0xd0, 0xa7, 0xd0, 0x1e, 0xe1, 0xec, 0xb9, 0x3d, 0x1f,
+	0xe3, 0x24, 0x16, 0x31, 0x3b, 0xd0, 0xf0, 0x43, 0x07, 0xc3, 0x43, 0xc1, 0x2b, 0x4c, 0xb2, 0x05,
+	0xf5, 0x53, 0xdb, 0x9b, 0xa6, 0xec, 0x9a, 0x95, 0x1a, 0xf4, 0x5d, 0x68, 0x0f, 0x31, 0x2e, 0x90,
+	0x14, 0x13, 0xbf, 0x03, 0x5b, 0x07, 0xe8, 0x61, 0x8c, 0x57, 0xf8, 0xed, 0x41, 0xfb, 0xb9, 0x3d,
+	0xbf, 0xdc, 0x69, 0x45, 0x1e, 0x23, 0xd8, 0xc8, 0x70, 0x55, 0xa5, 0x91, 0xf6, 0xa5, 0xad, 0xd8,
+	0x57, 0x4d, 0xe6, 0x7b, 0x06, 0xcd, 0x11, 0xce, 0x8e, 0x62, 0xff, 0xf8, 0x44, 0x24, 0x72, 0x0b,
+	0x6e, 0xda, 0x63, 0x7f, 0x3a, 0x89, 0x19, 0x6d, 0xdd, 0xe2, 0x16, 0xe9, 0x82, 0x1e, 0x62, 0x84,
+	0xe1, 0x29, 0x0a, 0xee, 0xcc, 0xa6, 0x7b, 0xd0, 0x1c, 0x38, 0x4e, 0x8e, 0xa6, 0x98, 0xd9, 0x92,
+	0x56, 0x93, 0x69, 0x29, 0x05, 0x7d, 0x88, 0x7c, 0x37, 0x2b, 0x42, 0xd3, 0x07, 0xb0, 0xfe, 0xb9,
+	0x7d, 0x82, 0x83, 0x30, 0x76, 0x8f, 0x3d, 0xbc, 0x36, 0xf5, 0x5b, 0xb0, 0xc6, 0x21, 0x87, 0x07,
+	0xa5, 0x43, 0xf8, 0x00, 0x8c, 0x21, 0xc6, 0x3c, 0x65, 0x11, 0x7c, 0x12, 0xcd, 0x30, 0x64, 0x4e,
+	0xba, 0xc5, 0xad, 0x24, 0xf8, 0x08, 0x67, 0x9c, 0x28, 0xba, 0x22, 0xb8, 0x91, 0x05, 0xff, 0x10,
+	0x5a, 0x09, 0xff, 0x34, 0x08, 0x3c, 0x57, 0x34, 0x72, 0x3e, 0xc4, 0x5a, 0x16, 0xe2, 0x6d, 0x80,
+	0x64, 0x2e, 0xec, 0xd8, 0xf6, 0xfc, 0x17, 0xa5, 0x4c, 0xbf, 0x83, 0x0d, 0xbe, 0x74, 0xfd, 0x71,
+	0xe8, 0xc1, 0xba, 0x83, 0xd1, 0x71, 0xe8, 0x06, 0xb1, 0xeb, 0x4f, 0xf8, 0x48, 0xc8, 0x9f, 0x92,
+	0x7e, 0x08, 0x42, 0xf7, 0x18, 0x3b, 0x37, 0x7a, 0xea, 0xb6, 0x6a, 0xa5, 0x06, 0xfd, 0x12, 0x20,
+	0x99, 0x72, 0x9e, 0x49, 0xd5, 0x74, 0x17, 0x98, 0xb5, 0x4b, 0x98, 0x6b, 0x32, 0xb3, 0x0b, 0xeb,
+	0x5f, 0x04, 0x8e, 0x1d, 0xa3, 0x73, 0x60, 0xc7, 0xf6, 0xff, 0xba, 0x89, 0x9f, 0x34, 0x76, 0x57,
+	0x1d, 0x7d, 0xeb, 0x06, 0xf2, 0x84, 0x0d, 0x40, 0xb7, 0xf9, 0x29, 0x76, 0xd4, 0x5e, 0x6d, 0x7b,
+	0xbd, 0xff, 0xfe, 0x4e, 0x72, 0x61, 0x96, 0x5d, 0x77, 0xc4, 0x69, 0x3f, 0x9b, 0xc4, 0xe1, 0xdc,
+	0xca, 0x60, 0x64, 0x17, 0xea, 0x21, 0xda, 0xce, 0xbc, 0xa3, 0x31, 0x3c, 0x5d, 0x85, 0xb7, 0x12,
+	0xa7, 0x14, 0x9c, 0x02, 0xba, 0xfb, 0x60, 0xe4, 0x48, 0x49, 0x0b, 0x6a, 0x27, 0x38, 0xe7, 0x15,
+	0x48, 0x7e, 0xe6, 0x27, 0xde, 0xe0, 0x13, 0xfa, 0xb1, 0xb6, 0xab, 0x76, 0x77, 0x01, 0x96, 0x8c,
+	0x57, 0x21, 0x75, 0x09, 0x49, 0x7f, 0xd6, 0xc0, 0x58, 0x26, 0x57, 0xd5, 0x3d, 0x8f, 0xa4, 0xaa,
+	0xa4, 0xbb, 0xea, 0xb1, 0x5d, 0xe5, 0x50, 0x2b, 0x0b, 0x72, 0x5f, 0x14, 0xa4, 0xc6, 0xa0, 0xef,
+	0x54, 0x40, 0x5f, 0x9b, 0x5a, 0xfc, 0xaa, 0x31, 0xf9, 0x29, 0xb6, 0x45, 0xb1, 0x20, 0x83, 0x52,
+	0x41, 0xd2, 0x36, 0x29, 0x43, 0xaf, 0x6e, 0x93, 0x9a, 0xd4, 0x26, 0x15, 0xf8, 0xd7, 0xa5, 0x34,
+	0xfd, 0x7d, 0x68, 0x0c, 0x43, 0xc4, 0x18, 0x43, 0x72, 0x17, 0xf4, 0x23, 0x7b, 0xce, 0x9e, 0x04,
+	0xa4, 0xcd, 0x12, 0x97, 0x9f, 0x10, 0xdd, 0xa6, 0xfc, 0x29, 0xf0, 0xe6, 0x54, 0xe9, 0xff, 0xa8,
+	0x82, 0x2e, 0x04, 0x9b, 0x3c, 0x62, 0xb7, 0x65, 0x66, 0xde, 0x16, 0x13, 0x52, 0x10, 0xfd, 0x2e,
+	0x61, 0x0b, 0x39, 0x9d, 0xa7, 0x4a, 0x82, 0x96, 0x1e, 0x08, 0x1c, 0x5d, 0x7e, 0x32, 0x54, 0xa3,
+	0xfb, 0xff, 0xa8, 0xd0, 0xe0, 0xea, 0x48, 0xf6, 0xd8, 0x45, 0x26, 0xac, 0x5b, 0x22, 0x8d, 0xbc,
+	0xe8, 0x76, 0xd3, 0x0d, 0xca, 0x8a, 0x4a, 0x95, 0x04, 0xba, 0xd4, 0x7a, 0x0e, 0x2d, 0x89, 0x7f,
+	0x35, 0xf4, 0x13, 0x30, 0x72, 0x2f, 0x00, 0xf2, 0x26, 0xf3, 0xaa, 0x7a, 0x15, 0xac, 0x8c, 0xbd,
+	0x7c, 0x1a, 0xf0, 0xd8, 0xa5, 0xb7, 0x42, 0x25, 0xb4, 0x7f, 0xa6, 0x42, 0x9d, 0xc9, 0x19, 0xb9,
+	0x07, 0xba, 0x10, 0x75, 0xb2, 0x95, 0x5d, 0x51, 0x92, 0x38, 0x77, 0x0d, 0xb1, 0x29, 0x11, 0xf7,
+	0x1e, 0xe8, 0x42, 0xc0, 0x39, 0xa4, 0xa0, 0xe7, 0x65, 0xc8, 0x47, 0xac, 0x4c, 0x42, 0x93, 0x5b,
+	0x6c, 0x59, 0x52, 0xe9, 0x32, 0xe0, 0x2e, 0x53, 0xfa, 0x34, 0xc6, 0x66, 0x1a, 0x43, 0xa8, 0x33,
+	0x3f, 0xd0, 0x9c, 0x20, 0x53, 0xa5, 0x7f, 0x08, 0xba, 0x10, 0x50, 0xf2, 0x18, 0x5a, 0x07, 0xe8,
+	0xb9, 0xa7, 0x18, 0xa2, 0x93, 0x0f, 0x2a, 0xa9, 0x73, 0xf7, 0x8d, 0x8c, 0x47, 0x16, 0x5e, 0xaa,
+	0xf4, 0xff, 0x56, 0xa1, 0x21, 0x64, 0xed, 0x21, 0x6c, 0x2e, 0xe5, 0xf6, 0x70, 0xf2, 0x8d, 0x4f,
+	0x9a, 0x59, 0xa3, 0xa5, 0x1f, 0x79, 0x85, 0x65, 0xd9, 0x65, 0x87, 0xd3, 0x5e, 0x8a, 0xa3, 0xc8,
+	0xa1, 0x99, 0x75, 0xf8, 0x65, 0xd0, 0x87, 0x60, 0xa4, 0xea, 0x27, 0x72, 0x48, 0x53, 0x97, 0x14,
+	0xb1, 0x1a, 0xf7, 0x40, 0x34, 0x94, 0xc0, 0x5d, 0x2b, 0xd3, 0xfe, 0x1f, 0x2a, 0xe8, 0xe2, 0xb2,
+	0xe1, 0x23, 0x99, 0x99, 0xb7, 0x57, 0x88, 0x16, 0x3f, 0x83, 0xdc, 0xe5, 0x4d, 0x15, 0xf2, 0x18,
+	0x36, 0x8e, 0x70, 0xe2, 0x14, 0xe0, 0xe5, 0xcb, 0x6c, 0x05, 0x7c, 0x00, 0x2d, 0x0b, 0xe3, 0x69,
+	0x38, 0xc1, 0xff, 0x4a, 0xf1, 0x64, 0xff, 0xec, 0xdc, 0x54, 0x5e, 0x9e, 0x9b, 0xca, 0xab, 0x73,
+	0x53, 0xfd, 0x61, 0x61, 0xaa, 0xbf, 0x2d, 0x4c, 0xf5, 0xf7, 0x85, 0xa9, 0x9e, 0x2d, 0x4c, 0xf5,
+	0xcf, 0x85, 0xa9, 0xfe, 0xb5, 0x30, 0x95, 0x57, 0x0b, 0x53, 0xfd, 0xe5, 0xc2, 0x54, 0xce, 0x2e,
+	0x4c, 0xe5, 0xe5, 0x85, 0xa9, 0x7c, 0x55, 0xdf, 0xd9, 0xb7, 0x03, 0xf7, 0xeb, 0x9b, 0xec, 0xef,
+	0xd0, 0xfd, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x12, 0xc0, 0x03, 0xc8, 0x1b, 0x0d, 0x00, 0x00,
 }
 
 func (this *HelloRequest) Equal(that interface{}) bool {
@@ -1662,14 +1662,41 @@ func (this *PaymentReply) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *NewStock) Equal(that interface{}) bool {
+func (this *NewStockRequest) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*NewStock)
+	that1, ok := that.(*NewStockRequest)
 	if !ok {
-		that2, ok := that.(NewStock)
+		that2, ok := that.(NewStockRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Amount != that1.Amount {
+		return false
+	}
+	if this.Reserved != that1.Reserved {
+		return false
+	}
+	return true
+}
+func (this *AddStockRequest) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*AddStockRequest)
+	if !ok {
+		that2, ok := that.(AddStockRequest)
 		if ok {
 			that1 = &that2
 		} else {
@@ -2036,33 +2063,6 @@ func (this *ShipmentReply) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *ArticleRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ArticleRequest)
-	if !ok {
-		that2, ok := that.(ArticleRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Id != that1.Id {
-		return false
-	}
-	if this.Amount != that1.Amount {
-		return false
-	}
-	return true
-}
 func (this *GetShipmentRequest) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2210,12 +2210,23 @@ func (this *PaymentReply) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *NewStock) GoString() string {
+func (this *NewStockRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
 	s := make([]string, 0, 6)
-	s = append(s, "&api.NewStock{")
+	s = append(s, "&api.NewStockRequest{")
+	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
+	s = append(s, "Reserved: "+fmt.Sprintf("%#v", this.Reserved)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *AddStockRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&api.AddStockRequest{")
 	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
 	s = append(s, "}")
@@ -2399,17 +2410,6 @@ func (this *ShipmentReply) GoString() string {
 	if this.Ready != nil {
 		s = append(s, "Ready: "+mapStringForReady+",\n")
 	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *ArticleRequest) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 6)
-	s = append(s, "&api.ArticleRequest{")
-	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
-	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2830,7 +2830,8 @@ var _Payment_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type StockClient interface {
-	AddStock(ctx context.Context, in *NewStock, opts ...grpc.CallOption) (*GetReply, error)
+	NewStock(ctx context.Context, in *NewStockRequest, opts ...grpc.CallOption) (*GetReply, error)
+	AddStock(ctx context.Context, in *AddStockRequest, opts ...grpc.CallOption) (*GetReply, error)
 	GetArticle(ctx context.Context, in *TakeArticle, opts ...grpc.CallOption) (*GetReply, error)
 	GetStock(ctx context.Context, in *ArticleID, opts ...grpc.CallOption) (*GetStockReply, error)
 }
@@ -2843,7 +2844,16 @@ func NewStockClient(cc *grpc.ClientConn) StockClient {
 	return &stockClient{cc}
 }
 
-func (c *stockClient) AddStock(ctx context.Context, in *NewStock, opts ...grpc.CallOption) (*GetReply, error) {
+func (c *stockClient) NewStock(ctx context.Context, in *NewStockRequest, opts ...grpc.CallOption) (*GetReply, error) {
+	out := new(GetReply)
+	err := c.cc.Invoke(ctx, "/api.Stock/NewStock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stockClient) AddStock(ctx context.Context, in *AddStockRequest, opts ...grpc.CallOption) (*GetReply, error) {
 	out := new(GetReply)
 	err := c.cc.Invoke(ctx, "/api.Stock/AddStock", in, out, opts...)
 	if err != nil {
@@ -2872,7 +2882,8 @@ func (c *stockClient) GetStock(ctx context.Context, in *ArticleID, opts ...grpc.
 
 // StockServer is the server API for Stock service.
 type StockServer interface {
-	AddStock(context.Context, *NewStock) (*GetReply, error)
+	NewStock(context.Context, *NewStockRequest) (*GetReply, error)
+	AddStock(context.Context, *AddStockRequest) (*GetReply, error)
 	GetArticle(context.Context, *TakeArticle) (*GetReply, error)
 	GetStock(context.Context, *ArticleID) (*GetStockReply, error)
 }
@@ -2881,7 +2892,10 @@ type StockServer interface {
 type UnimplementedStockServer struct {
 }
 
-func (*UnimplementedStockServer) AddStock(ctx context.Context, req *NewStock) (*GetReply, error) {
+func (*UnimplementedStockServer) NewStock(ctx context.Context, req *NewStockRequest) (*GetReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NewStock not implemented")
+}
+func (*UnimplementedStockServer) AddStock(ctx context.Context, req *AddStockRequest) (*GetReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddStock not implemented")
 }
 func (*UnimplementedStockServer) GetArticle(ctx context.Context, req *TakeArticle) (*GetReply, error) {
@@ -2895,8 +2909,26 @@ func RegisterStockServer(s *grpc.Server, srv StockServer) {
 	s.RegisterService(&_Stock_serviceDesc, srv)
 }
 
+func _Stock_NewStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewStockRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StockServer).NewStock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Stock/NewStock",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StockServer).NewStock(ctx, req.(*NewStockRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Stock_AddStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NewStock)
+	in := new(AddStockRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2908,7 +2940,7 @@ func _Stock_AddStock_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/api.Stock/AddStock",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StockServer).AddStock(ctx, req.(*NewStock))
+		return srv.(StockServer).AddStock(ctx, req.(*AddStockRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2953,6 +2985,10 @@ var _Stock_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "api.Stock",
 	HandlerType: (*StockServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "NewStock",
+			Handler:    _Stock_NewStock_Handler,
+		},
 		{
 			MethodName: "AddStock",
 			Handler:    _Stock_AddStock_Handler,
@@ -3227,7 +3263,6 @@ var _Catalog_serviceDesc = grpc.ServiceDesc{
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ShipmentClient interface {
 	NewShipment(ctx context.Context, in *NewShipmentRequest, opts ...grpc.CallOption) (*ShipmentReply, error)
-	GetNeededArticles(ctx context.Context, in *ArticleRequest, opts ...grpc.CallOption) (*ShipmentReply, error)
 	SendShipment(ctx context.Context, in *GetShipmentRequest, opts ...grpc.CallOption) (*ShipmentReply, error)
 	ReturnedShipment(ctx context.Context, in *GetShipmentRequest, opts ...grpc.CallOption) (*ShipmentReply, error)
 }
@@ -3243,15 +3278,6 @@ func NewShipmentClient(cc *grpc.ClientConn) ShipmentClient {
 func (c *shipmentClient) NewShipment(ctx context.Context, in *NewShipmentRequest, opts ...grpc.CallOption) (*ShipmentReply, error) {
 	out := new(ShipmentReply)
 	err := c.cc.Invoke(ctx, "/api.Shipment/NewShipment", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *shipmentClient) GetNeededArticles(ctx context.Context, in *ArticleRequest, opts ...grpc.CallOption) (*ShipmentReply, error) {
-	out := new(ShipmentReply)
-	err := c.cc.Invoke(ctx, "/api.Shipment/GetNeededArticles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3279,7 +3305,6 @@ func (c *shipmentClient) ReturnedShipment(ctx context.Context, in *GetShipmentRe
 // ShipmentServer is the server API for Shipment service.
 type ShipmentServer interface {
 	NewShipment(context.Context, *NewShipmentRequest) (*ShipmentReply, error)
-	GetNeededArticles(context.Context, *ArticleRequest) (*ShipmentReply, error)
 	SendShipment(context.Context, *GetShipmentRequest) (*ShipmentReply, error)
 	ReturnedShipment(context.Context, *GetShipmentRequest) (*ShipmentReply, error)
 }
@@ -3290,9 +3315,6 @@ type UnimplementedShipmentServer struct {
 
 func (*UnimplementedShipmentServer) NewShipment(ctx context.Context, req *NewShipmentRequest) (*ShipmentReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NewShipment not implemented")
-}
-func (*UnimplementedShipmentServer) GetNeededArticles(ctx context.Context, req *ArticleRequest) (*ShipmentReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNeededArticles not implemented")
 }
 func (*UnimplementedShipmentServer) SendShipment(ctx context.Context, req *GetShipmentRequest) (*ShipmentReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendShipment not implemented")
@@ -3319,24 +3341,6 @@ func _Shipment_NewShipment_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ShipmentServer).NewShipment(ctx, req.(*NewShipmentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Shipment_GetNeededArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ArticleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ShipmentServer).GetNeededArticles(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.Shipment/GetNeededArticles",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShipmentServer).GetNeededArticles(ctx, req.(*ArticleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3384,10 +3388,6 @@ var _Shipment_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NewShipment",
 			Handler:    _Shipment_NewShipment_Handler,
-		},
-		{
-			MethodName: "GetNeededArticles",
-			Handler:    _Shipment_GetNeededArticles_Handler,
 		},
 		{
 			MethodName: "SendShipment",
@@ -3732,7 +3732,7 @@ func (m *PaymentReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *NewStock) Marshal() (dAtA []byte, err error) {
+func (m *NewStockRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3742,12 +3742,45 @@ func (m *NewStock) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *NewStock) MarshalTo(dAtA []byte) (int, error) {
+func (m *NewStockRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *NewStock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *NewStockRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Reserved != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Reserved))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Amount != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AddStockRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AddStockRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AddStockRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -4238,39 +4271,6 @@ func (m *ShipmentReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *ArticleRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ArticleRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ArticleRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Amount != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Amount))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.Id != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Id))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *GetShipmentRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -4492,7 +4492,22 @@ func (m *PaymentReply) Size() (n int) {
 	return n
 }
 
-func (m *NewStock) Size() (n int) {
+func (m *NewStockRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		n += 1 + sovApi(uint64(m.Amount))
+	}
+	if m.Reserved != 0 {
+		n += 1 + sovApi(uint64(m.Reserved))
+	}
+	return n
+}
+
+func (m *AddStockRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4717,21 +4732,6 @@ func (m *ShipmentReply) Size() (n int) {
 	return n
 }
 
-func (m *ArticleRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Id != 0 {
-		n += 1 + sovApi(uint64(m.Id))
-	}
-	if m.Amount != 0 {
-		n += 1 + sovApi(uint64(m.Amount))
-	}
-	return n
-}
-
 func (m *GetShipmentRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -4873,11 +4873,22 @@ func (this *PaymentReply) String() string {
 	}, "")
 	return s
 }
-func (this *NewStock) String() string {
+func (this *NewStockRequest) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&NewStock{`,
+	s := strings.Join([]string{`&NewStockRequest{`,
+		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
+		`Reserved:` + fmt.Sprintf("%v", this.Reserved) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AddStockRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AddStockRequest{`,
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
 		`}`,
@@ -5053,17 +5064,6 @@ func (this *ShipmentReply) String() string {
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`Articles:` + mapStringForArticles + `,`,
 		`Ready:` + mapStringForReady + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *ArticleRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&ArticleRequest{`,
-		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
-		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5985,7 +5985,7 @@ func (m *PaymentReply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *NewStock) Unmarshal(dAtA []byte) error {
+func (m *NewStockRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6008,10 +6008,98 @@ func (m *NewStock) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: NewStock: wiretype end group for non-group")
+			return fmt.Errorf("proto: NewStockRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: NewStock: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: NewStockRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reserved", wireType)
+			}
+			m.Reserved = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Reserved |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AddStockRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AddStockRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AddStockRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6028,7 +6116,7 @@ func (m *NewStock) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= int32(b&0x7F) << shift
+				m.Id |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -6185,7 +6273,7 @@ func (m *TakeArticle) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= int32(b&0x7F) << shift
+				m.Id |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -6273,7 +6361,7 @@ func (m *ArticleID) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= int32(b&0x7F) << shift
+				m.Id |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -7519,94 +7607,6 @@ func (m *ShipmentReply) Unmarshal(dAtA []byte) error {
 			}
 			m.Ready[mapkey] = mapvalue
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ArticleRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ArticleRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ArticleRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			m.Id = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Id |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
-			}
-			m.Amount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Amount |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipApi(dAtA[iNdEx:])

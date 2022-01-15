@@ -9,12 +9,12 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/nats-io/nats.go"
 	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
-	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/stock"
+	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/shipment"
 	"google.golang.org/grpc"
 )
 
 const (
-	port = ":50057"
+	port = ":50060"
 )
 
 func main() {
@@ -26,14 +26,14 @@ func main() {
 
 	// Verbindung zu Redis
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
+		Addr:     "host.docker.internal:6379",
 		Password: "", // no password set
 	})
 
 	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "stock", "host.docker.internal"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "shipment", "host.docker.internal"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -43,14 +43,14 @@ func main() {
 	}()
 
 	// Verbindung zu NATS
-	nc, err := nats.Connect("nats:4222")
+	nc, err := nats.Connect("host.docker.internal:4222")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer nc.Close()
 
 	// Erzeugt den fertigen service
-	api.RegisterStockServer(s, &stock.Server{Nats: nc, Stock: make(map[uint32]*api.NewStockRequest), StockID: 0})
+	api.RegisterShipmentServer(s, &shipment.Server{Nats: nc, Shipment: make(map[uint32]*api.NewShipmentRequest), ShipmentID: 0})
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

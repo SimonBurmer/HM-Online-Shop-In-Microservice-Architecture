@@ -89,14 +89,19 @@ message PaymentReply{
 ///////////////////////
 
 service Stock {
-  rpc AddStock(NewStock) returns (GetReply) {}
+  rpc NewStock(NewStockRequest) returns (GetReply) {}
+  rpc AddStock(AddStockRequest) returns (GetReply) {}
   rpc GetArticle(TakeArticle) returns (GetReply) {}
   rpc GetStock(ArticleID) returns (GetStockReply) {}
 }
-// asdfsaasdfasd
 
-message NewStock {
-  int32 id = 1;
+message NewStockRequest {
+  int32 amount = 1;
+  uint32 reserved = 2;
+}
+
+message AddStockRequest {
+  uint32 id = 1;
   int32 amount = 2;
 }
 
@@ -105,12 +110,12 @@ message GetReply {
 }
 
 message TakeArticle {
-  int32 id = 1;
+  uint32 id = 1;
   int32 amount = 2;
 }
 
 message ArticleID {
-  int32 id = 1;
+  uint32 id = 1;
 }
 
 message GetStockReply {
@@ -125,6 +130,7 @@ message GetStockReply {
 // work in progress
 service Supplier {
   rpc DeliveredArticle(NewArticles) returns (GetSupplierReply) {}
+  
 }
 
 message NewArticles {
@@ -176,7 +182,7 @@ message UpdatedData {
 ////////////////////////
 //// Shipment Service
 ////////////////////////
-// work in progress
+
 service Shipment {
  rpc NewShipment(NewShipmentRequest) returns (ShipmentReply) {}
  rpc SendShipment(GetShipmentRequest) returns (ShipmentReply) {}

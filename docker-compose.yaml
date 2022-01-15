@@ -48,12 +48,21 @@ services:
       - nats
       - customer-service
       - catalog-service
+      - stock-service
 
   catalog-service:
     build:
       context: .
       dockerfile: catalog/service/Dockerfile
     image: catalog
+    depends_on:
+      - nats 
+
+  stock-service:
+    build:
+      context: .
+      dockerfile: stock/service/Dockerfile
+    image: stock
     depends_on:
       - redis
       - nats 

@@ -5,14 +5,12 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/nats-io/nats.go"
 	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
 )
 
 type Server struct {
 	Nats      *nats.Conn
-	Redis     *redis.Client
 	Catalog   map[uint32]*api.NewCatalog
 	CatalogID uint32
 	api.UnimplementedCatalogServer
