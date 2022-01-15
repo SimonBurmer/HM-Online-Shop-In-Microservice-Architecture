@@ -116,6 +116,60 @@ func (m *HelloReply) GetMessage() string {
 	return ""
 }
 
+//////////////////////
+//// Logger Service
+//////////////////////
+type Log struct {
+	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Subject string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+}
+
+func (m *Log) Reset()      { *m = Log{} }
+func (*Log) ProtoMessage() {}
+func (*Log) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{2}
+}
+func (m *Log) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Log) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Log.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Log) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Log.Merge(m, src)
+}
+func (m *Log) XXX_Size() int {
+	return m.Size()
+}
+func (m *Log) XXX_DiscardUnknown() {
+	xxx_messageInfo_Log.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Log proto.InternalMessageInfo
+
+func (m *Log) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *Log) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
+}
+
 type NewCustomerRequest struct {
 	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
@@ -124,7 +178,7 @@ type NewCustomerRequest struct {
 func (m *NewCustomerRequest) Reset()      { *m = NewCustomerRequest{} }
 func (*NewCustomerRequest) ProtoMessage() {}
 func (*NewCustomerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{2}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{3}
 }
 func (m *NewCustomerRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -174,7 +228,7 @@ type GetCustomerRequest struct {
 func (m *GetCustomerRequest) Reset()      { *m = GetCustomerRequest{} }
 func (*GetCustomerRequest) ProtoMessage() {}
 func (*GetCustomerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{3}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{4}
 }
 func (m *GetCustomerRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -219,7 +273,7 @@ type CustomerReply struct {
 func (m *CustomerReply) Reset()      { *m = CustomerReply{} }
 func (*CustomerReply) ProtoMessage() {}
 func (*CustomerReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{4}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{5}
 }
 func (m *CustomerReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -277,7 +331,7 @@ type NewPaymentRequest struct {
 func (m *NewPaymentRequest) Reset()      { *m = NewPaymentRequest{} }
 func (*NewPaymentRequest) ProtoMessage() {}
 func (*NewPaymentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{5}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{6}
 }
 func (m *NewPaymentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -320,101 +374,15 @@ func (m *NewPaymentRequest) GetValue() float32 {
 	return 0
 }
 
-type GetPaymentRequest struct {
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *GetPaymentRequest) Reset()      { *m = GetPaymentRequest{} }
-func (*GetPaymentRequest) ProtoMessage() {}
-func (*GetPaymentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{6}
-}
-func (m *GetPaymentRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GetPaymentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GetPaymentRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GetPaymentRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetPaymentRequest.Merge(m, src)
-}
-func (m *GetPaymentRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *GetPaymentRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetPaymentRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GetPaymentRequest proto.InternalMessageInfo
-
-func (m *GetPaymentRequest) GetId() uint32 {
-	if m != nil {
-		return m.Id
-	}
-	return 0
-}
-
-type DeletePaymentRequest struct {
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *DeletePaymentRequest) Reset()      { *m = DeletePaymentRequest{} }
-func (*DeletePaymentRequest) ProtoMessage() {}
-func (*DeletePaymentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{7}
-}
-func (m *DeletePaymentRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *DeletePaymentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_DeletePaymentRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *DeletePaymentRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DeletePaymentRequest.Merge(m, src)
-}
-func (m *DeletePaymentRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *DeletePaymentRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_DeletePaymentRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_DeletePaymentRequest proto.InternalMessageInfo
-
-func (m *DeletePaymentRequest) GetId() uint32 {
-	if m != nil {
-		return m.Id
-	}
-	return 0
-}
-
 type PayPaymentRequest struct {
-	Id    uint32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Value float32 `protobuf:"fixed32,2,opt,name=value,proto3" json:"value,omitempty"`
+	OrderId uint32  `protobuf:"varint,1,opt,name=orderId,proto3" json:"orderId,omitempty"`
+	Value   float32 `protobuf:"fixed32,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (m *PayPaymentRequest) Reset()      { *m = PayPaymentRequest{} }
 func (*PayPaymentRequest) ProtoMessage() {}
 func (*PayPaymentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{8}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{7}
 }
 func (m *PayPaymentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -443,9 +411,9 @@ func (m *PayPaymentRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PayPaymentRequest proto.InternalMessageInfo
 
-func (m *PayPaymentRequest) GetId() uint32 {
+func (m *PayPaymentRequest) GetOrderId() uint32 {
 	if m != nil {
-		return m.Id
+		return m.OrderId
 	}
 	return 0
 }
@@ -457,23 +425,22 @@ func (m *PayPaymentRequest) GetValue() float32 {
 	return 0
 }
 
-type PaymentReply struct {
-	Id      uint32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	OrderId uint32  `protobuf:"varint,2,opt,name=orderId,proto3" json:"orderId,omitempty"`
-	Value   float32 `protobuf:"fixed32,3,opt,name=value,proto3" json:"value,omitempty"`
+type RefundPaymentRequest struct {
+	OrderId uint32  `protobuf:"varint,1,opt,name=orderId,proto3" json:"orderId,omitempty"`
+	Value   float32 `protobuf:"fixed32,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
-func (m *PaymentReply) Reset()      { *m = PaymentReply{} }
-func (*PaymentReply) ProtoMessage() {}
-func (*PaymentReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{9}
+func (m *RefundPaymentRequest) Reset()      { *m = RefundPaymentRequest{} }
+func (*RefundPaymentRequest) ProtoMessage() {}
+func (*RefundPaymentRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{8}
 }
-func (m *PaymentReply) XXX_Unmarshal(b []byte) error {
+func (m *RefundPaymentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *PaymentReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *RefundPaymentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_PaymentReply.Marshal(b, m, deterministic)
+		return xxx_messageInfo_RefundPaymentRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -483,55 +450,99 @@ func (m *PaymentReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (m *PaymentReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PaymentReply.Merge(m, src)
+func (m *RefundPaymentRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RefundPaymentRequest.Merge(m, src)
 }
-func (m *PaymentReply) XXX_Size() int {
+func (m *RefundPaymentRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *PaymentReply) XXX_DiscardUnknown() {
-	xxx_messageInfo_PaymentReply.DiscardUnknown(m)
+func (m *RefundPaymentRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RefundPaymentRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_PaymentReply proto.InternalMessageInfo
+var xxx_messageInfo_RefundPaymentRequest proto.InternalMessageInfo
 
-func (m *PaymentReply) GetId() uint32 {
-	if m != nil {
-		return m.Id
-	}
-	return 0
-}
-
-func (m *PaymentReply) GetOrderId() uint32 {
+func (m *RefundPaymentRequest) GetOrderId() uint32 {
 	if m != nil {
 		return m.OrderId
 	}
 	return 0
 }
 
-func (m *PaymentReply) GetValue() float32 {
+func (m *RefundPaymentRequest) GetValue() float32 {
 	if m != nil {
 		return m.Value
 	}
 	return 0
 }
 
-type NewStockRequest struct {
-	Amount   int32  `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
-	Reserved uint32 `protobuf:"varint,2,opt,name=reserved,proto3" json:"reserved,omitempty"`
+type PayPaymentReply struct {
+	OrderId uint32  `protobuf:"varint,2,opt,name=orderId,proto3" json:"orderId,omitempty"`
+	Value   float32 `protobuf:"fixed32,3,opt,name=value,proto3" json:"value,omitempty"`
 }
 
-func (m *NewStockRequest) Reset()      { *m = NewStockRequest{} }
-func (*NewStockRequest) ProtoMessage() {}
-func (*NewStockRequest) Descriptor() ([]byte, []int) {
+func (m *PayPaymentReply) Reset()      { *m = PayPaymentReply{} }
+func (*PayPaymentReply) ProtoMessage() {}
+func (*PayPaymentReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_00212fb1f9d3bf1c, []int{9}
+}
+func (m *PayPaymentReply) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PayPaymentReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PayPaymentReply.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PayPaymentReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PayPaymentReply.Merge(m, src)
+}
+func (m *PayPaymentReply) XXX_Size() int {
+	return m.Size()
+}
+func (m *PayPaymentReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_PayPaymentReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PayPaymentReply proto.InternalMessageInfo
+
+func (m *PayPaymentReply) GetOrderId() uint32 {
+	if m != nil {
+		return m.OrderId
+	}
+	return 0
+}
+
+func (m *PayPaymentReply) GetValue() float32 {
+	if m != nil {
+		return m.Value
+	}
+	return 0
+}
+
+type NewStock struct {
+	Id     int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Amount int32 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *NewStock) Reset()      { *m = NewStock{} }
+func (*NewStock) ProtoMessage() {}
+func (*NewStock) Descriptor() ([]byte, []int) {
 	return fileDescriptor_00212fb1f9d3bf1c, []int{10}
 }
-func (m *NewStockRequest) XXX_Unmarshal(b []byte) error {
+func (m *NewStock) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *NewStockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NewStock) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_NewStockRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_NewStock.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -541,77 +552,26 @@ func (m *NewStockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *NewStockRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NewStockRequest.Merge(m, src)
+func (m *NewStock) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewStock.Merge(m, src)
 }
-func (m *NewStockRequest) XXX_Size() int {
+func (m *NewStock) XXX_Size() int {
 	return m.Size()
 }
-func (m *NewStockRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_NewStockRequest.DiscardUnknown(m)
+func (m *NewStock) XXX_DiscardUnknown() {
+	xxx_messageInfo_NewStock.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NewStockRequest proto.InternalMessageInfo
+var xxx_messageInfo_NewStock proto.InternalMessageInfo
 
-func (m *NewStockRequest) GetAmount() int32 {
-	if m != nil {
-		return m.Amount
-	}
-	return 0
-}
-
-func (m *NewStockRequest) GetReserved() uint32 {
-	if m != nil {
-		return m.Reserved
-	}
-	return 0
-}
-
-type AddStockRequest struct {
-	Id     uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Amount int32  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
-}
-
-func (m *AddStockRequest) Reset()      { *m = AddStockRequest{} }
-func (*AddStockRequest) ProtoMessage() {}
-func (*AddStockRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{11}
-}
-func (m *AddStockRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *AddStockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AddStockRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *AddStockRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AddStockRequest.Merge(m, src)
-}
-func (m *AddStockRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *AddStockRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AddStockRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AddStockRequest proto.InternalMessageInfo
-
-func (m *AddStockRequest) GetId() uint32 {
+func (m *NewStock) GetId() int32 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *AddStockRequest) GetAmount() int32 {
+func (m *NewStock) GetAmount() int32 {
 	if m != nil {
 		return m.Amount
 	}
@@ -625,7 +585,7 @@ type GetReply struct {
 func (m *GetReply) Reset()      { *m = GetReply{} }
 func (*GetReply) ProtoMessage() {}
 func (*GetReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{12}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{11}
 }
 func (m *GetReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -662,14 +622,14 @@ func (m *GetReply) GetAmount() int32 {
 }
 
 type TakeArticle struct {
-	Id     uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Amount int32  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Id     int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Amount int32 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
 func (m *TakeArticle) Reset()      { *m = TakeArticle{} }
 func (*TakeArticle) ProtoMessage() {}
 func (*TakeArticle) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{13}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{12}
 }
 func (m *TakeArticle) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -698,7 +658,7 @@ func (m *TakeArticle) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TakeArticle proto.InternalMessageInfo
 
-func (m *TakeArticle) GetId() uint32 {
+func (m *TakeArticle) GetId() int32 {
 	if m != nil {
 		return m.Id
 	}
@@ -713,13 +673,13 @@ func (m *TakeArticle) GetAmount() int32 {
 }
 
 type ArticleID struct {
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (m *ArticleID) Reset()      { *m = ArticleID{} }
 func (*ArticleID) ProtoMessage() {}
 func (*ArticleID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{14}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{13}
 }
 func (m *ArticleID) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -748,7 +708,7 @@ func (m *ArticleID) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ArticleID proto.InternalMessageInfo
 
-func (m *ArticleID) GetId() uint32 {
+func (m *ArticleID) GetId() int32 {
 	if m != nil {
 		return m.Id
 	}
@@ -762,7 +722,7 @@ type GetStockReply struct {
 func (m *GetStockReply) Reset()      { *m = GetStockReply{} }
 func (*GetStockReply) ProtoMessage() {}
 func (*GetStockReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{15}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{14}
 }
 func (m *GetStockReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -806,7 +766,7 @@ type NewArticles struct {
 func (m *NewArticles) Reset()      { *m = NewArticles{} }
 func (*NewArticles) ProtoMessage() {}
 func (*NewArticles) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{16}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{15}
 }
 func (m *NewArticles) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -856,7 +816,7 @@ type GetSupplierReply struct {
 func (m *GetSupplierReply) Reset()      { *m = GetSupplierReply{} }
 func (*GetSupplierReply) ProtoMessage() {}
 func (*GetSupplierReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{17}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{16}
 }
 func (m *GetSupplierReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -899,7 +859,7 @@ type GetCatalog struct {
 func (m *GetCatalog) Reset()      { *m = GetCatalog{} }
 func (*GetCatalog) ProtoMessage() {}
 func (*GetCatalog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{18}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{17}
 }
 func (m *GetCatalog) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -945,7 +905,7 @@ type CatalogReply struct {
 func (m *CatalogReply) Reset()      { *m = CatalogReply{} }
 func (*CatalogReply) ProtoMessage() {}
 func (*CatalogReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{19}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{18}
 }
 func (m *CatalogReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1011,7 +971,7 @@ type NewCatalog struct {
 func (m *NewCatalog) Reset()      { *m = NewCatalog{} }
 func (*NewCatalog) ProtoMessage() {}
 func (*NewCatalog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{20}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{19}
 }
 func (m *NewCatalog) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1071,7 +1031,7 @@ type UpdatedData struct {
 func (m *UpdatedData) Reset()      { *m = UpdatedData{} }
 func (*UpdatedData) ProtoMessage() {}
 func (*UpdatedData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{21}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{20}
 }
 func (m *UpdatedData) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1136,7 +1096,7 @@ type NewShipmentRequest struct {
 func (m *NewShipmentRequest) Reset()      { *m = NewShipmentRequest{} }
 func (*NewShipmentRequest) ProtoMessage() {}
 func (*NewShipmentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{22}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{21}
 }
 func (m *NewShipmentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1188,7 +1148,7 @@ type ShipmentReply struct {
 func (m *ShipmentReply) Reset()      { *m = ShipmentReply{} }
 func (*ShipmentReply) ProtoMessage() {}
 func (*ShipmentReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{23}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{22}
 }
 func (m *ShipmentReply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1247,7 +1207,7 @@ type GetShipmentRequest struct {
 func (m *GetShipmentRequest) Reset()      { *m = GetShipmentRequest{} }
 func (*GetShipmentRequest) ProtoMessage() {}
 func (*GetShipmentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{24}
+	return fileDescriptor_00212fb1f9d3bf1c, []int{23}
 }
 func (m *GetShipmentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1300,16 +1260,15 @@ func (m *GetShipmentRequest) GetReady() map[uint32]bool {
 func init() {
 	proto.RegisterType((*HelloRequest)(nil), "api.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "api.HelloReply")
+	proto.RegisterType((*Log)(nil), "api.Log")
 	proto.RegisterType((*NewCustomerRequest)(nil), "api.NewCustomerRequest")
 	proto.RegisterType((*GetCustomerRequest)(nil), "api.GetCustomerRequest")
 	proto.RegisterType((*CustomerReply)(nil), "api.CustomerReply")
 	proto.RegisterType((*NewPaymentRequest)(nil), "api.NewPaymentRequest")
-	proto.RegisterType((*GetPaymentRequest)(nil), "api.GetPaymentRequest")
-	proto.RegisterType((*DeletePaymentRequest)(nil), "api.DeletePaymentRequest")
 	proto.RegisterType((*PayPaymentRequest)(nil), "api.PayPaymentRequest")
-	proto.RegisterType((*PaymentReply)(nil), "api.PaymentReply")
-	proto.RegisterType((*NewStockRequest)(nil), "api.NewStockRequest")
-	proto.RegisterType((*AddStockRequest)(nil), "api.AddStockRequest")
+	proto.RegisterType((*RefundPaymentRequest)(nil), "api.RefundPaymentRequest")
+	proto.RegisterType((*PayPaymentReply)(nil), "api.PayPaymentReply")
+	proto.RegisterType((*NewStock)(nil), "api.NewStock")
 	proto.RegisterType((*GetReply)(nil), "api.GetReply")
 	proto.RegisterType((*TakeArticle)(nil), "api.TakeArticle")
 	proto.RegisterType((*ArticleID)(nil), "api.ArticleID")
@@ -1334,71 +1293,68 @@ func init() {
 func init() { proto.RegisterFile("api.proto", fileDescriptor_00212fb1f9d3bf1c) }
 
 var fileDescriptor_00212fb1f9d3bf1c = []byte{
-	// 1024 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0xcf, 0x6f, 0xe3, 0x44,
-	0x14, 0xb6, 0x9d, 0xcd, 0xc6, 0x7d, 0xad, 0x9b, 0x64, 0x54, 0x76, 0x43, 0x00, 0x2b, 0x1a, 0x60,
-	0xa9, 0x38, 0x94, 0xdd, 0xac, 0x76, 0xd5, 0xd2, 0x5d, 0xa1, 0xec, 0x76, 0x15, 0x7a, 0x20, 0x5a,
-	0xb9, 0x20, 0x21, 0x6e, 0xa6, 0x7e, 0x2c, 0xa6, 0x4e, 0x6c, 0x6c, 0xa7, 0x51, 0x6e, 0x9c, 0x10,
-	0xdc, 0x38, 0xf2, 0x27, 0xf0, 0xa7, 0x20, 0x4e, 0x3d, 0xee, 0x91, 0xa6, 0x17, 0x24, 0x2e, 0x7b,
-	0xe7, 0x82, 0x3c, 0x9e, 0x71, 0xc6, 0x3f, 0xd2, 0x56, 0x48, 0x48, 0x7b, 0xcb, 0xf3, 0xbc, 0xef,
-	0x7b, 0x6f, 0xde, 0xbc, 0x37, 0xdf, 0x04, 0xd6, 0xec, 0xc0, 0xdd, 0x09, 0x42, 0x3f, 0xf6, 0x49,
-	0xcd, 0x0e, 0x5c, 0x4a, 0x61, 0xe3, 0x53, 0xf4, 0x3c, 0xdf, 0xc2, 0xef, 0xa7, 0x18, 0xc5, 0x84,
-	0xc0, 0x8d, 0x89, 0x3d, 0xc6, 0x8e, 0xda, 0x53, 0xb7, 0xd7, 0x2c, 0xf6, 0x9b, 0xde, 0x01, 0xe0,
-	0x3e, 0x81, 0x37, 0x27, 0x1d, 0x68, 0x8c, 0x31, 0x8a, 0xec, 0x17, 0xc2, 0x49, 0x98, 0xf4, 0x09,
-	0x90, 0x11, 0xce, 0x9e, 0x4e, 0xa3, 0xd8, 0x1f, 0x63, 0x78, 0x09, 0x63, 0xc2, 0x61, 0x3b, 0x4e,
-	0x88, 0x51, 0xd4, 0xd1, 0x52, 0x0e, 0x6e, 0xd2, 0xf7, 0x80, 0x0c, 0x31, 0x2e, 0x72, 0x6c, 0x82,
-	0xe6, 0x3a, 0x8c, 0xc1, 0xb0, 0x34, 0xd7, 0xa1, 0x9f, 0x81, 0xb1, 0x74, 0x49, 0x92, 0x2a, 0x38,
-	0x64, 0x41, 0xb5, 0xea, 0xa0, 0xb5, 0x7c, 0xd0, 0xa7, 0xd0, 0x1e, 0xe1, 0xec, 0xb9, 0x3d, 0x1f,
-	0xe3, 0x24, 0x16, 0x31, 0x3b, 0xd0, 0xf0, 0x43, 0x07, 0xc3, 0x43, 0xc1, 0x2b, 0x4c, 0xb2, 0x05,
-	0xf5, 0x53, 0xdb, 0x9b, 0xa6, 0xec, 0x9a, 0x95, 0x1a, 0xf4, 0x5d, 0x68, 0x0f, 0x31, 0x2e, 0x90,
-	0x14, 0x13, 0xbf, 0x03, 0x5b, 0x07, 0xe8, 0x61, 0x8c, 0x57, 0xf8, 0xed, 0x41, 0xfb, 0xb9, 0x3d,
-	0xbf, 0xdc, 0x69, 0x45, 0x1e, 0x23, 0xd8, 0xc8, 0x70, 0x55, 0xa5, 0x91, 0xf6, 0xa5, 0xad, 0xd8,
-	0x57, 0x4d, 0xe6, 0x7b, 0x06, 0xcd, 0x11, 0xce, 0x8e, 0x62, 0xff, 0xf8, 0x44, 0x24, 0x72, 0x0b,
-	0x6e, 0xda, 0x63, 0x7f, 0x3a, 0x89, 0x19, 0x6d, 0xdd, 0xe2, 0x16, 0xe9, 0x82, 0x1e, 0x62, 0x84,
-	0xe1, 0x29, 0x0a, 0xee, 0xcc, 0xa6, 0x7b, 0xd0, 0x1c, 0x38, 0x4e, 0x8e, 0xa6, 0x98, 0xd9, 0x92,
-	0x56, 0x93, 0x69, 0x29, 0x05, 0x7d, 0x88, 0x7c, 0x37, 0x2b, 0x42, 0xd3, 0x07, 0xb0, 0xfe, 0xb9,
-	0x7d, 0x82, 0x83, 0x30, 0x76, 0x8f, 0x3d, 0xbc, 0x36, 0xf5, 0x5b, 0xb0, 0xc6, 0x21, 0x87, 0x07,
-	0xa5, 0x43, 0xf8, 0x00, 0x8c, 0x21, 0xc6, 0x3c, 0x65, 0x11, 0x7c, 0x12, 0xcd, 0x30, 0x64, 0x4e,
-	0xba, 0xc5, 0xad, 0x24, 0xf8, 0x08, 0x67, 0x9c, 0x28, 0xba, 0x22, 0xb8, 0x91, 0x05, 0xff, 0x10,
-	0x5a, 0x09, 0xff, 0x34, 0x08, 0x3c, 0x57, 0x34, 0x72, 0x3e, 0xc4, 0x5a, 0x16, 0xe2, 0x6d, 0x80,
-	0x64, 0x2e, 0xec, 0xd8, 0xf6, 0xfc, 0x17, 0xa5, 0x4c, 0xbf, 0x83, 0x0d, 0xbe, 0x74, 0xfd, 0x71,
-	0xe8, 0xc1, 0xba, 0x83, 0xd1, 0x71, 0xe8, 0x06, 0xb1, 0xeb, 0x4f, 0xf8, 0x48, 0xc8, 0x9f, 0x92,
-	0x7e, 0x08, 0x42, 0xf7, 0x18, 0x3b, 0x37, 0x7a, 0xea, 0xb6, 0x6a, 0xa5, 0x06, 0xfd, 0x12, 0x20,
-	0x99, 0x72, 0x9e, 0x49, 0xd5, 0x74, 0x17, 0x98, 0xb5, 0x4b, 0x98, 0x6b, 0x32, 0xb3, 0x0b, 0xeb,
-	0x5f, 0x04, 0x8e, 0x1d, 0xa3, 0x73, 0x60, 0xc7, 0xf6, 0xff, 0xba, 0x89, 0x9f, 0x34, 0x76, 0x57,
-	0x1d, 0x7d, 0xeb, 0x06, 0xf2, 0x84, 0x0d, 0x40, 0xb7, 0xf9, 0x29, 0x76, 0xd4, 0x5e, 0x6d, 0x7b,
-	0xbd, 0xff, 0xfe, 0x4e, 0x72, 0x61, 0x96, 0x5d, 0x77, 0xc4, 0x69, 0x3f, 0x9b, 0xc4, 0xe1, 0xdc,
-	0xca, 0x60, 0x64, 0x17, 0xea, 0x21, 0xda, 0xce, 0xbc, 0xa3, 0x31, 0x3c, 0x5d, 0x85, 0xb7, 0x12,
-	0xa7, 0x14, 0x9c, 0x02, 0xba, 0xfb, 0x60, 0xe4, 0x48, 0x49, 0x0b, 0x6a, 0x27, 0x38, 0xe7, 0x15,
-	0x48, 0x7e, 0xe6, 0x27, 0xde, 0xe0, 0x13, 0xfa, 0xb1, 0xb6, 0xab, 0x76, 0x77, 0x01, 0x96, 0x8c,
-	0x57, 0x21, 0x75, 0x09, 0x49, 0x7f, 0xd6, 0xc0, 0x58, 0x26, 0x57, 0xd5, 0x3d, 0x8f, 0xa4, 0xaa,
-	0xa4, 0xbb, 0xea, 0xb1, 0x5d, 0xe5, 0x50, 0x2b, 0x0b, 0x72, 0x5f, 0x14, 0xa4, 0xc6, 0xa0, 0xef,
-	0x54, 0x40, 0x5f, 0x9b, 0x5a, 0xfc, 0xaa, 0x31, 0xf9, 0x29, 0xb6, 0x45, 0xb1, 0x20, 0x83, 0x52,
-	0x41, 0xd2, 0x36, 0x29, 0x43, 0xaf, 0x6e, 0x93, 0x9a, 0xd4, 0x26, 0x15, 0xf8, 0xd7, 0xa5, 0x34,
-	0xfd, 0x7d, 0x68, 0x0c, 0x43, 0xc4, 0x18, 0x43, 0x72, 0x17, 0xf4, 0x23, 0x7b, 0xce, 0x9e, 0x04,
-	0xa4, 0xcd, 0x12, 0x97, 0x9f, 0x10, 0xdd, 0xa6, 0xfc, 0x29, 0xf0, 0xe6, 0x54, 0xe9, 0xff, 0xa8,
-	0x82, 0x2e, 0x04, 0x9b, 0x3c, 0x62, 0xb7, 0x65, 0x66, 0xde, 0x16, 0x13, 0x52, 0x10, 0xfd, 0x2e,
-	0x61, 0x0b, 0x39, 0x9d, 0xa7, 0x4a, 0x82, 0x96, 0x1e, 0x08, 0x1c, 0x5d, 0x7e, 0x32, 0x54, 0xa3,
-	0xfb, 0xff, 0xa8, 0xd0, 0xe0, 0xea, 0x48, 0xf6, 0xd8, 0x45, 0x26, 0xac, 0x5b, 0x22, 0x8d, 0xbc,
-	0xe8, 0x76, 0xd3, 0x0d, 0xca, 0x8a, 0x4a, 0x95, 0x04, 0xba, 0xd4, 0x7a, 0x0e, 0x2d, 0x89, 0x7f,
-	0x35, 0xf4, 0x13, 0x30, 0x72, 0x2f, 0x00, 0xf2, 0x26, 0xf3, 0xaa, 0x7a, 0x15, 0xac, 0x8c, 0xbd,
-	0x7c, 0x1a, 0xf0, 0xd8, 0xa5, 0xb7, 0x42, 0x25, 0xb4, 0x7f, 0xa6, 0x42, 0x9d, 0xc9, 0x19, 0xb9,
-	0x07, 0xba, 0x10, 0x75, 0xb2, 0x95, 0x5d, 0x51, 0x92, 0x38, 0x77, 0x0d, 0xb1, 0x29, 0x11, 0xf7,
-	0x1e, 0xe8, 0x42, 0xc0, 0x39, 0xa4, 0xa0, 0xe7, 0x65, 0xc8, 0x47, 0xac, 0x4c, 0x42, 0x93, 0x5b,
-	0x6c, 0x59, 0x52, 0xe9, 0x32, 0xe0, 0x2e, 0x53, 0xfa, 0x34, 0xc6, 0x66, 0x1a, 0x43, 0xa8, 0x33,
-	0x3f, 0xd0, 0x9c, 0x20, 0x53, 0xa5, 0x7f, 0x08, 0xba, 0x10, 0x50, 0xf2, 0x18, 0x5a, 0x07, 0xe8,
-	0xb9, 0xa7, 0x18, 0xa2, 0x93, 0x0f, 0x2a, 0xa9, 0x73, 0xf7, 0x8d, 0x8c, 0x47, 0x16, 0x5e, 0xaa,
-	0xf4, 0xff, 0x56, 0xa1, 0x21, 0x64, 0xed, 0x21, 0x6c, 0x2e, 0xe5, 0xf6, 0x70, 0xf2, 0x8d, 0x4f,
-	0x9a, 0x59, 0xa3, 0xa5, 0x1f, 0x79, 0x85, 0x65, 0xd9, 0x65, 0x87, 0xd3, 0x5e, 0x8a, 0xa3, 0xc8,
-	0xa1, 0x99, 0x75, 0xf8, 0x65, 0xd0, 0x87, 0x60, 0xa4, 0xea, 0x27, 0x72, 0x48, 0x53, 0x97, 0x14,
-	0xb1, 0x1a, 0xf7, 0x40, 0x34, 0x94, 0xc0, 0x5d, 0x2b, 0xd3, 0xfe, 0x1f, 0x2a, 0xe8, 0xe2, 0xb2,
-	0xe1, 0x23, 0x99, 0x99, 0xb7, 0x57, 0x88, 0x16, 0x3f, 0x83, 0xdc, 0xe5, 0x4d, 0x15, 0xf2, 0x18,
-	0x36, 0x8e, 0x70, 0xe2, 0x14, 0xe0, 0xe5, 0xcb, 0x6c, 0x05, 0x7c, 0x00, 0x2d, 0x0b, 0xe3, 0x69,
-	0x38, 0xc1, 0xff, 0x4a, 0xf1, 0x64, 0xff, 0xec, 0xdc, 0x54, 0x5e, 0x9e, 0x9b, 0xca, 0xab, 0x73,
-	0x53, 0xfd, 0x61, 0x61, 0xaa, 0xbf, 0x2d, 0x4c, 0xf5, 0xf7, 0x85, 0xa9, 0x9e, 0x2d, 0x4c, 0xf5,
-	0xcf, 0x85, 0xa9, 0xfe, 0xb5, 0x30, 0x95, 0x57, 0x0b, 0x53, 0xfd, 0xe5, 0xc2, 0x54, 0xce, 0x2e,
-	0x4c, 0xe5, 0xe5, 0x85, 0xa9, 0x7c, 0x55, 0xdf, 0xd9, 0xb7, 0x03, 0xf7, 0xeb, 0x9b, 0xec, 0xef,
-	0xd0, 0xfd, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x12, 0xc0, 0x03, 0xc8, 0x1b, 0x0d, 0x00, 0x00,
+	// 970 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0xcd, 0x6e, 0xdb, 0x46,
+	0x10, 0xe6, 0x92, 0x51, 0x4c, 0x8f, 0xcd, 0x58, 0x59, 0xb8, 0x89, 0xa0, 0xb6, 0x84, 0xb0, 0xe8,
+	0x8f, 0x91, 0x83, 0x1b, 0x28, 0x48, 0xe0, 0xd4, 0xce, 0x41, 0x89, 0x5b, 0xd5, 0x40, 0x6b, 0x04,
+	0x74, 0x0b, 0x14, 0xbd, 0x6d, 0xc4, 0x89, 0xcb, 0x98, 0x22, 0x59, 0x92, 0x8a, 0xa0, 0x5b, 0x4f,
+	0x45, 0x7b, 0xeb, 0xa9, 0xe8, 0x23, 0xf4, 0x51, 0x8a, 0x9e, 0x7c, 0xcc, 0xb1, 0x96, 0x2f, 0x05,
+	0x7a, 0xc9, 0x23, 0x14, 0x5c, 0xee, 0x52, 0xa4, 0x28, 0x39, 0x46, 0x83, 0x00, 0xb9, 0x71, 0x76,
+	0xe7, 0xfb, 0x66, 0x76, 0x76, 0x66, 0x3f, 0x09, 0x56, 0x79, 0xe4, 0x6d, 0x47, 0x71, 0x98, 0x86,
+	0xd4, 0xe0, 0x91, 0xc7, 0x18, 0xac, 0x7f, 0x81, 0xbe, 0x1f, 0x3a, 0xf8, 0xc3, 0x08, 0x93, 0x94,
+	0x52, 0xb8, 0x12, 0xf0, 0x21, 0xb6, 0x48, 0x87, 0x6c, 0xad, 0x3a, 0xe2, 0x9b, 0x7d, 0x04, 0x20,
+	0x7d, 0x22, 0x7f, 0x42, 0x5b, 0xb0, 0x32, 0xc4, 0x24, 0xe1, 0xc7, 0xca, 0x49, 0x99, 0xec, 0x3e,
+	0x18, 0x5f, 0x86, 0xc7, 0xcb, 0x1d, 0xb2, 0x9d, 0x64, 0xf4, 0xe4, 0x19, 0x0e, 0xd2, 0x96, 0x9e,
+	0xef, 0x48, 0x93, 0x3d, 0x04, 0x7a, 0x88, 0xe3, 0x47, 0xa3, 0x24, 0x0d, 0x87, 0x18, 0x5f, 0x90,
+	0x4c, 0xc6, 0xc1, 0x5d, 0x37, 0xc6, 0x24, 0x51, 0x1c, 0xd2, 0x64, 0x1f, 0x00, 0xed, 0x63, 0x3a,
+	0xcf, 0x71, 0x0d, 0x74, 0xcf, 0x15, 0x0c, 0x96, 0xa3, 0x7b, 0x2e, 0xfb, 0x0a, 0xac, 0x99, 0x4b,
+	0x76, 0x9e, 0x39, 0x87, 0x22, 0xa8, 0xbe, 0x38, 0xa8, 0x51, 0x0d, 0xfa, 0x08, 0xae, 0x1f, 0xe2,
+	0xf8, 0x31, 0x9f, 0x0c, 0x31, 0x48, 0x55, 0xcc, 0x16, 0xac, 0x84, 0xb1, 0x8b, 0xf1, 0x81, 0xe2,
+	0x55, 0x26, 0xdd, 0x84, 0xc6, 0x73, 0xee, 0x8f, 0x72, 0x76, 0xdd, 0xc9, 0x8d, 0x8c, 0xe4, 0x31,
+	0x9f, 0xbc, 0x26, 0xc9, 0xe7, 0xb0, 0xe9, 0xe0, 0xd3, 0x51, 0xe0, 0xbe, 0x26, 0x4f, 0x0f, 0x36,
+	0xca, 0xc9, 0xc8, 0x2b, 0x57, 0x14, 0xfa, 0x12, 0x0a, 0xa3, 0x4c, 0xd1, 0x05, 0xf3, 0x10, 0xc7,
+	0x47, 0x69, 0x38, 0x38, 0x29, 0x95, 0xb7, 0x21, 0xca, 0x7b, 0x03, 0xae, 0xf2, 0x61, 0x38, 0x0a,
+	0xf2, 0x16, 0x68, 0x38, 0xd2, 0x62, 0x0c, 0xcc, 0x3e, 0xca, 0x78, 0x33, 0x1f, 0x52, 0xf1, 0xb9,
+	0x0b, 0x6b, 0x5f, 0xf3, 0x13, 0xec, 0xc5, 0xa9, 0x37, 0xf0, 0xf1, 0xd2, 0xd4, 0xef, 0xc2, 0xaa,
+	0x84, 0x1c, 0xec, 0xcf, 0x83, 0xd8, 0xc7, 0x60, 0xf5, 0x31, 0x15, 0xb9, 0xce, 0x82, 0x07, 0xc9,
+	0x18, 0x63, 0xe1, 0x64, 0x3a, 0xd2, 0xca, 0x82, 0x1f, 0xe2, 0x58, 0x12, 0x25, 0xb5, 0xb6, 0xa9,
+	0x06, 0xb7, 0x8a, 0xe0, 0xb7, 0xa0, 0x99, 0xf1, 0x8f, 0xa2, 0xc8, 0xf7, 0x54, 0xcb, 0x55, 0x43,
+	0xac, 0x16, 0x21, 0xde, 0x03, 0xc8, 0x3a, 0x98, 0xa7, 0xdc, 0x0f, 0x8f, 0x6b, 0x9d, 0xfb, 0x0c,
+	0xd6, 0xe5, 0xd6, 0xe5, 0x1b, 0xb7, 0x03, 0x6b, 0x2e, 0x26, 0x83, 0xd8, 0x8b, 0x52, 0x2f, 0x0c,
+	0x64, 0xf3, 0x96, 0x97, 0xb2, 0x1b, 0x8c, 0x62, 0x6f, 0x80, 0xad, 0x2b, 0x1d, 0xb2, 0x45, 0x9c,
+	0xdc, 0x60, 0xdf, 0x02, 0x64, 0xf3, 0x28, 0x33, 0x59, 0x34, 0x87, 0x73, 0xcc, 0xfa, 0x05, 0xcc,
+	0x46, 0x99, 0xd9, 0x83, 0xb5, 0x6f, 0x22, 0x97, 0xa7, 0xe8, 0xee, 0xf3, 0x94, 0xbf, 0xd1, 0x43,
+	0xfc, 0xac, 0x8b, 0x57, 0xe5, 0xe8, 0x7b, 0x2f, 0x2a, 0x0f, 0x44, 0x0f, 0x4c, 0x2e, 0x6f, 0xb1,
+	0x45, 0x3a, 0xc6, 0xd6, 0x5a, 0xf7, 0xc3, 0xed, 0xec, 0x55, 0xac, 0xbb, 0x6e, 0xab, 0xdb, 0xfe,
+	0x2c, 0x48, 0xe3, 0x89, 0x53, 0xc0, 0xe8, 0x0e, 0x34, 0x62, 0xe4, 0xee, 0xa4, 0xa5, 0x0b, 0x3c,
+	0x5b, 0x86, 0x77, 0x32, 0xa7, 0x1c, 0x9c, 0x03, 0xda, 0xbb, 0x60, 0x55, 0x48, 0x69, 0x13, 0x8c,
+	0x13, 0x9c, 0xc8, 0x0a, 0x64, 0x9f, 0xd5, 0xb1, 0xb4, 0xe4, 0x4c, 0x7d, 0xaa, 0xef, 0x90, 0xf6,
+	0x0e, 0xc0, 0x8c, 0xf1, 0x55, 0x48, 0xb3, 0x84, 0x64, 0xbf, 0xe8, 0x60, 0xcd, 0x92, 0x5b, 0xd4,
+	0x3d, 0x7b, 0xa5, 0xaa, 0xe4, 0xa7, 0xea, 0x88, 0x53, 0x55, 0x50, 0x4b, 0x0b, 0x72, 0x47, 0x15,
+	0xc4, 0x10, 0xd0, 0xf7, 0x17, 0x40, 0xdf, 0x9a, 0x5a, 0xfc, 0xae, 0x0b, 0xa1, 0x98, 0x6f, 0x8b,
+	0xf9, 0x82, 0xf4, 0x6a, 0x05, 0xc9, 0xdb, 0xa4, 0x0e, 0x7d, 0x75, 0x9b, 0x18, 0xa5, 0x36, 0x59,
+	0x80, 0x7f, 0x5b, 0x4a, 0xd3, 0xdd, 0x85, 0x95, 0x7e, 0x8c, 0x98, 0x62, 0x4c, 0x6f, 0x83, 0x79,
+	0xc4, 0x27, 0x42, 0xf7, 0xe9, 0x75, 0x91, 0x78, 0xf9, 0x77, 0x42, 0x7b, 0xa3, 0xbc, 0x14, 0xf9,
+	0x13, 0xa6, 0x75, 0x7f, 0x22, 0x60, 0x2a, 0x69, 0xa5, 0x7b, 0xe2, 0xb5, 0x2c, 0xcc, 0x9b, 0x6a,
+	0x42, 0xe6, 0xe4, 0xb9, 0x4d, 0xc5, 0x46, 0x45, 0x91, 0x99, 0x96, 0xa1, 0x4b, 0x52, 0x2e, 0xd1,
+	0x75, 0x71, 0x5f, 0x8c, 0xee, 0xf6, 0x61, 0x45, 0xca, 0x17, 0xdd, 0x03, 0x98, 0x89, 0x19, 0xbd,
+	0x21, 0xdc, 0x6b, 0x52, 0xdb, 0xde, 0xac, 0xad, 0xe7, 0x44, 0xbf, 0x11, 0x68, 0xe4, 0x2a, 0x76,
+	0x0b, 0xcc, 0x9e, 0xeb, 0xe6, 0xdf, 0x56, 0x31, 0xed, 0x99, 0xd9, 0xb6, 0x54, 0x72, 0x2a, 0xf9,
+	0x4f, 0xc4, 0x2b, 0xae, 0x44, 0xaa, 0x29, 0xb6, 0x4b, 0xb2, 0x55, 0x07, 0xdc, 0x16, 0xd2, 0x27,
+	0xe5, 0x52, 0x6c, 0x16, 0x72, 0x25, 0x4f, 0x58, 0x51, 0x28, 0xa6, 0x75, 0x0f, 0xc0, 0x54, 0x8a,
+	0x42, 0x1f, 0x40, 0x73, 0x1f, 0x7d, 0xef, 0x39, 0xc6, 0xe8, 0x56, 0x83, 0x96, 0xe4, 0xaa, 0xfd,
+	0x4e, 0xc1, 0x53, 0x56, 0x22, 0xa6, 0x75, 0xff, 0x25, 0xb0, 0xa2, 0xde, 0xf9, 0x7b, 0x70, 0x6d,
+	0xa6, 0x3f, 0x07, 0xc1, 0xd3, 0x90, 0x6e, 0x14, 0x95, 0xcf, 0x17, 0xdb, 0x79, 0x2b, 0x94, 0x75,
+	0x88, 0x69, 0xf4, 0xbe, 0xf8, 0x11, 0x24, 0x17, 0x55, 0x0e, 0x1b, 0xc5, 0x95, 0x5f, 0x04, 0xbd,
+	0x07, 0x56, 0x2e, 0x07, 0x2a, 0x87, 0x3c, 0xf5, 0x92, 0x44, 0x2c, 0xc6, 0xdd, 0x05, 0x6b, 0x1f,
+	0x7d, 0x9c, 0xe1, 0x2e, 0x95, 0x69, 0xf7, 0x2f, 0x02, 0xa6, 0x9a, 0x3e, 0xd9, 0xa3, 0x85, 0x79,
+	0x73, 0xc9, 0x2b, 0x2e, 0xef, 0xa0, 0xf2, 0x9a, 0x31, 0x8d, 0x3e, 0x80, 0xf5, 0x23, 0x0c, 0xdc,
+	0x39, 0x78, 0x7d, 0xba, 0x97, 0xc0, 0x7b, 0xd0, 0x74, 0x30, 0x1d, 0xc5, 0x01, 0xfe, 0x5f, 0x8a,
+	0x87, 0xbb, 0xa7, 0x67, 0xb6, 0xf6, 0xe2, 0xcc, 0xd6, 0x5e, 0x9e, 0xd9, 0xe4, 0xc7, 0xa9, 0x4d,
+	0xfe, 0x98, 0xda, 0xe4, 0xcf, 0xa9, 0x4d, 0x4e, 0xa7, 0x36, 0xf9, 0x7b, 0x6a, 0x93, 0x7f, 0xa6,
+	0xb6, 0xf6, 0x72, 0x6a, 0x93, 0x5f, 0xcf, 0x6d, 0xed, 0xf4, 0xdc, 0xd6, 0x5e, 0x9c, 0xdb, 0xda,
+	0x77, 0x8d, 0xed, 0x5d, 0x1e, 0x79, 0x4f, 0xae, 0x8a, 0x3f, 0x01, 0x77, 0xfe, 0x0b, 0x00, 0x00,
+	0xff, 0xff, 0xbc, 0xbd, 0xfa, 0x7e, 0x11, 0x0c, 0x00, 0x00,
 }
 
 func (this *HelloRequest) Equal(that interface{}) bool {
@@ -1445,6 +1401,33 @@ func (this *HelloReply) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Message != that1.Message {
+		return false
+	}
+	return true
+}
+func (this *Log) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Log)
+	if !ok {
+		that2, ok := that.(Log)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Message != that1.Message {
+		return false
+	}
+	if this.Subject != that1.Subject {
 		return false
 	}
 	return true
@@ -1557,54 +1540,6 @@ func (this *NewPaymentRequest) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *GetPaymentRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*GetPaymentRequest)
-	if !ok {
-		that2, ok := that.(GetPaymentRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Id != that1.Id {
-		return false
-	}
-	return true
-}
-func (this *DeletePaymentRequest) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*DeletePaymentRequest)
-	if !ok {
-		that2, ok := that.(DeletePaymentRequest)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Id != that1.Id {
-		return false
-	}
-	return true
-}
 func (this *PayPaymentRequest) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -1624,7 +1559,7 @@ func (this *PayPaymentRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.Id != that1.Id {
+	if this.OrderId != that1.OrderId {
 		return false
 	}
 	if this.Value != that1.Value {
@@ -1632,14 +1567,14 @@ func (this *PayPaymentRequest) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *PaymentReply) Equal(that interface{}) bool {
+func (this *RefundPaymentRequest) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*PaymentReply)
+	that1, ok := that.(*RefundPaymentRequest)
 	if !ok {
-		that2, ok := that.(PaymentReply)
+		that2, ok := that.(RefundPaymentRequest)
 		if ok {
 			that1 = &that2
 		} else {
@@ -1649,9 +1584,6 @@ func (this *PaymentReply) Equal(that interface{}) bool {
 	if that1 == nil {
 		return this == nil
 	} else if this == nil {
-		return false
-	}
-	if this.Id != that1.Id {
 		return false
 	}
 	if this.OrderId != that1.OrderId {
@@ -1662,14 +1594,14 @@ func (this *PaymentReply) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *NewStockRequest) Equal(that interface{}) bool {
+func (this *PayPaymentReply) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*NewStockRequest)
+	that1, ok := that.(*PayPaymentReply)
 	if !ok {
-		that2, ok := that.(NewStockRequest)
+		that2, ok := that.(PayPaymentReply)
 		if ok {
 			that1 = &that2
 		} else {
@@ -1681,22 +1613,22 @@ func (this *NewStockRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.Amount != that1.Amount {
+	if this.OrderId != that1.OrderId {
 		return false
 	}
-	if this.Reserved != that1.Reserved {
+	if this.Value != that1.Value {
 		return false
 	}
 	return true
 }
-func (this *AddStockRequest) Equal(that interface{}) bool {
+func (this *NewStock) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*AddStockRequest)
+	that1, ok := that.(*NewStock)
 	if !ok {
-		that2, ok := that.(AddStockRequest)
+		that2, ok := that.(NewStock)
 		if ok {
 			that1 = &that2
 		} else {
@@ -2123,6 +2055,17 @@ func (this *HelloReply) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
+func (this *Log) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&api.Log{")
+	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
+	s = append(s, "Subject: "+fmt.Sprintf("%#v", this.Subject)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *NewCustomerRequest) GoString() string {
 	if this == nil {
 		return "nil"
@@ -2167,66 +2110,45 @@ func (this *NewPaymentRequest) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *GetPaymentRequest) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 5)
-	s = append(s, "&api.GetPaymentRequest{")
-	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *DeletePaymentRequest) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 5)
-	s = append(s, "&api.DeletePaymentRequest{")
-	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
 func (this *PayPaymentRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
 	s := make([]string, 0, 6)
 	s = append(s, "&api.PayPaymentRequest{")
-	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
-	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *PaymentReply) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 7)
-	s = append(s, "&api.PaymentReply{")
-	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	s = append(s, "OrderId: "+fmt.Sprintf("%#v", this.OrderId)+",\n")
 	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *NewStockRequest) GoString() string {
+func (this *RefundPaymentRequest) GoString() string {
 	if this == nil {
 		return "nil"
 	}
 	s := make([]string, 0, 6)
-	s = append(s, "&api.NewStockRequest{")
-	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
-	s = append(s, "Reserved: "+fmt.Sprintf("%#v", this.Reserved)+",\n")
+	s = append(s, "&api.RefundPaymentRequest{")
+	s = append(s, "OrderId: "+fmt.Sprintf("%#v", this.OrderId)+",\n")
+	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *AddStockRequest) GoString() string {
+func (this *PayPaymentReply) GoString() string {
 	if this == nil {
 		return "nil"
 	}
 	s := make([]string, 0, 6)
-	s = append(s, "&api.AddStockRequest{")
+	s = append(s, "&api.PayPaymentReply{")
+	s = append(s, "OrderId: "+fmt.Sprintf("%#v", this.OrderId)+",\n")
+	s = append(s, "Value: "+fmt.Sprintf("%#v", this.Value)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *NewStock) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&api.NewStock{")
 	s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
 	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
 	s = append(s, "}")
@@ -2650,10 +2572,7 @@ var _Customer_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type PaymentClient interface {
-	NewPayment(ctx context.Context, in *NewPaymentRequest, opts ...grpc.CallOption) (*PaymentReply, error)
-	GetPayment(ctx context.Context, in *GetPaymentRequest, opts ...grpc.CallOption) (*PaymentReply, error)
-	DeletePayment(ctx context.Context, in *DeletePaymentRequest, opts ...grpc.CallOption) (*PaymentReply, error)
-	PayPayment(ctx context.Context, in *PayPaymentRequest, opts ...grpc.CallOption) (*PaymentReply, error)
+	PayPayment(ctx context.Context, in *PayPaymentRequest, opts ...grpc.CallOption) (*PayPaymentReply, error)
 }
 
 type paymentClient struct {
@@ -2664,35 +2583,8 @@ func NewPaymentClient(cc *grpc.ClientConn) PaymentClient {
 	return &paymentClient{cc}
 }
 
-func (c *paymentClient) NewPayment(ctx context.Context, in *NewPaymentRequest, opts ...grpc.CallOption) (*PaymentReply, error) {
-	out := new(PaymentReply)
-	err := c.cc.Invoke(ctx, "/api.Payment/NewPayment", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *paymentClient) GetPayment(ctx context.Context, in *GetPaymentRequest, opts ...grpc.CallOption) (*PaymentReply, error) {
-	out := new(PaymentReply)
-	err := c.cc.Invoke(ctx, "/api.Payment/GetPayment", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *paymentClient) DeletePayment(ctx context.Context, in *DeletePaymentRequest, opts ...grpc.CallOption) (*PaymentReply, error) {
-	out := new(PaymentReply)
-	err := c.cc.Invoke(ctx, "/api.Payment/DeletePayment", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *paymentClient) PayPayment(ctx context.Context, in *PayPaymentRequest, opts ...grpc.CallOption) (*PaymentReply, error) {
-	out := new(PaymentReply)
+func (c *paymentClient) PayPayment(ctx context.Context, in *PayPaymentRequest, opts ...grpc.CallOption) (*PayPaymentReply, error) {
+	out := new(PayPaymentReply)
 	err := c.cc.Invoke(ctx, "/api.Payment/PayPayment", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -2702,85 +2594,19 @@ func (c *paymentClient) PayPayment(ctx context.Context, in *PayPaymentRequest, o
 
 // PaymentServer is the server API for Payment service.
 type PaymentServer interface {
-	NewPayment(context.Context, *NewPaymentRequest) (*PaymentReply, error)
-	GetPayment(context.Context, *GetPaymentRequest) (*PaymentReply, error)
-	DeletePayment(context.Context, *DeletePaymentRequest) (*PaymentReply, error)
-	PayPayment(context.Context, *PayPaymentRequest) (*PaymentReply, error)
+	PayPayment(context.Context, *PayPaymentRequest) (*PayPaymentReply, error)
 }
 
 // UnimplementedPaymentServer can be embedded to have forward compatible implementations.
 type UnimplementedPaymentServer struct {
 }
 
-func (*UnimplementedPaymentServer) NewPayment(ctx context.Context, req *NewPaymentRequest) (*PaymentReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NewPayment not implemented")
-}
-func (*UnimplementedPaymentServer) GetPayment(ctx context.Context, req *GetPaymentRequest) (*PaymentReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPayment not implemented")
-}
-func (*UnimplementedPaymentServer) DeletePayment(ctx context.Context, req *DeletePaymentRequest) (*PaymentReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeletePayment not implemented")
-}
-func (*UnimplementedPaymentServer) PayPayment(ctx context.Context, req *PayPaymentRequest) (*PaymentReply, error) {
+func (*UnimplementedPaymentServer) PayPayment(ctx context.Context, req *PayPaymentRequest) (*PayPaymentReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PayPayment not implemented")
 }
 
 func RegisterPaymentServer(s *grpc.Server, srv PaymentServer) {
 	s.RegisterService(&_Payment_serviceDesc, srv)
-}
-
-func _Payment_NewPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NewPaymentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PaymentServer).NewPayment(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.Payment/NewPayment",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentServer).NewPayment(ctx, req.(*NewPaymentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Payment_GetPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPaymentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PaymentServer).GetPayment(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.Payment/GetPayment",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentServer).GetPayment(ctx, req.(*GetPaymentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Payment_DeletePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeletePaymentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PaymentServer).DeletePayment(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.Payment/DeletePayment",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentServer).DeletePayment(ctx, req.(*DeletePaymentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Payment_PayPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -2806,18 +2632,6 @@ var _Payment_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*PaymentServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "NewPayment",
-			Handler:    _Payment_NewPayment_Handler,
-		},
-		{
-			MethodName: "GetPayment",
-			Handler:    _Payment_GetPayment_Handler,
-		},
-		{
-			MethodName: "DeletePayment",
-			Handler:    _Payment_DeletePayment_Handler,
-		},
-		{
 			MethodName: "PayPayment",
 			Handler:    _Payment_PayPayment_Handler,
 		},
@@ -2830,8 +2644,7 @@ var _Payment_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type StockClient interface {
-	NewStock(ctx context.Context, in *NewStockRequest, opts ...grpc.CallOption) (*GetReply, error)
-	AddStock(ctx context.Context, in *AddStockRequest, opts ...grpc.CallOption) (*GetReply, error)
+	AddStock(ctx context.Context, in *NewStock, opts ...grpc.CallOption) (*GetReply, error)
 	GetArticle(ctx context.Context, in *TakeArticle, opts ...grpc.CallOption) (*GetReply, error)
 	GetStock(ctx context.Context, in *ArticleID, opts ...grpc.CallOption) (*GetStockReply, error)
 }
@@ -2844,16 +2657,7 @@ func NewStockClient(cc *grpc.ClientConn) StockClient {
 	return &stockClient{cc}
 }
 
-func (c *stockClient) NewStock(ctx context.Context, in *NewStockRequest, opts ...grpc.CallOption) (*GetReply, error) {
-	out := new(GetReply)
-	err := c.cc.Invoke(ctx, "/api.Stock/NewStock", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stockClient) AddStock(ctx context.Context, in *AddStockRequest, opts ...grpc.CallOption) (*GetReply, error) {
+func (c *stockClient) AddStock(ctx context.Context, in *NewStock, opts ...grpc.CallOption) (*GetReply, error) {
 	out := new(GetReply)
 	err := c.cc.Invoke(ctx, "/api.Stock/AddStock", in, out, opts...)
 	if err != nil {
@@ -2882,8 +2686,7 @@ func (c *stockClient) GetStock(ctx context.Context, in *ArticleID, opts ...grpc.
 
 // StockServer is the server API for Stock service.
 type StockServer interface {
-	NewStock(context.Context, *NewStockRequest) (*GetReply, error)
-	AddStock(context.Context, *AddStockRequest) (*GetReply, error)
+	AddStock(context.Context, *NewStock) (*GetReply, error)
 	GetArticle(context.Context, *TakeArticle) (*GetReply, error)
 	GetStock(context.Context, *ArticleID) (*GetStockReply, error)
 }
@@ -2892,10 +2695,7 @@ type StockServer interface {
 type UnimplementedStockServer struct {
 }
 
-func (*UnimplementedStockServer) NewStock(ctx context.Context, req *NewStockRequest) (*GetReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NewStock not implemented")
-}
-func (*UnimplementedStockServer) AddStock(ctx context.Context, req *AddStockRequest) (*GetReply, error) {
+func (*UnimplementedStockServer) AddStock(ctx context.Context, req *NewStock) (*GetReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddStock not implemented")
 }
 func (*UnimplementedStockServer) GetArticle(ctx context.Context, req *TakeArticle) (*GetReply, error) {
@@ -2909,26 +2709,8 @@ func RegisterStockServer(s *grpc.Server, srv StockServer) {
 	s.RegisterService(&_Stock_serviceDesc, srv)
 }
 
-func _Stock_NewStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NewStockRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StockServer).NewStock(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.Stock/NewStock",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StockServer).NewStock(ctx, req.(*NewStockRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Stock_AddStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddStockRequest)
+	in := new(NewStock)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2940,7 +2722,7 @@ func _Stock_AddStock_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/api.Stock/AddStock",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StockServer).AddStock(ctx, req.(*AddStockRequest))
+		return srv.(StockServer).AddStock(ctx, req.(*NewStock))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2985,10 +2767,6 @@ var _Stock_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "api.Stock",
 	HandlerType: (*StockServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "NewStock",
-			Handler:    _Stock_NewStock_Handler,
-		},
 		{
 			MethodName: "AddStock",
 			Handler:    _Stock_AddStock_Handler,
@@ -3462,6 +3240,43 @@ func (m *HelloReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *Log) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Log) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Log) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Subject)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintApi(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *NewCustomerRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -3603,62 +3418,6 @@ func (m *NewPaymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *GetPaymentRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GetPaymentRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GetPaymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Id != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Id))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *DeletePaymentRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *DeletePaymentRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *DeletePaymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Id != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Id))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *PayPaymentRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -3685,15 +3444,15 @@ func (m *PayPaymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x15
 	}
-	if m.Id != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Id))
+	if m.OrderId != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.OrderId))
 		i--
 		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *PaymentReply) Marshal() (dAtA []byte, err error) {
+func (m *RefundPaymentRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3703,12 +3462,46 @@ func (m *PaymentReply) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *PaymentReply) MarshalTo(dAtA []byte) (int, error) {
+func (m *RefundPaymentRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *PaymentReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *RefundPaymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Value != 0 {
+		i -= 4
+		encoding_binary.LittleEndian.PutUint32(dAtA[i:], uint32(math.Float32bits(float32(m.Value))))
+		i--
+		dAtA[i] = 0x15
+	}
+	if m.OrderId != 0 {
+		i = encodeVarintApi(dAtA, i, uint64(m.OrderId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *PayPaymentReply) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PayPaymentReply) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PayPaymentReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3724,15 +3517,10 @@ func (m *PaymentReply) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x10
 	}
-	if m.Id != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Id))
-		i--
-		dAtA[i] = 0x8
-	}
 	return len(dAtA) - i, nil
 }
 
-func (m *NewStockRequest) Marshal() (dAtA []byte, err error) {
+func (m *NewStock) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3742,45 +3530,12 @@ func (m *NewStockRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *NewStockRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *NewStock) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *NewStockRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Reserved != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Reserved))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.Amount != 0 {
-		i = encodeVarintApi(dAtA, i, uint64(m.Amount))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *AddStockRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AddStockRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AddStockRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *NewStock) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -4371,6 +4126,23 @@ func (m *HelloReply) Size() (n int) {
 	return n
 }
 
+func (m *Log) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	l = len(m.Subject)
+	if l > 0 {
+		n += 1 + l + sovApi(uint64(l))
+	}
+	return n
+}
+
 func (m *NewCustomerRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -4435,54 +4207,12 @@ func (m *NewPaymentRequest) Size() (n int) {
 	return n
 }
 
-func (m *GetPaymentRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Id != 0 {
-		n += 1 + sovApi(uint64(m.Id))
-	}
-	return n
-}
-
-func (m *DeletePaymentRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Id != 0 {
-		n += 1 + sovApi(uint64(m.Id))
-	}
-	return n
-}
-
 func (m *PayPaymentRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovApi(uint64(m.Id))
-	}
-	if m.Value != 0 {
-		n += 5
-	}
-	return n
-}
-
-func (m *PaymentReply) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Id != 0 {
-		n += 1 + sovApi(uint64(m.Id))
-	}
 	if m.OrderId != 0 {
 		n += 1 + sovApi(uint64(m.OrderId))
 	}
@@ -4492,22 +4222,37 @@ func (m *PaymentReply) Size() (n int) {
 	return n
 }
 
-func (m *NewStockRequest) Size() (n int) {
+func (m *RefundPaymentRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Amount != 0 {
-		n += 1 + sovApi(uint64(m.Amount))
+	if m.OrderId != 0 {
+		n += 1 + sovApi(uint64(m.OrderId))
 	}
-	if m.Reserved != 0 {
-		n += 1 + sovApi(uint64(m.Reserved))
+	if m.Value != 0 {
+		n += 5
 	}
 	return n
 }
 
-func (m *AddStockRequest) Size() (n int) {
+func (m *PayPaymentReply) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.OrderId != 0 {
+		n += 1 + sovApi(uint64(m.OrderId))
+	}
+	if m.Value != 0 {
+		n += 5
+	}
+	return n
+}
+
+func (m *NewStock) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4786,6 +4531,17 @@ func (this *HelloReply) String() string {
 	}, "")
 	return s
 }
+func (this *Log) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Log{`,
+		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
+		`Subject:` + fmt.Sprintf("%v", this.Subject) + `,`,
+		`}`,
+	}, "")
+	return s
+}
 func (this *NewCustomerRequest) String() string {
 	if this == nil {
 		return "nil"
@@ -4830,65 +4586,44 @@ func (this *NewPaymentRequest) String() string {
 	}, "")
 	return s
 }
-func (this *GetPaymentRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&GetPaymentRequest{`,
-		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *DeletePaymentRequest) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&DeletePaymentRequest{`,
-		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
-		`}`,
-	}, "")
-	return s
-}
 func (this *PayPaymentRequest) String() string {
 	if this == nil {
 		return "nil"
 	}
 	s := strings.Join([]string{`&PayPaymentRequest{`,
-		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
-		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *PaymentReply) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&PaymentReply{`,
-		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`OrderId:` + fmt.Sprintf("%v", this.OrderId) + `,`,
 		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
 		`}`,
 	}, "")
 	return s
 }
-func (this *NewStockRequest) String() string {
+func (this *RefundPaymentRequest) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&NewStockRequest{`,
-		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
-		`Reserved:` + fmt.Sprintf("%v", this.Reserved) + `,`,
+	s := strings.Join([]string{`&RefundPaymentRequest{`,
+		`OrderId:` + fmt.Sprintf("%v", this.OrderId) + `,`,
+		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
 		`}`,
 	}, "")
 	return s
 }
-func (this *AddStockRequest) String() string {
+func (this *PayPaymentReply) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&AddStockRequest{`,
+	s := strings.Join([]string{`&PayPaymentReply{`,
+		`OrderId:` + fmt.Sprintf("%v", this.OrderId) + `,`,
+		`Value:` + fmt.Sprintf("%v", this.Value) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *NewStock) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&NewStock{`,
 		`Id:` + fmt.Sprintf("%v", this.Id) + `,`,
 		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
 		`}`,
@@ -5250,6 +4985,120 @@ func (m *HelloReply) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Log) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Log: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Log: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowApi
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthApi
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthApi
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Subject = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -5668,144 +5517,6 @@ func (m *NewPaymentRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetPaymentRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GetPaymentRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetPaymentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			m.Id = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Id |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *DeletePaymentRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: DeletePaymentRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DeletePaymentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			m.Id = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Id |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
 func (m *PayPaymentRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -5837,9 +5548,9 @@ func (m *PayPaymentRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
-			m.Id = 0
+			m.OrderId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -5849,7 +5560,7 @@ func (m *PayPaymentRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint32(b&0x7F) << shift
+				m.OrderId |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -5886,7 +5597,7 @@ func (m *PayPaymentRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *PaymentReply) Unmarshal(dAtA []byte) error {
+func (m *RefundPaymentRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5909,17 +5620,17 @@ func (m *PaymentReply) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: PaymentReply: wiretype end group for non-group")
+			return fmt.Errorf("proto: RefundPaymentRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PaymentReply: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: RefundPaymentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
 			}
-			m.Id = 0
+			m.OrderId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowApi
@@ -5929,11 +5640,72 @@ func (m *PaymentReply) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint32(b&0x7F) << shift
+				m.OrderId |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+		case 2:
+			if wireType != 5 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var v uint32
+			if (iNdEx + 4) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint32(encoding_binary.LittleEndian.Uint32(dAtA[iNdEx:]))
+			iNdEx += 4
+			m.Value = float32(math.Float32frombits(v))
+		default:
+			iNdEx = preIndex
+			skippy, err := skipApi(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthApi
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PayPaymentReply) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowApi
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PayPaymentReply: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PayPaymentReply: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		case 2:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OrderId", wireType)
@@ -5985,7 +5757,7 @@ func (m *PaymentReply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *NewStockRequest) Unmarshal(dAtA []byte) error {
+func (m *NewStock) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6008,98 +5780,10 @@ func (m *NewStockRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: NewStockRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: NewStock: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: NewStockRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
-			}
-			m.Amount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Amount |= int32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Reserved", wireType)
-			}
-			m.Reserved = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowApi
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Reserved |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipApi(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthApi
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *AddStockRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowApi
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AddStockRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AddStockRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: NewStock: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6116,7 +5800,7 @@ func (m *AddStockRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint32(b&0x7F) << shift
+				m.Id |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -6273,7 +5957,7 @@ func (m *TakeArticle) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint32(b&0x7F) << shift
+				m.Id |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -6361,7 +6045,7 @@ func (m *ArticleID) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint32(b&0x7F) << shift
+				m.Id |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

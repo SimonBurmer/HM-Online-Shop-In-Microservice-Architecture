@@ -10,123 +10,85 @@ import (
 )
 
 type Server struct {
-	Nats      *nats.Conn
-	Payments  map[uint32]*api.NewPaymentRequest
-	PaymentId uint32
+	Nats     *nats.EncodedConn
+	Payments map[uint32]*api.NewPaymentRequest
 	api.UnimplementedPaymentServer
 }
 
-func (s Server) NewPayment(ctx context.Context, in *api.NewPaymentRequest) (*api.PaymentReply, error) {
+func (s *Server) NewPayment(in *api.NewPaymentRequest) {
 	log.Printf("received new payment request of: orderId: %v, value: %v", in.GetOrderId(), in.GetValue())
-	err := s.Nats.Publish("log.payment", []byte(fmt.Sprintf("received new payment request of: orderId: %v, value: %v", in.GetOrderId(), in.GetValue())))
+	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received new payment request of: orderId: %v, value: %v", in.GetOrderId(), in.GetValue()), Subject: "Payment.NewPayment"})
 	if err != nil {
 		panic(err)
 	}
 
 	// Hier evtl. überprüfen ob OrderId existiert!
 
-	s.PaymentId++ // Funktioniert nicht!!!
-	s.Payments[s.PaymentId] = in
+	s.Payments[in.GetOrderId()] = in
 
-	log.Printf("successfully created new payment: id: %v, orderId: %v, value: %v", s.PaymentId, in.GetOrderId(), in.GetValue())
-	err = s.Nats.Publish("log.payment", []byte(fmt.Sprintf("successfully created new payment: id: %v, orderId: %v, value: %v", s.PaymentId, in.GetOrderId(), in.GetValue())))
+	log.Printf("successfully created new payment: orderId: %v, value: %v", in.GetOrderId(), in.GetValue())
+	err = s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("successfully created new payment: orderId: %v, value: %v", in.GetOrderId(), in.GetValue()), Subject: "Payment.NewPayment"})
 	if err != nil {
 		panic(err)
 	}
-
-	return &api.PaymentReply{Id: s.PaymentId, OrderId: in.GetOrderId(), Value: in.GetValue()}, nil
 }
 
-func (s Server) GetPayment(ctx context.Context, in *api.GetPaymentRequest) (*api.PaymentReply, error) {
-	log.Printf("received get payment request of: Id: %v", in.GetId())
-	err := s.Nats.Publish("log.payment", []byte(fmt.Sprintf("received get payment request of: Id: %v", in.GetId())))
+func (s *Server) PayPayment(ctx context.Context, in *api.PayPaymentRequest) (*api.PayPaymentReply, error) {
+	log.Printf("received pay payment request of: orderId: %v", in.GetOrderId())
+	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received pay payment request of: orderId: %v", in.GetOrderId()), Subject: "Payment.PayPayment"})
 	if err != nil {
 		panic(err)
 	}
 
-	out, ok := s.Payments[in.GetId()]
+	out, ok := s.Payments[in.GetOrderId()]
 	if !ok {
-		// Fehlerbehandlung!!
-		err = s.Nats.Publish("log.payment", []byte(fmt.Sprintf("no payment with Id: %v", in.GetId())))
+		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no payment with orderId: %v", in.GetOrderId()), Subject: "Payment.PayPayment"})
 		if err != nil {
 			panic(err)
 		}
-		log.Fatalf("no payment with Id: %v", in.GetId())
-	}
-
-	log.Printf("successfully loaded payment of: id: %v, orderId: %v, value: %v", in.GetId(), out.GetOrderId(), out.GetValue())
-	err = s.Nats.Publish("log.payment", []byte(fmt.Sprintf("successfully loaded payment of: id: %v, orderId: %v, value: %v", in.GetId(), out.GetOrderId(), out.GetValue())))
-	if err != nil {
-		panic(err)
-	}
-
-	return &api.PaymentReply{Id: in.GetId(), OrderId: out.GetOrderId(), Value: out.GetValue()}, nil
-}
-
-func (s Server) DeletePayment(ctx context.Context, in *api.DeletePaymentRequest) (*api.PaymentReply, error) {
-	log.Printf("received delete payment request of: Id: %v", in.GetId())
-	err := s.Nats.Publish("log.payment", []byte(fmt.Sprintf("received delete payment request of: Id: %v", in.GetId())))
-	if err != nil {
-		panic(err)
-	}
-
-	out, ok := s.Payments[in.GetId()]
-	if !ok {
-		// Fehlerbehandlung!!
-		err = s.Nats.Publish("log.payment", []byte(fmt.Sprintf("no payment with Id: %v", in.GetId())))
-		if err != nil {
-			panic(err)
-		}
-		log.Fatalf("no payment with Id: %v", in.GetId())
-	}
-
-	delete(s.Payments, in.GetId())
-
-	log.Printf("successfully deleted payment of: Id: %v", in.GetId())
-	err = s.Nats.Publish("log.payment", []byte(fmt.Sprintf("successfully deleted payment of: Id: %v", in.GetId())))
-	if err != nil {
-		panic(err)
-	}
-
-	return &api.PaymentReply{Id: in.GetId(), OrderId: out.GetOrderId(), Value: out.GetValue()}, nil
-}
-
-func (s Server) PayPayment(ctx context.Context, in *api.PayPaymentRequest) (*api.PaymentReply, error) {
-	log.Printf("received pay payment request of: Id: %v", in.GetId())
-	err := s.Nats.Publish("log.payment", []byte(fmt.Sprintf("received pay payment request of: Id: %v", in.GetId())))
-	if err != nil {
-		panic(err)
-	}
-
-	out, ok := s.Payments[in.GetId()]
-	if !ok {
-		// Fehlerbehandlung!!
-		err = s.Nats.Publish("log.payment", []byte(fmt.Sprintf("no payment with Id: %v", in.GetId())))
-		if err != nil {
-			panic(err)
-		}
-		log.Fatalf("no payment with Id: %v", in.GetId())
+		log.Fatalf("no payment with orderId: %v", in.GetOrderId())
 	}
 
 	newValue := out.GetValue() - in.GetValue()
-	s.Payments[in.GetId()] = &api.NewPaymentRequest{OrderId: out.OrderId, Value: newValue}
+	s.Payments[in.GetOrderId()] = &api.NewPaymentRequest{OrderId: out.OrderId, Value: newValue}
 
 	if newValue <= 0 {
-		log.Printf("successfully payed payment of: Id: %v", in.GetId())
-		err = s.Nats.Publish("log.payment", []byte(fmt.Sprintf("successfully payed payment of: Id: %v", in.GetId())))
+		log.Printf("successfully payed payment of: orderId: %v", in.GetOrderId())
+		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("successfully payed payment of: orderId: %v", in.GetOrderId()), Subject: "Payment.PayPayment"})
 		if err != nil {
 			panic(err)
 		}
 
-		// !!! Orderservice bescheid geben !!!!!
+		// !!! Orderservice bescheidgeben !!!!!
 
 	} else {
-		log.Printf("payment of: Id: %v has %v value left to pay", in.GetId(), newValue)
-		err = s.Nats.Publish("log.payment", []byte(fmt.Sprintf("payment of: Id: %v has %v value left to pay", in.GetId(), newValue)))
+		log.Printf("payment of: orderId: %v has %v value left to pay", in.GetOrderId(), newValue)
+		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("payment of: orderId: %v has %v value left to pay", in.GetOrderId(), newValue), Subject: "Payment.PayPayment"})
 		if err != nil {
 			panic(err)
 		}
 	}
+	return &api.PayPaymentReply{OrderId: out.GetOrderId(), Value: out.GetValue()}, nil
+}
 
-	return &api.PaymentReply{Id: in.GetId(), OrderId: out.GetOrderId(), Value: out.GetValue()}, nil
+func (s *Server) RefundPayment(in *api.RefundPaymentRequest) {
+	log.Printf("received refound payment request of: orderId: %v", in.GetOrderId())
+	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received refound payment request of: orderId: %v", in.GetOrderId()), Subject: "Payment.RefundPayment"})
+	if err != nil {
+		panic(err)
+	}
+
+	out, ok := s.Payments[in.GetOrderId()]
+	if !ok {
+		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no payment with orderId: %v", in.GetOrderId()), Subject: "Payment.RefundPayment"})
+		if err != nil {
+			panic(err)
+		}
+		log.Fatalf("no payment with orderId: %v", in.GetOrderId())
+	}
+
+	newValue := out.GetValue() - in.GetValue()
+	s.Payments[in.GetOrderId()] = &api.NewPaymentRequest{OrderId: out.OrderId, Value: newValue}
+
+	log.Printf("AUSZAHLUNG PASST!!!")
 }

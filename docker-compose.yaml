@@ -3,7 +3,7 @@ services:
   # https://docs.docker.com/compose/compose-file/compose-file-v3/#environment
   # Dependencies
   redis:
-    image: "bitnami/redis:latest"
+    image: "redis"
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
 

@@ -49,10 +49,35 @@ func main() {
 		log.Fatal(err)
 	}
 	defer nc.Close()
+	c, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Erzeugt den fertigen Service
-	api.RegisterPaymentServer(s, &payment.Server{Nats: nc, Payments: make(map[uint32]*api.NewPaymentRequest), PaymentId: 0})
+	paymentServer := payment.Server{Nats: c, Payments: make(map[uint32]*api.NewPaymentRequest)}
+	api.RegisterPaymentServer(s, &paymentServer)
+
+	// Subscribt einen Nats Channel
+	newPaymentSubscription, err := c.Subscribe("payment.new", func(msg *api.NewPaymentRequest) {
+		paymentServer.NewPayment(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer newPaymentSubscription.Unsubscribe()
+
+	refundPaymentSubscription, err := c.Subscribe("payment.refund", func(msg *api.RefundPaymentRequest) {
+		paymentServer.RefundPayment(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer refundPaymentSubscription.Unsubscribe()
+
+	// Startet Server
 	err = s.Serve(lis)
+
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
