@@ -61,33 +61,58 @@ message PayPaymentRequest{
   uint32  orderId = 1;
   float  value = 2;
 }
-message RefundPaymentRequest{
-  uint32  orderId = 1;
-  float  value = 2;
-}
 
 message PayPaymentReply{
   uint32          orderId = 2;
   float           value = 3;
 }
 
+message RefundPaymentRequest{
+  uint32  orderId = 1;
+  float  value = 2;
+}
 
-
-
-
-//// Order Service //////
+///////////////////////
+//// Order Service 
+///////////////////////
+service Order {
+  rpc newOrder(NewOrderRequest) returns (OrderReply) {}
+}
+message OrderStorage{
+  uint32 customerID =1;
+  map<uint32, uint32> article = 2;
+  float totalCost = 3;
+  bool payed = 4;
+  bool shipped = 5;
+}
+message NewOrderRequest{
+  uint32 customerID =1;
+  map<uint32, uint32> article = 2;
+}
+message OrderReply{
+  uint32  orderId = 1;
+}
+message OrderPaymentUpdate{
+  uint32  orderId = 1;
+}
+message OrderShipmentUpdate{
+  uint32  orderId = 1;
+}
+message RefundOrderRequest{
+  uint32  orderId = 1;
+  map<uint32, uint32> article = 2;
+}
 
 
 ///////////////////////
 //// Stock Service 
 ///////////////////////
-
 service Stock {
   rpc AddStock(NewStock) returns (GetReply) {}
   rpc GetArticle(TakeArticle) returns (GetReply) {}
   rpc GetStock(ArticleID) returns (GetStockReply) {}
 }
-// asdfsaasdfasd
+
 
 message NewStock {
   int32 id = 1;

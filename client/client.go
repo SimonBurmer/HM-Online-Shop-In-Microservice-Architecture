@@ -10,6 +10,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/status"
 )
 
 type Client struct {
@@ -50,6 +51,7 @@ func (c *Client) scenario1() {
 	// Testen der einzelnen Komponenten
 	// 1. Customer service
 	// 2. Payment service
+	// 3. Order service
 
 	////////////////////////////
 	// Kommunikation mit Customer:
@@ -68,6 +70,7 @@ func (c *Client) scenario1() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer customer_conn.Close()
+
 	customer := api.NewCustomerClient(customer_conn)
 	customer_ctx, customer_cancel := context.WithTimeout(context.Background(), time.Second)
 	defer customer_cancel()
@@ -86,9 +89,13 @@ func (c *Client) scenario1() {
 	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
 
 	// - Kunde über ID anfordern
-	customer_r, customer_err = customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: customer_r.GetId()})
+	customer_r, customer_err = customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: 3})
 	if customer_err != nil {
-		log.Fatalf("Direct communication with customer failed: %v", customer_r)
+		st, ok := status.FromError(customer_err)
+		if !ok {
+			log.Fatalf("An unexpected error occurred: %v", customer_err)
+		}
+		log.Printf("GetCustomer failed: %v", st.Message())
 	}
 	log.Printf("Got customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
 
@@ -114,8 +121,6 @@ func (c *Client) scenario1() {
 	payment_ctx, payment_cancel := context.WithTimeout(context.Background(), time.Second)
 	defer payment_cancel()
 
-	log.Printf("test1")
-
 	// - Neues Payment erstellen
 	newPayment := &api.NewPaymentRequest{OrderId: 1, Value: 33.33}
 	err = c.Nats.Publish("payment.new", newPayment)
@@ -138,6 +143,56 @@ func (c *Client) scenario1() {
 		panic(err)
 	}
 	log.Printf("refund payment: orderId:%v, value:%v", refundPayment.GetOrderId(), refundPayment.GetValue())
+
+	////////////////////////////
+	// Kommunikation mit Order:
+	////////////////////////////
+	order_redisVal := c.Redis.Get(context.TODO(), "order")
+	if order_redisVal == nil {
+		log.Fatal("service not registered")
+	}
+	order_address, err := order_redisVal.Result()
+	if err != nil {
+		log.Fatalf("error while trying to get the result %v", err)
+	}
+	order_conn, err := grpc.Dial(order_address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer order_conn.Close()
+
+	order := api.NewOrderClient(order_conn)
+	order_ctx, order_cancel := context.WithTimeout(context.Background(), time.Second)
+	defer order_cancel()
+
+	m := make(map[uint32]uint32)
+	m[uint32(100)] = uint32(2)
+	m[uint32(100)] = uint32(1)
+
+	// Order erstellen (direkt)
+	order_r, order_err := order.NewOrder(order_ctx, &api.NewOrderRequest{CustomerID: 1, Article: m})
+	if order_err != nil {
+		log.Fatalf("Direct communication with customer failed: %v", customer_r)
+	}
+	log.Printf("created order: OrderId:%v", order_r.GetOrderId())
+
+	// Order als bezahlt markieren (indirekt)
+	paymentUpdate := &api.OrderPaymentUpdate{OrderId: 1}
+	err = c.Nats.Publish("order.payment", paymentUpdate)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("updated order payment: orderId:%v", paymentUpdate.GetOrderId())
+
+	time.Sleep(8 * time.Second)
+
+	// Order als verschifft markieren (indirekt)
+	shipmentUpdate := &api.OrderShipmentUpdate{OrderId: 1}
+	err = c.Nats.Publish("order.shipment", shipmentUpdate)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("updated order shipment: orderId:%v", paymentUpdate.GetOrderId())
 
 	time.Sleep(8 * time.Second)
 }

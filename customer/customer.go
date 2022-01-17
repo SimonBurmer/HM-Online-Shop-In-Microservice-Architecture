@@ -7,6 +7,8 @@ import (
 
 	"github.com/nats-io/nats.go"
 	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Server struct {
@@ -42,11 +44,13 @@ func (s *Server) GetCustomer(ctx context.Context, in *api.GetCustomerRequest) (*
 
 	out, ok := s.Customers[in.GetId()]
 	if !ok {
-		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no payment with Id: %v", in.GetId()), Subject: "Customer.GetCustomer"})
+		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no customer with Id: %v", in.GetId()), Subject: "Customer.GetCustomer"})
 		if err != nil {
 			panic(err)
 		}
-		log.Fatalf("no payment with Id: %v", in.GetId())
+		log.Printf("no customer with Id: %v", in.GetId())
+
+		return &api.CustomerReply{}, status.Error(codes.NotFound, "id was not found")
 	}
 
 	log.Printf("successfully loaded customer of: id: %v, name: %v, address: %v", in.GetId(), out.GetName(), out.GetAddress())

@@ -28,6 +28,7 @@ services:
     depends_on:
       - redis
       - nats 
+      - logger-service
 
   payment-service:
     build:
@@ -36,8 +37,31 @@ services:
     image: payment
     depends_on:
       - redis
-      - nats 
+      - nats
+      - logger-service 
           
+  catalog-service:
+    build:
+      context: .
+      dockerfile: catalog/service/Dockerfile
+    image: catalog
+    depends_on:
+      - redis
+      - nats
+      - logger-service  
+  
+  order-service:
+    build:
+      context: .
+      dockerfile: order/service/Dockerfile
+    image: order
+    depends_on:
+      - redis
+      - nats
+      - logger-service 
+      - payment-service
+
+
   client:
     build:
       context: .
@@ -46,14 +70,8 @@ services:
     depends_on:
       - redis
       - nats
+      - logger-service 
       - customer-service
       - catalog-service
-
-  catalog-service:
-    build:
-      context: .
-      dockerfile: catalog/service/Dockerfile
-    image: catalog
-    depends_on:
-      - redis
-      - nats 
+      - order-service
+      - payment-service

@@ -9,7 +9,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/nats-io/nats.go"
 	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
-	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/customer"
+	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/order"
 	"google.golang.org/grpc"
 )
 
@@ -34,7 +34,7 @@ func main() {
 	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "customer", "customer-service"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "order", "order-service"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -55,8 +55,27 @@ func main() {
 	}
 
 	// Erzeugt den fertigen Service
-	customerServer := customer.Server{Nats: c, Customers: make(map[uint32]*api.NewCustomerRequest), CustomerID: 0}
-	api.RegisterCustomerServer(s, &customerServer)
+	orderServer := order.Server{Nats: c,Redis: rdb, Orders: make(map[uint32]*api.OrderStorage), OrderID: 0}
+	api.RegisterOrderServer(s, &orderServer)
+
+	// Subscribt einen Nats Channel
+	newOrderSubscription, err := c.Subscribe("order.payment", func(msg *api.OrderPaymentUpdate) {
+		orderServer.OrderPaymentUpdate(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer newOrderSubscription.Unsubscribe()
+
+	refundOrderSubscription, err := c.Subscribe("order.shipment", func(msg *api.OrderShipmentUpdate) {
+		orderServer.OrderShipmentUpdate(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer refundOrderSubscription.Unsubscribe()
+
+	// Startet Server
 	err = s.Serve(lis)
 
 	if err != nil {
