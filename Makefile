@@ -5,7 +5,7 @@
 
 test:
 	@echo "------------------------------------------------------"
-	@echo "-- TEST ----------------------------------------"
+	@echo "-- TEST ----------------------------------------------"
 	@echo "------------------------------------------------------"
 	docker-compose -f docker-compose.yaml -f docker-compose.test.yaml up --abort-on-container-exit
 
