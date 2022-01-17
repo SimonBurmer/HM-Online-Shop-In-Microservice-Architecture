@@ -48,8 +48,19 @@ services:
     depends_on:
       - redis
       - nats
-      - logger-service  
-  
+      - customer-service
+      - catalog-service
+      - stock-service
+    
+  stock-service:
+    build:
+      context: .
+      dockerfile: stock/service/Dockerfile
+    image: stock
+    depends_on:
+      - redis
+      - nats 
+
   order-service:
     build:
       context: .
@@ -60,7 +71,6 @@ services:
       - nats
       - logger-service 
       - payment-service
-
 
   client:
     build:
@@ -75,3 +85,5 @@ services:
       - catalog-service
       - order-service
       - payment-service
+
+
