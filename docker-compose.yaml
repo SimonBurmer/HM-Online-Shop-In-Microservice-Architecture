@@ -49,7 +49,6 @@ services:
       - redis
       - nats
       - customer-service
-      - catalog-service
       - stock-service
     
   stock-service:
