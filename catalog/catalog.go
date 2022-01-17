@@ -78,7 +78,7 @@ func (s Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.Ca
 
 	available := s.getAvailability(ctx, in)
 
-	return &api.CatalogReplyInfo{Id: s.CatalogID, Name: out.GetName(), Description: out.GetDescription(), Price: out.GetPrice(), Avalability: available}, nil
+	return &api.CatalogReplyInfo{Id: s.CatalogID, Name: out.GetName(), Description: out.GetDescription(), Price: out.GetPrice(), Availability: available}, nil
 }
 
 func (s Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*api.CatalogReply, error) {

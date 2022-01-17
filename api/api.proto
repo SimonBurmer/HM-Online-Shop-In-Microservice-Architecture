@@ -109,7 +109,6 @@ message RefundOrderRequest{
 ///////////////////////
 service Stock {
   rpc NewStock(NewStockRequest) returns (GetReply) {}
-  rpc AddStock(AddStockRequest) returns (GetReply) {}
   rpc GetArticle(TakeArticle) returns (GetReply) {}
   rpc GetStock(ArticleID) returns (GetStockReply) {}
 }
@@ -184,7 +183,7 @@ message CatalogReplyInfo {
   string name = 2;
   string description = 3;
   double price = 4;
-  bool avalability = 5;
+  bool availability = 5;
 }
 
 message CatalogReply {

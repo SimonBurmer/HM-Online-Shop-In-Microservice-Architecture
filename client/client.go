@@ -52,6 +52,7 @@ func (c *Client) scenario1() {
 	// 1. Customer service
 	// 2. Payment service
 	// 3. Order service
+	// 4. Catalog service
 
 	////////////////////////////
 	// Kommunikation mit Customer:
@@ -195,6 +196,53 @@ func (c *Client) scenario1() {
 	log.Printf("updated order shipment: orderId:%v", paymentUpdate.GetOrderId())
 
 	time.Sleep(8 * time.Second)
+
+	////////////////////////////
+	// Kommunikation mit Payment:
+	////////////////////////////
+	// Mithilfe von Redis Verbindung zu Payment aufbauen
+
+	catalog_redisVal := c.Redis.Get(context.TODO(), "catalog")
+	if catalog_redisVal == nil {
+		log.Fatal("service not registered")
+	}
+	catalog_address, err := catalog_redisVal.Result()
+	if err != nil {
+		log.Fatalf("error while trying to get the result %v", err)
+	}
+	catalog_conn, err := grpc.Dial(catalog_address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer catalog_conn.Close()
+
+	catalog := api.NewCatalogClient(catalog_conn)
+	catalog_ctx, catalog_cancel := context.WithTimeout(context.Background(), time.Second)
+	defer catalog_cancel()
+
+	// - Neuen Eintrag erstellen
+	catalog_r, catalog_err := catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Printer123", Description: "Very good printer!", Price: 102.50})
+	if catalog_err != nil {
+		log.Fatalf("Direct communication with catalog failed: %v", catalog_r)
+	}
+	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r.GetName(), catalog_r.GetDescription(), catalog_r.GetPrice(), catalog_r.GetId())
+
+	catalog_r, catalog_err = catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Lamp", Description: "Ligths up the room", Price: 42.00})
+	if catalog_err != nil {
+		log.Fatalf("Direct communication with catalog failed: %v", catalog_r)
+	}
+	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r.GetName(), catalog_r.GetDescription(), catalog_r.GetPrice(), catalog_r.GetId())
+
+	// - Kunde über ID anfordern
+	catalog_r2, catalog_err := catalog.GetCatalogInfo(catalog_ctx, &api.GetCatalog{Id: 2})
+	if catalog_err != nil {
+		st, ok := status.FromError(catalog_err)
+		if !ok {
+			log.Fatalf("An unexpected error occurred: %v", catalog_err)
+		}
+		log.Printf("GetCatalogInfo failed: %v", st.Message())
+	}
+	log.Printf("Got catalog: Name:%v, Description:%v, Price:%v, Id:%v, Availability:%v", catalog_r2.GetName(), catalog_r2.GetDescription(), catalog_r2.GetPrice(), catalog_r2.GetId(), catalog_r2.GetAvailability())
 }
 
 func (c *Client) scenario2() {
