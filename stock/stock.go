@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/nats-io/nats.go"
 	"gitlab.lrz.de/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/api"
-	"google.golang.org/grpc"
 )
 
 type Server struct {
@@ -20,7 +18,7 @@ type Server struct {
 	api.UnimplementedStockServer
 }
 
-func (s *Server) AddStock(ctx context.Context, in *api.AddStockRequest) (*api.GetReply, error) {
+func (s *Server) AddStock(in *api.AddStockRequest) {
 	log.Printf("received new article(s) with: ID: %v, quantity: %v", in.GetId(), in.GetAmount())
 
 	err := s.Nats.Publish("log.stock", []byte(fmt.Sprintf("received new article(s) with: ID: %v, quantity: %v", in.GetId(), in.GetAmount())))
@@ -30,7 +28,7 @@ func (s *Server) AddStock(ctx context.Context, in *api.AddStockRequest) (*api.Ge
 
 	// article is already in DB
 	if val, ok := s.Stock[in.GetId()]; ok {
-		if val.GetReserved() > 0 {
+		if len(val.GetReserved()) > 0 {
 			// Send to Shipment
 			// Rest in Stock
 		}
@@ -38,7 +36,7 @@ func (s *Server) AddStock(ctx context.Context, in *api.AddStockRequest) (*api.Ge
 	} else {
 		// article is not in DB
 		s.StockID = in.GetId()
-		s.Stock[s.StockID] = &api.NewStockRequest{Amount: in.GetAmount(), Reserved: 0}
+		s.Stock[s.StockID] = &api.NewStockRequest{Amount: in.GetAmount()}
 
 	}
 	out := s.Stock[in.GetId()].Amount
@@ -47,8 +45,6 @@ func (s *Server) AddStock(ctx context.Context, in *api.AddStockRequest) (*api.Ge
 	if err != nil {
 		panic(err)
 	}
-
-	return &api.GetReply{Amount: out}, nil
 }
 
 func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetReply, error) {
@@ -68,42 +64,47 @@ func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetR
 		if err != nil {
 			panic(err)
 		}
-		s.Stock[in.GetId()].Reserved = uint32(in.GetAmount()) - uint32(out.GetAmount())
+		//TODO Shipment ID mitgeben & reserved anlegen
+		tmp := make(map[uint32]uint32)
+		tmp[1] = uint32(in.GetAmount()) - uint32(out.GetAmount())
+		s.Stock[in.GetId()].Reserved = tmp
+		//s.Stock[in.GetId()].Reserved = uint32(in.GetAmount()) - uint32(out.GetAmount())
+		/*
+			// Bestellung bei Supplier aufgeben
+			// Mithilfe von Redis Verbindung zu Supplier aufbauen
+			supplier_redisVal := s.Redis.Get(context.TODO(), "supplier")
+			if supplier_redisVal == nil {
+				log.Fatal("service not registered")
+			}
+			supplier_address, err := supplier_redisVal.Result()
+			if err != nil {
+				log.Fatalf("error while trying to get the result %v", err)
+			}
+			supplier_conn, err := grpc.Dial(supplier_address, grpc.WithInsecure(), grpc.WithBlock())
+			if err != nil {
+				log.Fatalf("did not connect: %v", err)
+			}
+			defer supplier_conn.Close()
+			supplier := api.NewSupplierClient(supplier_conn)
+			supplier_ctx, supplier_cancel := context.WithTimeout(context.Background(), time.Second)
+			defer supplier_cancel()
 
-		// Bestellung bei Supplier aufgeben
-		// Mithilfe von Redis Verbindung zu Supplier aufbauen
-		supplier_redisVal := s.Redis.Get(context.TODO(), "supplier")
-		if supplier_redisVal == nil {
-			log.Fatal("service not registered")
-		}
-		supplier_address, err := supplier_redisVal.Result()
-		if err != nil {
-			log.Fatalf("error while trying to get the result %v", err)
-		}
-		supplier_conn, err := grpc.Dial(supplier_address, grpc.WithInsecure(), grpc.WithBlock())
-		if err != nil {
-			log.Fatalf("did not connect: %v", err)
-		}
-		defer supplier_conn.Close()
-		supplier := api.NewPaymentClient(supplier_conn)
-		supplier_ctx, supplier_cancel := context.WithTimeout(context.Background(), time.Second)
-		defer supplier_cancel()
-
-		// Kommunikation mit Supplier:
-		// - Neue Nachbestellung von Artikeln
-		//TODO Methode in Supplier erstellen
-		supplier_r, supplier_err := supplier.NewPayment(supplier_ctx, &api.NewPaymentRequest{OrderId: 1, Value: 33.98})
-		if supplier_err != nil {
-			log.Fatalf("direct communication with supplier failed: %v", supplier_r)
-		}
-		log.Printf("reordered article: Id:%v, OrderId:%v, Value:%v", supplier_r.GetId(), supplier_r.GetOrderId(), supplier_r.GetValue())
-
+			// Kommunikation mit Supplier:
+			// - Neue Nachbestellung von Artikeln
+			//TODO Methode in Supplier erstellen
+			supplier_r, supplier_err := supplier.OrderSupplies(supplier_ctx, &api.NewArticles{OrderId: 0, ArticleId: in.GetId(), Amount: uint32(in.GetAmount()), NameSupplier: "unknown"})
+			if supplier_err != nil {
+				log.Fatalf("direct communication with supplier failed: %v", supplier_r)
+			}
+			log.Printf("reordered article: Id:%v, OrderId:%v, Value:%v", supplier_r.GetId(), supplier_r.GetOrderId(), supplier_r.GetValue())
+		*/
 	}
 	out.Amount = out.Amount - in.GetAmount()
 
 	return &api.GetReply{Amount: out.GetAmount()}, nil
 }
 
+// eventuell Amount zurück geben
 func (s *Server) GetStock(ctx context.Context, in *api.ArticleID) (*api.GetStockReply, error) {
 	log.Printf("received get stock request with: id: %v", in.GetId())
 
@@ -120,6 +121,9 @@ func (s *Server) GetStock(ctx context.Context, in *api.ArticleID) (*api.GetStock
 			panic(err)
 		}
 		log.Fatalf("no article with Id: %v", in.GetId())
+	}
+	if s.Stock[in.GetId()].GetAmount() <= 0 {
+		answer = false
 	}
 	return &api.GetStockReply{Answer: answer}, nil
 }

@@ -48,9 +48,13 @@ func main() {
 		log.Fatal(err)
 	}
 	defer nc.Close()
+	c, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Erzeugt den fertigen service
-	api.RegisterCatalogServer(s, &catalog.Server{Nats: nc, Catalog: make(map[uint32]*api.NewCatalog), CatalogID: 0})
+	api.RegisterCatalogServer(s, &catalog.Server{Nats: c, Catalog: make(map[uint32]*api.NewCatalog), CatalogID: 0})
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

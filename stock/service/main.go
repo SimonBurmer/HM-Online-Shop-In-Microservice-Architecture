@@ -48,9 +48,25 @@ func main() {
 		log.Fatal(err)
 	}
 	defer nc.Close()
+	c, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Erzeugt den fertigen service
-	api.RegisterStockServer(s, &stock.Server{Nats: nc, Stock: make(map[uint32]*api.NewStockRequest), StockID: 0})
+	stockServer := stock.Server{Nats: nc, Redis: rdb, Stock: make(map[uint32]*api.NewStockRequest), StockID: 0}
+	api.RegisterStockServer(s, &stockServer)
+	//api.RegisterStockServer(s, &stock.Server{Nats: nc, Redis: rdb, Stock: make(map[uint32]*api.NewStockRequest), StockID: 0})
+
+	// Subscribt einen Nats Channel
+	newStockSubscription, err := c.Subscribe("stock.add", func(msg *api.AddStockRequest) {
+		stockServer.AddStock(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer newStockSubscription.Unsubscribe()
+
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

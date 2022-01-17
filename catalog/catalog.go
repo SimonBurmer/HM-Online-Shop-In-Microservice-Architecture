@@ -14,14 +14,14 @@ import (
 )
 
 type Server struct {
-	Nats      *nats.Conn
+	Nats      *nats.EncodedConn
 	Redis     *redis.Client
 	Catalog   map[uint32]*api.NewCatalog
 	CatalogID uint32
 	api.UnimplementedCatalogServer
 }
 
-func (s Server) getAvailability(ctx context.Context, in *api.GetCatalog) (answer bool) {
+func (s *Server) getAvailability(ctx context.Context, in *api.GetCatalog) (answer bool) {
 	stock_redisVal := s.Redis.Get(context.TODO(), "stock")
 	if stock_redisVal == nil {
 		log.Fatal("service not registered")
@@ -53,7 +53,7 @@ func (s Server) getAvailability(ctx context.Context, in *api.GetCatalog) (answer
 
 }
 
-func (s Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.CatalogReplyInfo, error) {
+func (s *Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.CatalogReplyInfo, error) {
 	log.Printf("received request for the article with: id: %v", in.GetId())
 
 	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("received request for the article with: id: %v", in.GetId())))
@@ -81,7 +81,7 @@ func (s Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.Ca
 	return &api.CatalogReplyInfo{Id: s.CatalogID, Name: out.GetName(), Description: out.GetDescription(), Price: out.GetPrice(), Availability: available}, nil
 }
 
-func (s Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*api.CatalogReply, error) {
+func (s *Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*api.CatalogReply, error) {
 	log.Printf("received new catalog request of: name: %v, description: %v, price: %v", in.GetName(), in.GetDescription(), in.GetPrice())
 
 	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("received new catalog request of: name: %v, description: %v, price: %v", in.GetName(), in.GetDescription(), in.GetPrice())))
@@ -89,17 +89,25 @@ func (s Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*api
 		panic(err)
 	}
 
-	s.CatalogID++
+	s.CatalogID = s.CatalogID + 1
 	s.Catalog[s.CatalogID] = in
 	log.Printf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice())
 	err = s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice())))
 	if err != nil {
 		panic(err)
 	}
+
+	newStockEntry := &api.AddStockRequest{Id: s.CatalogID, Amount: 0}
+	err = s.Nats.Publish("stock.add", newStockEntry)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("updated stock: Id:%v", newStockEntry.GetId())
+
 	return &api.CatalogReply{Id: s.CatalogID, Name: in.GetName(), Description: in.GetDescription(), Price: in.GetPrice()}, nil
 }
 
-func (s Server) UpdateCatalog(ctx context.Context, in *api.UpdatedData) (*api.CatalogReply, error) {
+func (s *Server) UpdateCatalog(ctx context.Context, in *api.UpdatedData) (*api.CatalogReply, error) {
 	log.Printf("received update catalog request with: id: %v, name: %v, description: %v, price: %v", in.GetId(), in.GetName(), in.GetDescription(), in.GetPrice())
 
 	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("received update catalog request with: id: %v, name: %v, description: %v, price: %v", in.GetId(), in.GetName(), in.GetDescription(), in.GetPrice())))
@@ -117,7 +125,7 @@ func (s Server) UpdateCatalog(ctx context.Context, in *api.UpdatedData) (*api.Ca
 	return &api.CatalogReply{Id: s.CatalogID, Name: in.GetName(), Description: in.GetDescription(), Price: in.GetPrice()}, nil
 }
 
-func (s Server) DeleteCatalog(ctx context.Context, in *api.GetCatalog) (*api.CatalogReply, error) {
+func (s *Server) DeleteCatalog(ctx context.Context, in *api.GetCatalog) (*api.CatalogReply, error) {
 	log.Printf("received delete catalog request of: id: %v", in.GetId())
 
 	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("received delete catalog request of: id: %v", in.GetId())))
