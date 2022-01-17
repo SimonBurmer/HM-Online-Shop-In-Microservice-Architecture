@@ -70,6 +70,7 @@ services:
       - nats
       - logger-service 
       - payment-service
+      - catalog-service
 
   client:
     build:

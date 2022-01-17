@@ -29,11 +29,11 @@ func (s *Server) NewOrder(ctx context.Context, in *api.NewOrderRequest) (*api.Or
 		panic(err)
 	}
 
-	// Verbindung zu Customer herstellen
-	custoner_con := s.GetConnection("customer")
-	customer := api.NewCustomerClient(custoner_con)
+	// Verbindung zu Customer-Service aufbauen
+	customer_con := s.getConnection("customer")
+	customer := api.NewCustomerClient(customer_con)
 	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer custoner_con.Close()
+	defer customer_con.Close()
 	defer cancel()
 
 	// Überprüfen ob Customer existiert
@@ -47,17 +47,40 @@ func (s *Server) NewOrder(ctx context.Context, in *api.NewOrderRequest) (*api.Or
 		return &api.OrderReply{}, status.Error(codes.NotFound, "Given Customer was not found")
 	}
 
-	// Prüfen ob bestelle artikel in catalog
+	// Verbindung zu Catalog-Service aufbauen
+	catalog_con := s.getConnection("catalog")
+	catalog := api.NewCatalogClient(catalog_con)
+	catalog_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer catalog_con.Close()
+	defer cancel()
 
-	// gesamtsumme der bestellung von XXX
-	totalCost := 3
+	// Überprüfen ob bestellte Artikel existieren und Bestellsumme berechnen
+	var totalCost float64
+	for articleID, articleAmount := range in.GetArticles() {
+		article, catalog_err := catalog.GetCatalogInfo(catalog_ctx, &api.GetCatalog{Id: articleID})
+		if catalog_err != nil {
+			st, ok := status.FromError(customer_err)
+			if !ok {
+				log.Fatalf("An unexpected error occurred: %v", customer_err)
+			}
+			log.Printf("GetCatalogInfo failed: %v", st.Message())
+			return &api.OrderReply{}, status.Error(codes.NotFound, fmt.Sprintf("Given article was not found: articleID %v", articleID))
+		}
+		totalCost = totalCost + article.GetPrice()*float64(articleAmount)
+	}
 
+	// Neue Order abspeichern
 	s.OrderID = s.OrderID + 1
-	s.Orders[s.OrderID] = &api.OrderStorage{CustomerID: in.CustomerID, Article: in.Article, TotalCost: float32(totalCost), Payed: false, Shipped: false}
+	s.Orders[s.OrderID] = &api.OrderStorage{CustomerID: in.CustomerID, Articles: in.Articles, TotalCost: float32(totalCost), Payed: false, Shipped: false, Canceled: false}
+
+	// Neues Payment erstellen
+	NewPayment := &api.NewPaymentRequest{OrderId: s.OrderID, Value: float32(totalCost)}
+	err = s.Nats.Publish("payment.new", NewPayment)
+	if err != nil {
+		panic(err)
+	}
+
 	log.Printf("successfully created new order with orderId: %v", s.OrderID)
-
-	// Paymentservice reinstellen
-
 	return &api.OrderReply{OrderId: s.OrderID}, nil
 }
 
@@ -68,21 +91,17 @@ func (s *Server) OrderPaymentUpdate(in *api.OrderPaymentUpdate) {
 		panic(err)
 	}
 
-	out, ok := s.Orders[in.GetOrderId()]
-	if !ok {
-		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no order with orderId: %v", in.GetOrderId()), Subject: "Order.OrderPaymentUpdate"})
-		if err != nil {
-			panic(err)
-		}
-		log.Fatalf("no order with orderId: %v", in.GetOrderId())
-	}
-
-	// Checken ob schon bezaht wurde
-
+	// Order laden und auf bezahlt setzen
+	out := s.getOrder(in.GetOrderId())
 	out.Payed = true
 	s.Orders[in.GetOrderId()] = out
 
-	// Shipment reinstellen
+	// Neues Shipment erstellen
+	//NewPayment := &api.NewPaymentRequest{OrderId: s.OrderID, Value: float32(totalCost)}
+	//err = s.Nats.Publish("payment.new", NewPayment)
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	log.Printf("order with orderId %v has been payed!", in.GetOrderId())
 }
@@ -94,39 +113,105 @@ func (s *Server) OrderShipmentUpdate(in *api.OrderShipmentUpdate) {
 		panic(err)
 	}
 
-	out, ok := s.Orders[in.GetOrderId()]
-	if !ok {
-		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no order with orderId: %v", in.GetOrderId()), Subject: "Order.OrderShipmentUpdate"})
-		if err != nil {
-			panic(err)
-		}
-		log.Fatalf("no order with orderId: %v", in.GetOrderId())
-	}
-
-	// Checken ob schon verschifft wurde
-
-	if !out.Payed {
-		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Order shipped but not payed: orderId: %v", in.GetOrderId()), Subject: "Order.OrderShipmentUpdate"})
-		if err != nil {
-			panic(err)
-		}
-		log.Fatalf("Order shipped but not payed: orderId: %v", in.GetOrderId())
-	}
-
+	// Order laden und auf verschickt setzen
+	out := s.getOrder(in.GetOrderId())
 	out.Shipped = true
 	s.Orders[in.GetOrderId()] = out
-
 	log.Printf("order with orderId %v has been shipped!", in.GetOrderId())
 }
 
-func (s *Server) RefundOrderRequest(in *api.RefundOrderRequest) {
-	log.Printf("order with orderId ")
+func (s *Server) CancelOrderRequest(in *api.CancelOrderRequest) {
+	log.Printf("received cancel order request of: orderId: %v", in.GetOrderId())
+	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received cancel order request of: orderId: %v", in.GetOrderId()), Subject: "Order.CancelOrderRequest"})
+	if err != nil {
+		panic(err)
+	}
 
-	// TODO!!!
+	// Order laden (checken ob Order mit gegebener Id existiert)
+	out := s.getOrder(in.GetOrderId())
 
+	//--------------
+	log.Printf("test %v", out.GetCanceled())
+	//--------------
+	log.Printf("test1 %v", out.GetShipped())
+	//--------------
+
+	// Payment der Order stornieren
+	cancelPayment := &api.CancelPaymentRequest{OrderId: in.GetOrderId()}
+	err = s.Nats.Publish("payment.cancel", cancelPayment)
+	if err != nil {
+		panic(err)
+	}
+
+	// shipment der Order stornieren
+	//cancelPayment := &api.CancelPaymentRequest{OrderId: in.GetOrderId()}
+	//err = s.Nats.Publish("payment.cancel", cancelPayment)
+	//if err != nil {
+	//	panic(err)
+	//}
+
+	// Order als storniert markieren
+	out.Canceled = true
+	s.Orders[in.GetOrderId()] = out
+
+	log.Printf("successfully canceled order with orderId: %v", in.GetOrderId())
 }
 
-func (s *Server) GetConnection(connectTo string) *grpc.ClientConn {
+func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
+	log.Printf("received refund article request of: orderId: %v, articleId: %v", in.GetOrderId(), in.GetArticleId())
+	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received refund article request of: orderId: %v, articleId: %v", in.GetOrderId(), in.GetArticleId()), Subject: "Order.RefundArticleRequest"})
+	if err != nil {
+		panic(err)
+	}
+
+	// Order laden (checken ob Order mit gegebener Id existiert)
+	out := s.getOrder(in.GetOrderId())
+
+	//--------------
+	log.Printf("map %v", out.GetArticles())
+	//--------------
+
+	// Rücksendung aus Bestellung löschen
+	delete(out.GetArticles(), in.GetArticleId())
+
+	// Preis der Rücksendung erstatten
+	// - Verbindung zu Catalog-Service aufbauen
+	catalog_con := s.getConnection("catalog")
+	catalog := api.NewCatalogClient(catalog_con)
+	catalog_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer catalog_con.Close()
+	defer cancel()
+
+	// - Artikel-Informationen holen
+	article, catalog_err := catalog.GetCatalogInfo(catalog_ctx, &api.GetCatalog{Id: in.GetArticleId()})
+	if catalog_err != nil {
+		log.Fatalf("could not get catalog info of: articleId: %v", in.GetArticleId())
+	}
+
+	// - Verbindung zu Customer-Service aufbauen
+	customer_con := s.getConnection("customer")
+	customer := api.NewCustomerClient(customer_con)
+	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer customer_con.Close()
+	defer cancel()
+
+	// - Kunden-Informationen holen
+	customer_r, customer_err := customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: out.GetCustomerID()})
+	if customer_err != nil {
+		log.Fatalf("could not get customer of: customerId: %v", out.GetCustomerID())
+	}
+
+	// - Rückerstattung erstellen
+	refundPayment := &api.RefundPaymentRequest{OrderId: in.GetOrderId(), CustomerName: customer_r.GetName(), CustomerAddress: customer_r.GetAddress(), Value: float32(article.GetPrice())}
+	err = s.Nats.Publish("payment.refund", refundPayment)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Printf("successfully refund articleID: %v of orderId: %v", in.GetArticleId(), in.GetOrderId())
+}
+
+func (s *Server) getConnection(connectTo string) *grpc.ClientConn {
 	redisVal := s.Redis.Get(context.TODO(), connectTo)
 	if redisVal == nil {
 		log.Fatalf("service %v not registered", connectTo)
@@ -140,4 +225,17 @@ func (s *Server) GetConnection(connectTo string) *grpc.ClientConn {
 		log.Fatalf("did not connect: %v", err)
 	}
 	return conn
+}
+
+func (s *Server) getOrder(orderId uint32) *api.OrderStorage {
+	out, ok := s.Orders[orderId]
+	if !ok {
+		err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no order with orderId: %v", orderId), Subject: "Order.getOrder"})
+		if err != nil {
+			panic(err)
+		}
+		log.Fatalf("no order with orderId: %v", orderId)
+	}
+
+	return out
 }

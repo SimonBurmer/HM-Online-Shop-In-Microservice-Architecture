@@ -55,7 +55,7 @@ func main() {
 	}
 
 	// Erzeugt den fertigen Service
-	paymentServer := payment.Server{Nats: c, Payments: make(map[uint32]*api.NewPaymentRequest)}
+	paymentServer := payment.Server{Nats: c, Payments: make(map[uint32]*api.PaymentStorage)}
 	api.RegisterPaymentServer(s, &paymentServer)
 
 	// Subscribt einen Nats Channel
@@ -66,6 +66,14 @@ func main() {
 		log.Fatal("cannot subscribe")
 	}
 	defer newPaymentSubscription.Unsubscribe()
+
+	cancelPaymentSubscription, err := c.Subscribe("payment.cancel", func(msg *api.CancelPaymentRequest) {
+		paymentServer.CancelPayment(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer cancelPaymentSubscription.Unsubscribe()
 
 	refundPaymentSubscription, err := c.Subscribe("payment.refund", func(msg *api.RefundPaymentRequest) {
 		paymentServer.RefundPayment(msg)

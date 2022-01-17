@@ -55,25 +55,41 @@ func main() {
 	}
 
 	// Erzeugt den fertigen Service
-	orderServer := order.Server{Nats: c,Redis: rdb, Orders: make(map[uint32]*api.OrderStorage), OrderID: 0}
+	orderServer := order.Server{Nats: c, Redis: rdb, Orders: make(map[uint32]*api.OrderStorage), OrderID: 0}
 	api.RegisterOrderServer(s, &orderServer)
 
 	// Subscribt einen Nats Channel
-	newOrderSubscription, err := c.Subscribe("order.payment", func(msg *api.OrderPaymentUpdate) {
+	paymentUpdateSubscription, err := c.Subscribe("order.payment", func(msg *api.OrderPaymentUpdate) {
 		orderServer.OrderPaymentUpdate(msg)
 	})
 	if err != nil {
 		log.Fatal("cannot subscribe")
 	}
-	defer newOrderSubscription.Unsubscribe()
+	defer paymentUpdateSubscription.Unsubscribe()
 
-	refundOrderSubscription, err := c.Subscribe("order.shipment", func(msg *api.OrderShipmentUpdate) {
+	shipmentUpdateSubscription, err := c.Subscribe("order.shipment", func(msg *api.OrderShipmentUpdate) {
 		orderServer.OrderShipmentUpdate(msg)
 	})
 	if err != nil {
 		log.Fatal("cannot subscribe")
 	}
-	defer refundOrderSubscription.Unsubscribe()
+	defer shipmentUpdateSubscription.Unsubscribe()
+
+	cancleOrderSubscription, err := c.Subscribe("order.cancel", func(msg *api.CancelOrderRequest) {
+		orderServer.CancelOrderRequest(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer cancleOrderSubscription.Unsubscribe()
+
+	refundArticleSubscription, err := c.Subscribe("order.refund", func(msg *api.RefundArticleRequest) {
+		orderServer.RefundArticleRequest(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer refundArticleSubscription.Unsubscribe()
 
 	// Startet Server
 	err = s.Serve(lis)

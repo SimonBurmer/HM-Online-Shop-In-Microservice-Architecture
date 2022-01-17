@@ -26,17 +26,20 @@ func (c *Client) Scenarios(scenario string) {
 	}
 
 	switch scenario {
+	case "test":
+		c.test()
+
 	case "s1":
 		c.scenario1()
 	case "s2":
 		c.scenario2()
 
 	default:
-		log.Fatalf("no scenario called: %s", scenario)
 		err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no scenario called: %s", scenario), Subject: "Client.Scenarios"})
 		if err != nil {
 			panic(err)
 		}
+		log.Fatalf("no scenario called: %s", scenario)
 	}
 }
 
@@ -47,7 +50,7 @@ func (c *Client) Scenarios(scenario string) {
 // 4. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit sofortiger Ersatzlieferung.
 // 5. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit Rückbuchung des entsprechenden Teilbetrages.
 
-func (c *Client) scenario1() {
+func (c *Client) test() {
 	// Testen der einzelnen Komponenten
 	// 1. Customer service
 	// 2. Payment service
@@ -56,6 +59,7 @@ func (c *Client) scenario1() {
 	////////////////////////////
 	// Kommunikation mit Customer:
 	////////////////////////////
+
 	// Mithilfe von Redis Verbindung zu Customer aufbauen
 	customer_redisVal := c.Redis.Get(context.TODO(), "customer")
 	if customer_redisVal == nil {
@@ -134,7 +138,7 @@ func (c *Client) scenario1() {
 	if payment_err != nil {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
-	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), payment_r.GetValue())
+	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), payment_r.GetStillToPay())
 
 	// -  Payment zurückerstatten
 	refundPayment := &api.RefundPaymentRequest{OrderId: 1, Value: 33.33}
@@ -170,7 +174,7 @@ func (c *Client) scenario1() {
 	m[uint32(100)] = uint32(1)
 
 	// Order erstellen (direkt)
-	order_r, order_err := order.NewOrder(order_ctx, &api.NewOrderRequest{CustomerID: 1, Article: m})
+	order_r, order_err := order.NewOrder(order_ctx, &api.NewOrderRequest{CustomerID: 1, Articles: m})
 	if order_err != nil {
 		log.Fatalf("Direct communication with customer failed: %v", customer_r)
 	}
@@ -197,12 +201,12 @@ func (c *Client) scenario1() {
 	time.Sleep(8 * time.Second)
 }
 
-func (c *Client) scenario2() {
-	// Standartfall: Kund Bestellt lagernde Produkte
-	// 1. Kunde erstellen
-	// 2. Bestellung erstellen
-	// 3. Auf Versandbestätigung warten
+func (c *Client) scenario1() {
 
-	log.Printf("Send xx to xx")
+}
+func (c *Client) scenario2() {
+
+}
+func (c *Client) scenario3() {
 
 }
