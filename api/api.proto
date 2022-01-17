@@ -117,14 +117,13 @@ message RefundArticleRequest{
 ///////////////////////
 service Stock {
   rpc NewStock(NewStockRequest) returns (GetReply) {}
-  rpc AddStock(AddStockRequest) returns (GetReply) {}
   rpc GetArticle(TakeArticle) returns (GetReply) {}
   rpc GetStock(ArticleID) returns (GetStockReply) {}
 }
 
 message NewStockRequest {
   int32 amount = 1;
-  uint32 reserved = 2;
+  map<uint32, uint32> reserved = 2;
 }
 
 message AddStockRequest {
@@ -161,8 +160,10 @@ service Supplier {
 }
 
 message NewArticles {
-  uint32 id = 1;
-  uint32 amount = 2;
+  uint32 orderId = 1;
+  uint32 articleId = 2;
+  uint32 amount = 3;
+  string nameSupplier = 4;
 }
 
 message GetSupplierReply {
@@ -175,7 +176,7 @@ message GetSupplierReply {
 //////////////////////
 
 service Catalog {
-  rpc GetCatalogInfo(GetCatalog) returns (CatalogReply) {}
+  rpc GetCatalogInfo(GetCatalog) returns (CatalogReplyInfo) {}
   rpc NewCatalogArticle(NewCatalog) returns (CatalogReply) {}
   rpc UpdateCatalog(UpdatedData) returns(CatalogReply) {}
   rpc DeleteCatalog(GetCatalog) returns (CatalogReply) {}
@@ -183,6 +184,14 @@ service Catalog {
 
 message GetCatalog {
   uint32 id = 1;
+}
+
+message CatalogReplyInfo {
+  uint32 id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+  bool availability = 5;
 }
 
 message CatalogReply {
@@ -217,8 +226,9 @@ service Shipment {
 }
 
 message NewShipmentRequest {
-  map<uint32, uint32> articles = 1;
-  map<uint32, bool> ready = 2;
+  uint32 orderID = 1;
+  map<uint32, uint32> articles = 2;
+  map<uint32, bool> ready = 3;
 }
 
 message ShipmentReply {
