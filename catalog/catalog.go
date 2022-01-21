@@ -21,25 +21,36 @@ type Server struct {
 	api.UnimplementedCatalogServer
 }
 
-func (s *Server) getAvailability(ctx context.Context, in *api.GetCatalog) (answer bool) {
-	stock_redisVal := s.Redis.Get(context.TODO(), "stock")
+func (s *Server) GetAvailability(ctx context.Context, in *api.GetCatalog) (answer bool) {
+	log.Printf("availability check: id:%v", in.GetId())
+	msg := "stock"
+	log.Printf("availability test 1.1")
+	cnx := context.TODO()
+	log.Printf("availability test 1.1.1")
+	stock_redisVal := s.Redis.Get(cnx, msg)
+	log.Printf("availability test 1.2")
 	if stock_redisVal == nil {
 		log.Fatal("service not registered")
 	}
+	log.Printf("availability test 1.3")
 	stock_address, err := stock_redisVal.Result()
 	if err != nil {
 		log.Fatalf("error while trying to get the result %v", err)
 	}
+	log.Printf("availability test 2")
 	stock_conn, err := grpc.Dial(stock_address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
+	log.Printf("availability test 3")
 	defer stock_conn.Close()
 	stock := api.NewStockClient(stock_conn)
 	stock_ctx, stock_cancel := context.WithTimeout(context.Background(), time.Second)
+	log.Printf("availability test 4")
 	defer stock_cancel()
-
+	log.Printf("before GetStock")
 	stock_r, stock_err := stock.GetStock(stock_ctx, &api.ArticleID{Id: in.GetId()})
+	log.Printf("directly after GetStock")
 	if stock_err != nil {
 		st, ok := status.FromError(stock_err)
 		if !ok {
@@ -76,7 +87,7 @@ func (s *Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.C
 		panic(err)
 	}
 
-	available := s.getAvailability(ctx, in)
+	available := s.GetAvailability(ctx, in)
 
 	return &api.CatalogReplyInfo{Id: s.CatalogID, Name: out.GetName(), Description: out.GetDescription(), Price: out.GetPrice(), Availability: available}, nil
 }

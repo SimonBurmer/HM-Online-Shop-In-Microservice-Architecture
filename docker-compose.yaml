@@ -72,6 +72,27 @@ services:
       - payment-service
       - catalog-service
 
+  shipment-service:
+    build:
+      context: .
+      dockerfile: shipment/service/Dockerfile
+    image: shipment
+    depends_on:
+      - redis
+      - nats 
+      - order-service
+      - stock-service
+
+  supplier-service:
+    build:
+      context: .
+      dockerfile: supplier/service/Dockerfile
+    image: supplier
+    depends_on:
+      - redis
+      - nats 
+      - stock-service
+
   client:
     build:
       context: .
@@ -85,5 +106,8 @@ services:
       - catalog-service
       - order-service
       - payment-service
+      - stock-service
+      - shipment-service
+      - supplier-service
 
 

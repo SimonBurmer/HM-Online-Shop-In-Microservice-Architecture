@@ -11,7 +11,7 @@ import (
 )
 
 type Server struct {
-	Nats    *nats.Conn
+	Nats    *nats.EncodedConn
 	Redis   *redis.Client
 	Stock   map[uint32]*api.NewStockRequest
 	StockID uint32
@@ -27,12 +27,37 @@ func (s *Server) AddStock(in *api.AddStockRequest) {
 	}
 
 	// article is already in DB
+	amount := in.GetAmount()
 	if val, ok := s.Stock[in.GetId()]; ok {
+
+		// Send to Shipment
 		if len(val.GetReserved()) > 0 {
-			// Send to Shipment
-			// Rest in Stock
+			// delete könnte Fehler schmeißen -> out of range
+			for key, value := range val.GetReserved() {
+				if amount >= int32(value) {
+					UpdateShipment := &api.ShipmentReadiness{Id: key, ArticleId: in.GetId(), Amount: value}
+					err = s.Nats.Publish("shipment.articles", UpdateShipment)
+					if err != nil {
+						panic(err)
+					}
+					amount = amount - int32(value)
+					delete(s.Stock[in.GetId()].GetReserved(), key)
+				} else {
+					value = uint32(in.GetAmount()) - value
+					UpdateShipment := &api.ShipmentReadiness{Id: key, ArticleId: in.GetId(), Amount: uint32(amount)}
+					err = s.Nats.Publish("shipment.articles", UpdateShipment)
+					if err != nil {
+						panic(err)
+					}
+					s.Stock[in.GetId()].Reserved[key] = value
+					amount = 0
+					break
+				}
+			}
+
 		}
-		s.Stock[in.GetId()].Amount = val.Amount + in.GetAmount()
+		// Rest in Stock
+		s.Stock[in.GetId()].Amount = val.Amount + amount
 	} else {
 		// article is not in DB
 		s.StockID = in.GetId()
@@ -48,60 +73,40 @@ func (s *Server) AddStock(in *api.AddStockRequest) {
 }
 
 func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetReply, error) {
-	log.Printf("received get article request of: id: %v, amount: %v", in.GetId(), in.GetAmount())
+	log.Printf("received get article request of: id: %v, amount: %v, shipmentID: %v", in.GetId(), in.GetAmount(), in.GetShipmentId())
 
-	err := s.Nats.Publish("log.stock", []byte(fmt.Sprintf("received get article request of: id: %v, amount: %v", in.GetId(), in.GetAmount())))
+	err := s.Nats.Publish("log.stock", []byte(fmt.Sprintf("received get article request of: id: %v, amount: %v, shipmentID: %v", in.GetId(), in.GetAmount(), in.GetShipmentId())))
 	if err != nil {
 		panic(err)
 	}
 
 	out := s.Stock[in.GetId()]
-	s.Stock[in.GetId()].Amount = out.Amount - in.GetAmount()
-	if out.Amount-in.GetAmount() < 0 {
+	articleAmount := out.GetAmount() - in.GetAmount()
+
+	if articleAmount < 0 {
 
 		log.Printf("not enough stock available: id: %v, amount: %v", in.GetId(), in.GetAmount())
 		err = s.Nats.Publish("log.stock", []byte(fmt.Sprintf("not enough stock available: id: %v, amount: %v", in.GetId(), in.GetAmount())))
 		if err != nil {
 			panic(err)
 		}
-		//TODO Shipment ID mitgeben & reserved anlegen
-		tmp := make(map[uint32]uint32)
-		tmp[1] = uint32(in.GetAmount()) - uint32(out.GetAmount())
-		s.Stock[in.GetId()].Reserved = tmp
-		//s.Stock[in.GetId()].Reserved = uint32(in.GetAmount()) - uint32(out.GetAmount())
-		/*
-			// Bestellung bei Supplier aufgeben
-			// Mithilfe von Redis Verbindung zu Supplier aufbauen
-			supplier_redisVal := s.Redis.Get(context.TODO(), "supplier")
-			if supplier_redisVal == nil {
-				log.Fatal("service not registered")
-			}
-			supplier_address, err := supplier_redisVal.Result()
-			if err != nil {
-				log.Fatalf("error while trying to get the result %v", err)
-			}
-			supplier_conn, err := grpc.Dial(supplier_address, grpc.WithInsecure(), grpc.WithBlock())
-			if err != nil {
-				log.Fatalf("did not connect: %v", err)
-			}
-			defer supplier_conn.Close()
-			supplier := api.NewSupplierClient(supplier_conn)
-			supplier_ctx, supplier_cancel := context.WithTimeout(context.Background(), time.Second)
-			defer supplier_cancel()
+		s.Stock[in.GetId()].Reserved[in.GetShipmentId()] = uint32(in.GetAmount()) - uint32(out.GetAmount())
+		s.Stock[in.GetId()].Amount = 0
 
-			// Kommunikation mit Supplier:
-			// - Neue Nachbestellung von Artikeln
-			//TODO Methode in Supplier erstellen
-			supplier_r, supplier_err := supplier.OrderSupplies(supplier_ctx, &api.NewArticles{OrderId: 0, ArticleId: in.GetId(), Amount: uint32(in.GetAmount()), NameSupplier: "unknown"})
-			if supplier_err != nil {
-				log.Fatalf("direct communication with supplier failed: %v", supplier_r)
-			}
-			log.Printf("reordered article: Id:%v, OrderId:%v, Value:%v", supplier_r.GetId(), supplier_r.GetOrderId(), supplier_r.GetValue())
-		*/
+		// Bestellung der fehlenden Artikel beim Supplier
+		neededAmount := articleAmount * (-1)
+		NewOrderSupplier := &api.OrderArticleRequest{ArticleId: in.GetId(), Amount: uint32(neededAmount)}
+		err = s.Nats.Publish("supplier.order", NewOrderSupplier)
+		if err != nil {
+			panic(err)
+		}
+		return &api.GetReply{Amount: out.GetAmount()}, nil
+
 	}
-	out.Amount = out.Amount - in.GetAmount()
 
-	return &api.GetReply{Amount: out.GetAmount()}, nil
+	s.Stock[in.GetId()].Amount = articleAmount
+
+	return &api.GetReply{Amount: in.GetAmount()}, nil
 }
 
 // eventuell Amount zurück geben
@@ -126,4 +131,8 @@ func (s *Server) GetStock(ctx context.Context, in *api.ArticleID) (*api.GetStock
 		answer = false
 	}
 	return &api.GetStockReply{Answer: answer}, nil
+}
+
+func (s *Server) CancelReserved(in *api.CancelReservedRequest) {
+	delete(s.Stock[in.GetId()].GetReserved(), in.GetShipmentId())
 }
