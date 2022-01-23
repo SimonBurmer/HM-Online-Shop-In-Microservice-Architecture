@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	port = ":50057"
+	port = ":50056"
 )
 
 func main() {
@@ -33,7 +33,7 @@ func main() {
 	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "stock", "host.docker.internal"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "stock", "stock-service"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -54,7 +54,7 @@ func main() {
 	}
 
 	// Erzeugt den fertigen service
-	stockServer := stock.Server{Nats: nc, Redis: rdb, Stock: make(map[uint32]*api.NewStockRequest), StockID: 0}
+	stockServer := stock.Server{Nats: c, Redis: rdb, Stock: make(map[uint32]*api.NewStockRequest), StockID: 0}
 	api.RegisterStockServer(s, &stockServer)
 	//api.RegisterStockServer(s, &stock.Server{Nats: nc, Redis: rdb, Stock: make(map[uint32]*api.NewStockRequest), StockID: 0})
 
@@ -66,6 +66,14 @@ func main() {
 		log.Fatal("cannot subscribe")
 	}
 	defer newStockSubscription.Unsubscribe()
+
+	cancelReservedSubscription, err := c.Subscribe("stock.cancel", func(msg *api.CancelReservedRequest) {
+		stockServer.CancelReserved(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer cancelReservedSubscription.Unsubscribe()
 
 	err = s.Serve(lis)
 	if err != nil {

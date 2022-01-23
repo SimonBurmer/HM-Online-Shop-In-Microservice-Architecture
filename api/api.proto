@@ -138,6 +138,7 @@ message GetReply {
 message TakeArticle {
   uint32 id = 1;
   int32 amount = 2;
+  uint32 shipmentId = 3;
 }
 
 message ArticleID {
@@ -148,6 +149,11 @@ message GetStockReply {
   bool answer = 1;
 }
 
+message CancelReservedRequest {
+  uint32 id = 1;
+  uint32 shipmentId = 2;
+}
+
 
 ///////////////////////
 //// Supplier Service
@@ -156,7 +162,13 @@ message GetStockReply {
 // work in progress
 service Supplier {
   rpc DeliveredArticle(NewArticles) returns (GetSupplierReply) {}
-  
+  rpc OrderArticle(OrderArticleRequest) returns (SupplierName) {}
+}
+
+message OrderArticleRequest {
+  uint32 orderId = 1;
+  uint32 articleId = 2;
+  uint32 amount = 3;
 }
 
 message NewArticles {
@@ -168,6 +180,10 @@ message NewArticles {
 
 message GetSupplierReply {
   string answer = 1;
+}
+
+message SupplierName {
+  string name = 1;
 }
 
 
@@ -220,7 +236,6 @@ message UpdatedData {
 ////////////////////////
 
 service Shipment {
- rpc NewShipment(NewShipmentRequest) returns (ShipmentReply) {}
  rpc SendShipment(GetShipmentRequest) returns (ShipmentReply) {}
  rpc ReturnedShipment(GetShipmentRequest) returns (ShipmentReply) {}
 }
@@ -228,17 +243,36 @@ service Shipment {
 message NewShipmentRequest {
   uint32 orderID = 1;
   map<uint32, uint32> articles = 2;
-  map<uint32, bool> ready = 3;
+  map<uint32, uint32> ready = 3;
+  string address = 4;
 }
 
 message ShipmentReply {
   uint32 id = 1;
   map<uint32, uint32> articles = 2;
-  map<uint32, bool> ready = 3;
+  map<uint32, uint32> ready = 3;
 }
 
 message GetShipmentRequest {
   uint32 id = 1;
   map<uint32, uint32> articles = 2;
-  map<uint32, bool> ready = 3;
+  map<uint32, uint32> ready = 3;
 }
+
+message ShipmentReadiness {
+  uint32 id = 1;
+  uint32 articleId = 2;
+  uint32 amount = 3;
+}
+
+message OrderID {
+  uint32 id = 1;
+}
+
+message ShipmentReturnRequest {
+  uint32 id = 1;
+  uint32 articleId = 2;
+  uint32 amount = 3;
+}
+
+

@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	port = ":50059"
+	port = ":50056"
 )
 
 func main() {
@@ -26,14 +26,14 @@ func main() {
 
 	// Verbindung zu Redis
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "host.docker.internal:6379",
+		Addr:     "redis:6379",
 		Password: "", // no password set
 	})
 
 	// Registration im Redis
 	go func() {
 		for {
-			err = rdb.Set(context.TODO(), "supplier", "host.docker.internal"+port, 13*time.Second).Err()
+			err = rdb.Set(context.TODO(), "supplier", "supplier-service"+port, 13*time.Second).Err()
 			if err != nil {
 				panic(err)
 			}
@@ -43,14 +43,28 @@ func main() {
 	}()
 
 	// Verbindung zu NATS
-	nc, err := nats.Connect("host.docker.internal:4222")
+	nc, err := nats.Connect("nats:4222")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer nc.Close()
+	c, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Erzeugt den fertigen service
-	api.RegisterSupplierServer(s, &supplier.Server{Nats: nc, Supplie: make(map[uint32]uint32), SupplieID: 0})
+	supplierServer := supplier.Server{Nats: c, Supplier: make(map[uint32]*api.NewArticles), SupplierID: 0}
+	api.RegisterSupplierServer(s, &supplierServer)
+
+	newOrderSupplier, err := c.Subscribe("supplier.order", func(msg *api.OrderArticleRequest) {
+		supplierServer.OrderSupplies(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer newOrderSupplier.Unsubscribe()
+
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
