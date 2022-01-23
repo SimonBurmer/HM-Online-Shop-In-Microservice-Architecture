@@ -80,10 +80,10 @@ func (s *Server) SendShipment(ctx context.Context, in *api.GetShipmentRequest) (
 	if err != nil {
 		panic(err)
 	}
-
+	address := s.Shipment[in.GetId()].GetAddress()
 	// Get Adresse Customer
 	// Anbindung an API
-	return &api.ShipmentReply{Id: in.GetId(), Articles: in.GetArticles(), Ready: in.GetReady()}, nil
+	return &api.ShipmentReply{Id: in.GetId(), Articles: in.GetArticles(), Ready: in.GetReady(), Address: address}, nil
 }
 
 func (s *Server) Cancellation(in *api.OrderID) {

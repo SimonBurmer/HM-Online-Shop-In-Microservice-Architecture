@@ -13,7 +13,7 @@ import (
 type Server struct {
 	Nats       *nats.EncodedConn
 	Redis      *redis.Client
-	Supplier   map[uint32]*api.NewArticles
+	Supplier   map[uint32]*api.SupplierStorage
 	SupplierID uint32
 	api.UnimplementedSupplierServer
 }
@@ -46,7 +46,7 @@ func (s *Server) DeliveredArticle(ctx context.Context, in *api.NewArticles) (*ap
 	}
 	log.Printf("Articles send to Stock: Id: %v, Amount: %v", in.GetArticleId(), in.GetAmount())
 
-	return &api.GetSupplierReply{Answer: "ok"}, nil
+	return &api.GetSupplierReply{OrderId: in.GetOrderId(), ArticleId: in.GetArticleId(), Amount: in.GetAmount(), NameSupplier: in.GetNameSupplier()}, nil
 }
 
 // asynchron aufgerufene Funktion
@@ -57,11 +57,15 @@ func (s *Server) OrderSupplies(in *api.OrderArticleRequest) {
 		panic(err)
 	}
 
-	s.SupplierID++
-	s.Supplier[s.SupplierID].Amount = in.GetAmount()
-	s.Supplier[s.SupplierID].ArticleId = in.GetArticleId()
+	s.SupplierID = s.SupplierID + 1
+	log.Printf("new supplier ID")
+	s.Supplier[s.SupplierID] = &api.SupplierStorage{ArticleId: in.GetArticleId(), Amount: in.GetAmount()}
+	log.Printf("Article Id has been stored: %v", s.Supplier[s.SupplierID].GetArticleId())
+
 	// TODO
-	//s.Supplier[s.SupplierID].NameSupplier = s.OrderArticle(context.TODO(), in);
+	name, _ := s.OrderArticle(context.TODO(), in)
+	s.Supplier[s.SupplierID] = &api.SupplierStorage{NameSupplier: name.GetName()}
+	log.Printf("Sucessfully ordered article(s) with: id: %v, amount: %v, name supplier: %v", in.GetArticleId(), in.GetAmount(), name.GetName())
 
 }
 

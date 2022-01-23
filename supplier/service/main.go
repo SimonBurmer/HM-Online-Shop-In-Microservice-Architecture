@@ -54,7 +54,7 @@ func main() {
 	}
 
 	// Erzeugt den fertigen service
-	supplierServer := supplier.Server{Nats: c, Supplier: make(map[uint32]*api.NewArticles), SupplierID: 0}
+	supplierServer := supplier.Server{Nats: c, Supplier: make(map[uint32]*api.SupplierStorage), SupplierID: 0}
 	api.RegisterSupplierServer(s, &supplierServer)
 
 	newOrderSupplier, err := c.Subscribe("supplier.order", func(msg *api.OrderArticleRequest) {

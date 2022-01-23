@@ -90,12 +90,15 @@ func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetR
 		if err != nil {
 			panic(err)
 		}
-		s.Stock[in.GetId()].Reserved[in.GetShipmentId()] = uint32(in.GetAmount()) - uint32(out.GetAmount())
-		s.Stock[in.GetId()].Amount = 0
+
+		m := make(map[uint32]uint32)
+		m[in.GetShipmentId()] = (uint32(in.GetAmount()) - uint32(out.GetAmount()))
+		s.Stock[s.StockID] = &api.NewStockRequest{Amount: 0, Reserved: m}
 
 		// Bestellung der fehlenden Artikel beim Supplier
 		neededAmount := articleAmount * (-1)
-		NewOrderSupplier := &api.OrderArticleRequest{ArticleId: in.GetId(), Amount: uint32(neededAmount)}
+		log.Printf("ordering articles: id: %v, amount: %v", in.GetId(), neededAmount)
+		NewOrderSupplier := &api.OrderArticleRequest{ArticleId: in.GetId(), Amount: uint32(neededAmount), OrderId: in.GetShipmentId()}
 		err = s.Nats.Publish("supplier.order", NewOrderSupplier)
 		if err != nil {
 			panic(err)
