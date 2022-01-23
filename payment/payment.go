@@ -81,7 +81,7 @@ func (s *Server) CancelPayment(in *api.CancelPaymentRequest) {
 
 	// Bereits bezahlte Summe der Order Zurückerstatten
 	if out.GetValue() > 0 {
-		log.Printf("completely refound payment of: orderId: %v", in.GetOrderId())
+		log.Printf("completely refound payment of: orderId: %v ordervalue: %v", in.GetOrderId(), out.GetValue())
 		s.RefundPayment(&api.RefundPaymentRequest{OrderId: out.OrderId, CustomerName: in.GetCustomerName(), CustomerAddress: in.GetCustomerAddress(), Value: out.GetValue()})
 	}
 
@@ -109,7 +109,7 @@ func (s *Server) RefundPayment(in *api.RefundPaymentRequest) {
 	s.Payments[in.GetOrderId()] = &api.PaymentStorage{OrderId: out.OrderId, Value: newValue, Canceled: false}
 
 	// Refund-Betrag zurückzahlen
-	log.Printf("successfully refund value: %v  to customer %v %v of orderID: %v", in.GetValue(), in.GetCustomerName(), in.GetCustomerAddress(), in.GetOrderId())
+	log.Printf("successfully refund value: %v to customer %v %v of orderID: %v", in.GetValue(), in.GetCustomerName(), in.GetCustomerAddress(), in.GetOrderId())
 	err = s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("successfully refund value: %v  to customer %v %v of orderID: %v", in.GetValue(), in.GetCustomerName(), in.GetCustomerAddress(), in.GetOrderId()), Subject: "Payment.RefundPayment"})
 	if err != nil {
 		panic(err)

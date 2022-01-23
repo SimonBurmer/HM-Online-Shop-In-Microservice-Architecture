@@ -130,14 +130,21 @@ func (s *Server) CancelOrderRequest(in *api.CancelOrderRequest) {
 	// Order laden (checken ob Order mit gegebener Id existiert)
 	out := s.getOrder(in.GetOrderId())
 
-	//--------------
-	log.Printf("test %v", out.GetCanceled())
-	//--------------
-	log.Printf("test1 %v", out.GetShipped())
-	//--------------
+	// - Verbindung zu Customer-Service aufbauen
+	customer_con := s.getConnection("customer")
+	customer := api.NewCustomerClient(customer_con)
+	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer customer_con.Close()
+	defer cancel()
+
+	// - Kunden-Informationen holen
+	customer_r, customer_err := customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: out.GetCustomerID()})
+	if customer_err != nil {
+		log.Fatalf("could not get customer of: customerId: %v", out.GetCustomerID())
+	}
 
 	// Payment der Order stornieren
-	cancelPayment := &api.CancelPaymentRequest{OrderId: in.GetOrderId()}
+	cancelPayment := &api.CancelPaymentRequest{OrderId: in.GetOrderId(), CustomerName: customer_r.GetName(), CustomerAddress: customer_r.GetAddress()}
 	err = s.Nats.Publish("payment.cancel", cancelPayment)
 	if err != nil {
 		panic(err)
@@ -167,9 +174,7 @@ func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
 	// Order laden (checken ob Order mit gegebener Id existiert)
 	out := s.getOrder(in.GetOrderId())
 
-	//--------------
-	log.Printf("map %v", out.GetArticles())
-	//--------------
+	// TODO: Überprüfen ob article teil der bestellung!!!
 
 	// Rücksendung aus Bestellung löschen
 	delete(out.GetArticles(), in.GetArticleId())

@@ -50,7 +50,7 @@ func (s *Server) GetCustomer(ctx context.Context, in *api.GetCustomerRequest) (*
 		}
 		log.Printf("no customer with Id: %v", in.GetId())
 
-		return &api.CustomerReply{}, status.Error(codes.NotFound, "id was not found")
+		return &api.CustomerReply{}, status.Error(codes.NotFound, fmt.Sprintf("id: %v  was not found", in.GetId()))
 	}
 
 	log.Printf("successfully loaded customer of: id: %v, name: %v, address: %v", in.GetId(), out.GetName(), out.GetAddress())

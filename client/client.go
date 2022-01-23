@@ -93,8 +93,17 @@ func (c *Client) test() {
 	}
 	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
 
-	// - Kunde über ID anfordern
-	customer_r, customer_err = customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: 3})
+	// - Kunde über ID anfordern die nicht existiert
+	_, customer_err = customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: 3})
+	if customer_err != nil {
+		st, ok := status.FromError(customer_err)
+		if !ok {
+			log.Fatalf("An unexpected error occurred: %v", customer_err)
+		}
+		log.Printf("GetCustomer failed: %v", st.Message())
+	}
+
+	customer_r, customer_err = customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: 1})
 	if customer_err != nil {
 		st, ok := status.FromError(customer_err)
 		if !ok {
@@ -134,12 +143,20 @@ func (c *Client) test() {
 	}
 	log.Printf("created payment: orderId:%v, value:%v", newPayment.GetOrderId(), newPayment.GetValue())
 
-	// - Payment bezahlen
-	payment_r, payment_err := payment.PayPayment(payment_ctx, &api.PayPaymentRequest{OrderId: newPayment.OrderId, Value: 33.98})
+	// - Payment bezahlen (nicht komplett)
+	payment_r, payment_err := payment.PayPayment(payment_ctx, &api.PayPaymentRequest{OrderId: newPayment.OrderId, Value: 10})
 	if payment_err != nil {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
 	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), payment_r.GetStillToPay())
+
+	// - Payment stornieren
+	cancelPayment := &api.CancelPaymentRequest{OrderId: 1, CustomerName: "Name1", CustomerAddress: "straße2"}
+	err = c.Nats.Publish("payment.cancel", cancelPayment)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("cancel payment: orderId:%v", cancelPayment.GetOrderId())
 
 	// -  Payment zurückerstatten
 	refundPayment := &api.RefundPaymentRequest{OrderId: 1, Value: 33.33}
@@ -148,6 +165,52 @@ func (c *Client) test() {
 		panic(err)
 	}
 	log.Printf("refund payment: orderId:%v, value:%v", refundPayment.GetOrderId(), refundPayment.GetValue())
+
+	////////////////////////////
+	// Kommunikation mit Catalog:
+	////////////////////////////
+	// Mithilfe von Redis Verbindung zu Catalog aufbauen
+
+	catalog_redisVal := c.Redis.Get(context.TODO(), "catalog")
+	if catalog_redisVal == nil {
+		log.Fatal("service not registered")
+	}
+	catalog_address, err := catalog_redisVal.Result()
+	if err != nil {
+		log.Fatalf("error while trying to get the result %v", err)
+	}
+	catalog_conn, err := grpc.Dial(catalog_address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer catalog_conn.Close()
+
+	catalog := api.NewCatalogClient(catalog_conn)
+	catalog_ctx, catalog_cancel := context.WithTimeout(context.Background(), time.Second)
+	defer catalog_cancel()
+
+	// - Neuen Artikel hinzufügen
+	catalog_r, catalog_err := catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Printer123", Description: "Very good printer!", Price: 102.50})
+	if catalog_err != nil {
+		log.Fatalf("Direct communication with catalog failed: %v", catalog_r)
+	}
+	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r.GetName(), catalog_r.GetDescription(), catalog_r.GetPrice(), catalog_r.GetId())
+	catalog_r, catalog_err = catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Lamp", Description: "Ligths up the room", Price: 42.00})
+	if catalog_err != nil {
+		log.Fatalf("Direct communication with catalog failed: %v", catalog_r)
+	}
+	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r.GetName(), catalog_r.GetDescription(), catalog_r.GetPrice(), catalog_r.GetId())
+
+	// - Artikel Informationen anfordern
+	catalog_r2, catalog_err := catalog.GetCatalogInfo(catalog_ctx, &api.GetCatalog{Id: 2})
+	if catalog_err != nil {
+		st, ok := status.FromError(catalog_err)
+		if !ok {
+			log.Fatalf("An unexpected error occurred: %v", catalog_err)
+		}
+		log.Printf("GetCatalogInfo failed: %v", st.Message())
+	}
+	log.Printf("Got catalog: Name:%v, Description:%v, Price:%v, Id:%v, Availability:%v", catalog_r2.GetName(), catalog_r2.GetDescription(), catalog_r2.GetPrice(), catalog_r2.GetId(), catalog_r2.GetAvailability())
 
 	////////////////////////////
 	// Kommunikation mit Order:
@@ -171,8 +234,8 @@ func (c *Client) test() {
 	defer order_cancel()
 
 	m := make(map[uint32]uint32)
-	m[uint32(100)] = uint32(2)
-	m[uint32(100)] = uint32(1)
+	m[uint32(1)] = uint32(2)
+	m[uint32(2)] = uint32(1)
 
 	// Order erstellen (direkt)
 	order_r, order_err := order.NewOrder(order_ctx, &api.NewOrderRequest{CustomerID: 1, Articles: m})
@@ -180,6 +243,8 @@ func (c *Client) test() {
 		log.Fatalf("Direct communication with customer failed: %v", customer_r)
 	}
 	log.Printf("created order: OrderId:%v", order_r.GetOrderId())
+
+	time.Sleep(3 * time.Second)
 
 	// Order als bezahlt markieren (indirekt)
 	paymentUpdate := &api.OrderPaymentUpdate{OrderId: 1}
@@ -189,7 +254,7 @@ func (c *Client) test() {
 	}
 	log.Printf("updated order payment: orderId:%v", paymentUpdate.GetOrderId())
 
-	time.Sleep(8 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	// Order als verschifft markieren (indirekt)
 	shipmentUpdate := &api.OrderShipmentUpdate{OrderId: 1}
@@ -199,54 +264,39 @@ func (c *Client) test() {
 	}
 	log.Printf("updated order shipment: orderId:%v", paymentUpdate.GetOrderId())
 
-	time.Sleep(8 * time.Second)
+	time.Sleep(3 * time.Second)
 
-	////////////////////////////
-	// Kommunikation mit Payment:
-	////////////////////////////
-	// Mithilfe von Redis Verbindung zu Payment aufbauen
-
-	catalog_redisVal := c.Redis.Get(context.TODO(), "catalog")
-	if catalog_redisVal == nil {
-		log.Fatal("service not registered")
-	}
-	catalog_address, err := catalog_redisVal.Result()
+	// Artikel zurücksenden 1
+	refundArticle := &api.RefundArticleRequest{OrderId: 1, ArticleId: 1}
+	err = c.Nats.Publish("order.refund", refundArticle)
 	if err != nil {
-		log.Fatalf("error while trying to get the result %v", err)
+		panic(err)
 	}
-	catalog_conn, err := grpc.Dial(catalog_address, grpc.WithInsecure(), grpc.WithBlock())
+	log.Printf("refund article of: orderId:%v, articleID: %v", refundArticle.GetOrderId(), refundArticle.GetArticleId())
+
+	// Artikel zurücksenden 2
+	refundArticle = &api.RefundArticleRequest{OrderId: 1, ArticleId: 1}
+	err = c.Nats.Publish("order.refund", refundArticle)
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		panic(err)
 	}
-	defer catalog_conn.Close()
+	log.Printf("refund article of: orderId:%v, articleID: %v", refundArticle.GetOrderId(), refundArticle.GetArticleId())
 
-	catalog := api.NewCatalogClient(catalog_conn)
-	catalog_ctx, catalog_cancel := context.WithTimeout(context.Background(), time.Second)
-	defer catalog_cancel()
-
-	// - Neuen Eintrag erstellen
-	catalog_r, catalog_err := catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Printer123", Description: "Very good printer!", Price: 102.50})
-	if catalog_err != nil {
-		log.Fatalf("Direct communication with catalog failed: %v", catalog_r)
+	// Order stornieren 1
+	cancelOrder := &api.CancelOrderRequest{OrderId: 1}
+	err = c.Nats.Publish("order.cancel", cancelOrder)
+	if err != nil {
+		panic(err)
 	}
-	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r.GetName(), catalog_r.GetDescription(), catalog_r.GetPrice(), catalog_r.GetId())
+	log.Printf("canceled order: orderId:%v", cancelOrder.GetOrderId())
 
-	catalog_r, catalog_err = catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Lamp", Description: "Ligths up the room", Price: 42.00})
-	if catalog_err != nil {
-		log.Fatalf("Direct communication with catalog failed: %v", catalog_r)
+	// Order stornieren 2
+	cancelOrder = &api.CancelOrderRequest{OrderId: 1}
+	err = c.Nats.Publish("order.cancel", cancelOrder)
+	if err != nil {
+		panic(err)
 	}
-	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r.GetName(), catalog_r.GetDescription(), catalog_r.GetPrice(), catalog_r.GetId())
-
-	// - Kunde über ID anfordern
-	catalog_r2, catalog_err := catalog.GetCatalogInfo(catalog_ctx, &api.GetCatalog{Id: 2})
-	if catalog_err != nil {
-		st, ok := status.FromError(catalog_err)
-		if !ok {
-			log.Fatalf("An unexpected error occurred: %v", catalog_err)
-		}
-		log.Printf("GetCatalogInfo failed: %v", st.Message())
-	}
-	log.Printf("Got catalog: Name:%v, Description:%v, Price:%v, Id:%v, Availability:%v", catalog_r2.GetName(), catalog_r2.GetDescription(), catalog_r2.GetPrice(), catalog_r2.GetId(), catalog_r2.GetAvailability())
+	log.Printf("canceled order: orderId:%v", cancelOrder.GetOrderId())
 }
 
 func (c *Client) scenario1() {
