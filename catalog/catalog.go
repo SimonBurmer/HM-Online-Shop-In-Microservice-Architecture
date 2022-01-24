@@ -109,33 +109,19 @@ func (s *Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*ap
 func (s *Server) UpdateCatalog(ctx context.Context, in *api.UpdatedData) (*api.CatalogReply, error) {
 	log.Printf("received update catalog request with: id: %v, name: %v, description: %v, price: %v", in.GetId(), in.GetName(), in.GetDescription(), in.GetPrice())
 
-	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("received update catalog request with: id: %v, name: %v, description: %v, price: %v", in.GetId(), in.GetName(), in.GetDescription(), in.GetPrice())))
-	if err != nil {
-		panic(err)
-	}
-
 	tmp := &api.NewCatalog{Name: in.GetName(), Description: in.GetDescription(), Price: in.GetPrice()}
 	s.Catalog[in.GetId()] = tmp
 	log.Printf("successfully updated catalog: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice())
-	err = s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("successfully updated catalog: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice())))
-	if err != nil {
-		panic(err)
-	}
 	return &api.CatalogReply{Id: s.CatalogID, Name: in.GetName(), Description: in.GetDescription(), Price: in.GetPrice()}, nil
 }
 
 func (s *Server) DeleteCatalog(ctx context.Context, in *api.GetCatalog) (*api.CatalogReply, error) {
 	log.Printf("received delete catalog request of: id: %v", in.GetId())
 
-	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("received delete catalog request of: id: %v", in.GetId())))
-	if err != nil {
-		panic(err)
-	}
-
 	out := s.Catalog[in.GetId()]
 	delete(s.Catalog, in.GetId())
 	log.Printf("successfully deleted catalog article: id: %v, name: %v, description: %v, price: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice())
-	err = s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("successfully deleted catalog article: id: %v, name: %v, description: %v, price: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice())))
+	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("successfully deleted catalog article: id: %v, name: %v, description: %v, price: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice())))
 	if err != nil {
 		panic(err)
 	}
