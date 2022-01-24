@@ -150,12 +150,12 @@ func (c *Client) test() {
 	defer payment_cancel()
 
 	// - Neues Payment erstellen
-	newPayment := &api.NewPaymentRequest{OrderId: 1, Value: 33.33}
+	newPayment := &api.NewPaymentRequest{OrderId: 1, TotalCost: 33.33}
 	err = c.Nats.Publish("payment.new", newPayment)
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("created payment: orderId:%v, value:%v", newPayment.GetOrderId(), newPayment.GetValue())
+	log.Printf("created payment: orderId:%v, value:%v", newPayment.GetOrderId(), newPayment.GetTotalCost())
 
 	// - Payment bezahlen (nicht komplett)
 	payment_r, payment_err := payment.PayPayment(payment_ctx, &api.PayPaymentRequest{OrderId: newPayment.OrderId, Value: 10})

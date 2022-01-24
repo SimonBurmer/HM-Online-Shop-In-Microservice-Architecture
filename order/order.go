@@ -74,7 +74,7 @@ func (s *Server) NewOrder(ctx context.Context, in *api.NewOrderRequest) (*api.Or
 	s.Orders[s.OrderID] = &api.OrderStorage{CustomerID: in.CustomerID, Articles: in.Articles, TotalCost: float32(totalCost), Payed: false, Shipped: false, Canceled: false}
 
 	// Neues Payment erstellen
-	newPayment := &api.NewPaymentRequest{OrderId: s.OrderID, Value: float32(totalCost)}
+	newPayment := &api.NewPaymentRequest{OrderId: s.OrderID, TotalCost: float32(totalCost)}
 	err = s.Nats.Publish("payment.new", newPayment)
 	if err != nil {
 		panic(err)
@@ -166,13 +166,6 @@ func (s *Server) CancelOrderRequest(in *api.CancelOrderRequest) {
 	// Shipment der Order stornieren
 	cancelShipment := &api.CancelShipmentRequest{Id: in.GetOrderId()}
 	err = s.Nats.Publish("shipment.cancel", cancelShipment)
-	if err != nil {
-		panic(err)
-	}
-
-	// Stornierte Order zurückzahlen
-	refundPayment := &api.RefundPaymentRequest{OrderId: in.GetOrderId(), CustomerName: customer_r.GetName(), CustomerAddress: customer_r.GetAddress(), Value: out.GetTotalCost()}
-	err = s.Nats.Publish("payment.refund", refundPayment)
 	if err != nil {
 		panic(err)
 	}
