@@ -580,14 +580,13 @@ func (c *Client) scenario3() {
 }
 
 func (c *Client) scenario4() {
-
-	log.Printf("Scenario4: Return of a defective article and sending a replacement")
+	log.Printf("Scenario 4: Return of a defective article and sending a replacement")
 	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario4: Return of a defective article and sending a replacement"), Subject: "Client.Scenario4"})
 	if err != nil {
 		panic(err)
 	}
 
-	// Daten in Stock und Catalog füllen
+	// Stock und Catalog "befüllen"
 	err = c.Nats.Publish("catalog.first", "")
 	if err != nil {
 		panic(err)
@@ -626,7 +625,7 @@ func (c *Client) scenario4() {
 	if order_err != nil {
 		log.Fatalf("Direct communication with order failed: %v", order_r)
 	}
-	log.Printf("created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
+	log.Printf("Created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
 
 	////
 	// Verbindung zu Payment-Service aufbauen
@@ -642,7 +641,7 @@ func (c *Client) scenario4() {
 	if payment_err != nil {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
-	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
+	log.Printf("Payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
 
 	// Warten, damit Ware versendet wird
 	time.Sleep(3 * time.Second)
@@ -661,18 +660,17 @@ func (c *Client) scenario4() {
 	if shipment_err != nil {
 		log.Fatalf("Direct communication with shipment failed: %v", shipment_r)
 	}
-	log.Printf("returned articles: orderId:%v, articleId:%v, amount:%v", shipment_r.GetId(), shipment_r.GetArticleId(), shipment_r.GetAmount())
+	log.Printf("Returned articles: orderId:%v, articleId:%v, amount:%v", shipment_r.GetId(), shipment_r.GetArticleId(), shipment_r.GetAmount())
 
 }
 func (c *Client) scenario5() {
-
-	log.Printf("Scenario5: Return of a defective article and refunding it")
+	log.Printf("Scenario 5: Return of a defective article and refunding it")
 	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario5: Return of a defective article and refunding it"), Subject: "Client.Scenario5"})
 	if err != nil {
 		panic(err)
 	}
 
-	// Daten in Stock und Catalog füllen
+	// Stock und Catalog "befüllen"
 	err = c.Nats.Publish("catalog.first", "")
 	if err != nil {
 		panic(err)
@@ -711,8 +709,8 @@ func (c *Client) scenario5() {
 	if order_err != nil {
 		log.Fatalf("Direct communication with order failed: %v", order_r)
 	}
-	log.Printf("created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
-
+	log.Printf("Created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
+	
 	////
 	// Verbindung zu Payment-Service aufbauen
 	////
@@ -727,7 +725,7 @@ func (c *Client) scenario5() {
 	if payment_err != nil {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
-	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
+	log.Printf("Payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
 
 	// Warten, damit Ware versendet wird
 	time.Sleep(3 * time.Second)
@@ -746,10 +744,5 @@ func (c *Client) scenario5() {
 	if shipment_err != nil {
 		log.Fatalf("Direct communication with shipment failed: %v", shipment_r)
 	}
-	log.Printf("returned articles: orderId:%v, articleId:%v, amount:%v", shipment_r.GetId(), shipment_r.GetArticleId(), shipment_r.GetAmount())
-
+	log.Printf("Returned articles: orderId:%v, articleId:%v, amount:%v", shipment_r.GetId(), shipment_r.GetArticleId(), shipment_r.GetAmount())
 }
-
-// 3.  Stornieren einer Bestellung, die noch nicht verschickt wurde.
-// 4. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit sofortiger Ersatzlieferung.
-// 5. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit Rückbuchung des entsprechenden Teilbetrages.
