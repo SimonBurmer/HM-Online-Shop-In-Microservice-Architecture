@@ -5,5 +5,4 @@ RUN go build -o customer/service/customerservice customer/service/main.go
 
 FROM alpine
 COPY --from=builder /app/customer/service/customerservice /app/customerservice
-EXPOSE 8091
 ENTRYPOINT [ "/app/customerservice" ]
