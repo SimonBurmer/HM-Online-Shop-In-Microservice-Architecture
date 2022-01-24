@@ -12,10 +12,7 @@ services:
 
   # App
   logger-service:
-    build:
-      context: .
-      dockerfile: logger/Dockerfile
-    image: logger
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/loggerservice
     depends_on:
       - nats 
 
@@ -27,20 +24,14 @@ services:
       - logger-service
 
   payment-service:
-    build:
-      context: .
-      dockerfile: payment/service/Dockerfile
-    image: payment
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/paymentservice
     depends_on:
       - redis
       - nats
       - logger-service 
           
   catalog-service:
-    build:
-      context: .
-      dockerfile: catalog/service/Dockerfile
-    image: catalog
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/catalogservice
     depends_on:
       - redis
       - nats
@@ -48,20 +39,14 @@ services:
       - stock-service
     
   stock-service:
-    build:
-      context: .
-      dockerfile: stock/service/Dockerfile
-    image: stock
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/stockservice
     depends_on:
       - redis
       - nats 
       - logger-service 
 
   order-service:
-    build:
-      context: .
-      dockerfile: order/service/Dockerfile
-    image: order
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/orderservice
     depends_on:
       - redis
       - nats
@@ -71,10 +56,7 @@ services:
       - shipment-service
 
   shipment-service:
-    build:
-      context: .
-      dockerfile: shipment/service/Dockerfile
-    image: shipment
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/shipmentservice
     depends_on:
       - redis
       - nats 
@@ -82,10 +64,7 @@ services:
       - stock-service
 
   supplier-service:
-    build:
-      context: .
-      dockerfile: supplier/service/Dockerfile
-    image: supplier
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/supplierservice
     depends_on:
       - redis
       - nats 
@@ -93,10 +72,7 @@ services:
       - stock-service
 
   client:
-    build:
-      context: .
-      dockerfile: client/service/Dockerfile
-    image: client
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/clientservice
     depends_on:
       - redis
       - nats
