@@ -74,6 +74,14 @@ func main() {
 	}
 	defer gotStockSubscription.Unsubscribe()
 
+	cancelPaymentSubscription, err := c.Subscribe("shipment.cancel", func(msg *api.CancelShipmentRequest) {
+		shipmentServer.CancelShipment(msg)
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer cancelPaymentSubscription.Unsubscribe()
+
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

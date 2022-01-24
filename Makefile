@@ -19,7 +19,7 @@ run2:
 	@echo "------------------------------------------------------"
 	@echo "-- SZENARIO 2 ----------------------------------------"
 	@echo "------------------------------------------------------"
-		docker-compose -f docker-compose.yaml -f docker-compose.S2.yaml up --abort-on-container-exit
+	docker-compose -f docker-compose.yaml -f docker-compose.S2.yaml up --abort-on-container-exit
 
 run3:
 	@echo "------------------------------------------------------"

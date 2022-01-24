@@ -170,6 +170,13 @@ func (s *Server) CancelOrderRequest(in *api.CancelOrderRequest) {
 		panic(err)
 	}
 
+	// Stornierte Order zurückzahlen
+	refundPayment := &api.RefundPaymentRequest{OrderId: in.GetOrderId(), CustomerName: customer_r.GetName(), CustomerAddress: customer_r.GetAddress(), Value: out.GetTotalCost()}
+	err = s.Nats.Publish("payment.refund", refundPayment)
+	if err != nil {
+		panic(err)
+	}
+
 	// Order als storniert markieren
 	out.Canceled = true
 	s.Orders[in.GetOrderId()] = out
@@ -187,22 +194,6 @@ func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
 	// Order laden (checken ob Order mit gegebener Id existiert)
 	out := s.getOrder(in.GetOrderId())
 
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-	// TODO: Überprüfen ob article teil der bestellung!!!
-
 	// Rücksendung aus Bestellung löschen
 	delete(out.GetArticles(), in.GetArticleId())
 
@@ -219,6 +210,12 @@ func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
 	if catalog_err != nil {
 		log.Fatalf("could not get catalog info of: articleId: %v", in.GetArticleId())
 	}
+
+	// - Preis der Bestellung neu berechnen und abspeichern
+	log.Printf("%v", s.getOrder(in.GetOrderId()).GetTotalCost())
+	out.TotalCost = out.TotalCost - float32(article.GetPrice())
+	s.Orders[in.GetOrderId()] = out
+	log.Printf("%v", s.getOrder(in.GetOrderId()).GetTotalCost())
 
 	// - Verbindung zu Customer-Service aufbauen
 	customer_con := s.getConnection("customer")

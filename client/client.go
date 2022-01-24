@@ -64,12 +64,6 @@ func (c *Client) getConnection(connectTo string) *grpc.ClientConn {
 	return conn
 }
 
-// 2. Bestellung von drei Produkten, von denen nur eines auf Lager ist, bis zum Verschicken.
-//      Die beiden nicht lagernden Produkte werden zu verschiedenen Zeit- punkten, durch verschiedene Zulieferer, geliefert.
-// 3.  Stornieren einer Bestellung, die noch nicht verschickt wurde.
-// 4. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit sofortiger Ersatzlieferung.
-// 5. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit Rückbuchung des entsprechenden Teilbetrages.
-
 func (c *Client) test() {
 	// Testen der einzelnen Komponenten
 	// 1. Customer service
@@ -321,7 +315,7 @@ func (c *Client) test() {
 
 func (c *Client) scenario1() {
 	// 1. Bestellung lagernder Produkte durch einen Neukunden bis zum Verschicken.
-	log.Printf("Scenario1: Order of products in stock by a new customer ")
+	log.Printf("Scenario 1: Order of products in stock by a new customer ")
 	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario1: Order of products in stock by a new customer "), Subject: "Client.Scenario1"})
 	if err != nil {
 		panic(err)
@@ -396,7 +390,7 @@ func (c *Client) scenario1() {
 	if order_err != nil {
 		log.Fatalf("Direct communication with order failed: %v", order_r)
 	}
-	log.Printf("created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
+	log.Printf("Created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
 
 	////
 	// Verbindung zu Payment-Service aufbauen
@@ -412,18 +406,19 @@ func (c *Client) scenario1() {
 	if payment_err != nil {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
-	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
+	log.Printf("Payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
 }
 
 func (c *Client) scenario2() {
 
-	log.Printf("Scenario2: Ordering three products, only one of which is in stock")
+	log.Printf("Scenario 2: Ordering three products, only one of which is in stock")
 	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario2: Ordering three products, only one of which is in stock"), Subject: "Client.Scenario2"})
 	if err != nil {
 		panic(err)
 	}
 
-	// Daten in Stock und Catalog füllen
+	// Stock und Catalog "befüllen"
+	log.Printf("Created catalog and fill up stock")
 	err = c.Nats.Publish("catalog.first", "")
 	if err != nil {
 		panic(err)
@@ -464,7 +459,7 @@ func (c *Client) scenario2() {
 	if order_err != nil {
 		log.Fatalf("Direct communication with order failed: %v", order_r)
 	}
-	log.Printf("created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
+	log.Printf("Created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
 
 	////
 	// Verbindung zu Payment-Service aufbauen
@@ -480,7 +475,7 @@ func (c *Client) scenario2() {
 	if payment_err != nil {
 		log.Fatalf("Direct communication with payment failed: %v", payment_r)
 	}
-	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
+	log.Printf("Payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
 
 	////
 	// Verbindung zu Supplier-Service aufbauen
@@ -496,21 +491,92 @@ func (c *Client) scenario2() {
 	if supplier_err != nil {
 		log.Fatalf("Direct communication with supplier failed: %v", supplier_r)
 	}
-	log.Printf("delivered articles: orderId:%v, articleId:%v, amount:%v, name supplier:%v", supplier_r.GetOrderId(), supplier_r.GetArticleId(), supplier_r.GetAmount(), supplier_r.GetNameSupplier())
+	log.Printf("Delivered articles: orderId:%v, articleId:%v, amount:%v, name supplier:%v", supplier_r.GetOrderId(), supplier_r.GetArticleId(), supplier_r.GetAmount(), supplier_r.GetNameSupplier())
 
 	// Lieferung des Artikels der nicht mehr vorrätig war
 	supplier_r, supplier_err = supplier.DeliveredArticle(supplier_ctx, &api.NewArticles{OrderId: order_r.GetOrderId(), ArticleId: 4, Amount: 1, NameSupplier: "Supplier2"})
 	if supplier_err != nil {
 		log.Fatalf("Direct communication with supplier failed: %v", supplier_r)
 	}
-	log.Printf("delivered articles: orderId:%v, articleId:%v, amount:%v, name supplier:%v", supplier_r.GetOrderId(), supplier_r.GetArticleId(), supplier_r.GetAmount(), supplier_r.GetNameSupplier())
+	log.Printf("Delivered articles: orderId:%v, articleId:%v, amount:%v, name supplier:%v", supplier_r.GetOrderId(), supplier_r.GetArticleId(), supplier_r.GetAmount(), supplier_r.GetNameSupplier())
 
 }
 func (c *Client) scenario3() {
+	log.Printf("Scenario 3: Cancel an order that has not been shipped yet")
+	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario 3: Cancel an order that has not been shipped yet"), Subject: "Client.Scenario3"})
+	if err != nil {
+		panic(err)
+	}
 
-	time.Sleep(3 * time.Second)
+	// Stock und Catalog "befüllen"
+	log.Printf("Created catalog and fill up stock")
+	err = c.Nats.Publish("catalog.first", "")
+	if err != nil {
+		panic(err)
+	}
 
+	////
+	// Verbindung zu Customer-Service aufbauen
+	////
+	customer_con := c.getConnection("customer")
+	customer := api.NewCustomerClient(customer_con)
+	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer customer_con.Close()
+	defer cancel()
+
+	customer_r, customer_err := customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Peter", Address: "Ulm"})
+	if customer_err != nil {
+		log.Fatalf("Direct communication with customer failed: %v", customer_r)
+	}
+	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
+
+	////
+	// Verbindung zu Order-Service aufbauen
+	////
+	order_con := c.getConnection("order")
+	order := api.NewOrderClient(order_con)
+	order_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer order_con.Close()
+	defer cancel()
+
+	// Neue Order anlegen
+	// Bestellung von mehrere nicht lagernden Artikel
+	articles := make(map[uint32]uint32)
+	articles[1] = uint32(2)
+	articles[2] = uint32(42)
+	articles[4] = uint32(33)
+
+	order_r, order_err := order.NewOrder(order_ctx, &api.NewOrderRequest{CustomerID: customer_r.GetId(), Articles: articles})
+	if order_err != nil {
+		log.Fatalf("Direct communication with order failed: %v", order_r)
+	}
+	log.Printf("Created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
+
+	////
+	// Verbindung zu Payment-Service aufbauen
+	////
+	payment_con := c.getConnection("payment")
+	payment := api.NewPaymentClient(payment_con)
+	payment_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer payment_con.Close()
+	defer cancel()
+
+	// Payment bezahlen
+	payment_r, payment_err := payment.PayPayment(payment_ctx, &api.PayPaymentRequest{OrderId: order_r.GetOrderId(), Value: order_r.GetTotalCost()})
+	if payment_err != nil {
+		log.Fatalf("Direct communication with payment failed: %v", payment_r)
+	}
+	log.Printf("Payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
+
+	// Order stornieren
+	cancelOrder := &api.CancelOrderRequest{OrderId: 1}
+	err = c.Nats.Publish("order.cancel", cancelOrder)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("Canceled order: orderId:%v", cancelOrder.GetOrderId())
 }
+
 func (c *Client) scenario4() {
 
 	time.Sleep(3 * time.Second)
@@ -521,3 +587,7 @@ func (c *Client) scenario5() {
 	time.Sleep(3 * time.Second)
 
 }
+
+// 3.  Stornieren einer Bestellung, die noch nicht verschickt wurde.
+// 4. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit sofortiger Ersatzlieferung.
+// 5. Empfangen eines defekten Artikels aus einer Bestellung mit mehreren Artikeln als Retoure mit Rückbuchung des entsprechenden Teilbetrages.
