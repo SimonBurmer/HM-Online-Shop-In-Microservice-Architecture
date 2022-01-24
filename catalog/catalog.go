@@ -142,3 +142,30 @@ func (s *Server) DeleteCatalog(ctx context.Context, in *api.GetCatalog) (*api.Ca
 	}
 	return &api.CatalogReply{Id: in.GetId(), Name: out.GetName(), Description: out.GetDescription(), Price: out.GetPrice()}, nil
 }
+
+func (s *Server) First() {
+	s.Catalog[1] = &api.NewCatalog{Name: "Printer123", Description: "Very good printer!", Price: 102.50}
+	newStockEntry := &api.AddStockRequest{Id: 1, Amount: 3}
+	err := s.Nats.Publish("stock.add", newStockEntry)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("filling stock: Id:%v", newStockEntry.GetId())
+
+	s.Catalog[2] = &api.NewCatalog{Name: "Lamp", Description: "Ligths up the room", Price: 42.00}
+	newStockEntry = &api.AddStockRequest{Id: 2, Amount: 2}
+	err = s.Nats.Publish("stock.add", newStockEntry)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("filling stock: Id:%v", newStockEntry.GetId())
+
+	s.Catalog[3] = &api.NewCatalog{Name: "Microwave", Description: "Newest technology. Heats food up 10 times faster", Price: 63.99}
+	newStockEntry = &api.AddStockRequest{Id: 3, Amount: 1}
+	err = s.Nats.Publish("stock.add", newStockEntry)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("filling stock: Id:%v", newStockEntry.GetId())
+
+}

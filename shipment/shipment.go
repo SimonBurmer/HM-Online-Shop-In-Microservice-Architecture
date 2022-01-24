@@ -114,7 +114,7 @@ func (s *Server) Cancellation(in *api.OrderID) {
 
 }
 
-func (s *Server) ReturnDefectArticle(in *api.ShipmentReturnRequest) {
+func (s *Server) ReturnDefectArticle(ctx context.Context, in *api.ShipmentReturnRequest) (*api.ReturnReply, error) {
 
 	log.Printf("received return of defect article: ID: %v, article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())
 	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received return of defect article: ID: %v, article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())))
@@ -127,9 +127,10 @@ func (s *Server) ReturnDefectArticle(in *api.ShipmentReturnRequest) {
 	s.Shipment[s.ShipmentID].Ready[in.GetArticleId()] = uint32(stock.GetAmount())
 	ready := &api.ShipmentReadiness{Id: s.ShipmentID}
 	s.ShipmentReady(ready)
+	return &api.ReturnReply{Id: in.GetId(), ArticleId: in.GetArticleId(), Amount: in.GetAmount()}, nil
 }
 
-func (s *Server) Refund(in *api.ShipmentReturnRequest) {
+func (s *Server) Refund(ctx context.Context, in *api.ShipmentReturnRequest) (*api.ReturnReply, error) {
 	log.Printf("received refund request of: order ID: %v article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())
 	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received refund request of: order ID: %v article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())))
 	if err != nil {
@@ -144,6 +145,7 @@ func (s *Server) Refund(in *api.ShipmentReturnRequest) {
 	log.Printf("Sent refund request to order")
 
 	// artikel löschen??
+	return &api.ReturnReply{Id: in.GetId(), ArticleId: in.GetArticleId(), Amount: in.GetAmount()}, nil
 }
 
 func (s *Server) getConnectionStock(in *api.ShipmentReadiness) *api.GetReply {

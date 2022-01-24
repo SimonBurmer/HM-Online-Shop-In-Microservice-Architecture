@@ -245,7 +245,8 @@ message UpdatedData {
 
 service Shipment {
  rpc SendShipment(GetShipmentRequest) returns (ShipmentReply) {}
- rpc ReturnedShipment(GetShipmentRequest) returns (ShipmentReply) {}
+ rpc ReturnDefectArticle(ShipmentReturnRequest) returns (ReturnReply) {}
+ rpc Refund (ShipmentReturnRequest) returns (ReturnReply) {}
 }
 
 message NewShipmentRequest {
@@ -279,6 +280,12 @@ message OrderID {
 }
 
 message ShipmentReturnRequest {
+  uint32 id = 1;
+  uint32 articleId = 2;
+  uint32 amount = 3;
+}
+
+message ReturnReply {
   uint32 id = 1;
   uint32 articleId = 2;
   uint32 amount = 3;

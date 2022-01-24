@@ -54,7 +54,16 @@ func main() {
 	}
 
 	// Erzeugt den fertigen service
-	api.RegisterCatalogServer(s, &catalog.Server{Nats: c, Redis: rdb, Catalog: make(map[uint32]*api.NewCatalog), CatalogID: 0})
+	catalogServer := &catalog.Server{Nats: c, Redis: rdb, Catalog: make(map[uint32]*api.NewCatalog), CatalogID: 0}
+	api.RegisterCatalogServer(s, catalogServer)
+
+	catalogIntitialisationSubscription, err := c.Subscribe("catalog.first", func(msg string) {
+		catalogServer.First()
+	})
+	if err != nil {
+		log.Fatal("cannot subscribe")
+	}
+	defer catalogIntitialisationSubscription.Unsubscribe()
 	err = s.Serve(lis)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
