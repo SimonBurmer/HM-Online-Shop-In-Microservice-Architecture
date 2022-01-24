@@ -1,4 +1,4 @@
-lint_code:
+lint:
   image: golangci/golangci-lint
   stage: lint
   script:
