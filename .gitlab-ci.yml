@@ -1,8 +1,8 @@
-lint:
+lint_code:
   image: golangci/golangci-lint
-  stage: test
+  stage: lint
   script:
-    - echo "Test"
+    - echo "No lint activated"
 
 customer_docker:
   stage: deploy
