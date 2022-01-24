@@ -22,7 +22,7 @@ func (s *Server) NewCustomer(ctx context.Context, in *api.NewCustomerRequest) (*
 	log.Printf("received new customer request of: name: %v, address: %v", in.GetName(), in.GetAddress())
 
 	// Indirekte Kommunikation über NATS (Stellt Logger einer Nachricht rein)
-	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received new customer of: name: %v, address: %v", in.GetName(), in.GetAddress()), Subject: "Customer.NewCustomer"})
+	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received new customer request of: name: %v, address: %v", in.GetName(), in.GetAddress()), Subject: "Customer.NewCustomer"})
 	if err != nil {
 		panic(err)
 	}
