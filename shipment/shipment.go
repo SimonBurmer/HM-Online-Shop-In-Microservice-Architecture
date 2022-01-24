@@ -15,23 +15,26 @@ import (
 type Server struct {
 	Nats       *nats.EncodedConn
 	Redis      *redis.Client
-	Shipment   map[uint32]*api.NewShipmentRequest
+	Shipment   map[uint32]*api.ShipmentStorage
 	ShipmentID uint32
 	api.UnimplementedShipmentServer
 }
 
 func (s *Server) NewShipment(in *api.NewShipmentRequest) {
-	log.Printf("received new shipment request of: order ID: %v articles: %v, availability: %v, address: %v", in.GetOrderID(), in.GetArticles(), in.GetReady(), in.GetAddress())
-
-	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received new shipment request of: order ID: %v, articles: %v, availability: %v, address: %v", in.GetOrderID(), in.GetArticles(), in.GetReady(), in.GetAddress())))
+	log.Printf("received new shipment request of: order ID: %v articles: %v, address: %v", in.GetOrderID(), in.GetArticles(), in.GetAddress())
+	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received new shipment request of: order ID: %v, articles: %v, address: %v", in.GetOrderID(), in.GetArticles(), in.GetAddress())))
 	if err != nil {
 		panic(err)
 	}
 
 	s.ShipmentID = in.GetOrderID()
-	s.Shipment[s.ShipmentID] = in
-	log.Printf("successfully created new shipment: id: %v, order ID: %v, articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), in.GetReady(), in.GetAddress())
-	err = s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("successfully created new shipment: id: %v, order ID: %v articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), in.GetReady(), in.GetAddress())))
+	m := make(map[uint32]uint32)
+	for key := range in.GetArticles() {
+		m[key] = 0
+	}
+	s.Shipment[s.ShipmentID] = &api.ShipmentStorage{Address: in.GetAddress(), Articles: in.GetArticles(), Ready: m}
+	log.Printf("successfully created new shipment: id: %v, order ID: %v, articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress())
+	err = s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("successfully created new shipment: id: %v, order ID: %v articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress())))
 	if err != nil {
 		panic(err)
 	}
@@ -63,6 +66,7 @@ func (s *Server) ShipmentReady(in *api.ShipmentReadiness) {
 		}
 	}
 	if ready {
+		log.Printf("Shipment %v is ready to be send", in.GetId())
 		s.SendShipment(context.TODO(), &api.GetShipmentRequest{Id: in.GetId(), Articles: s.Shipment[s.ShipmentID].GetArticles(), Ready: s.Shipment[s.ShipmentID].GetReady()})
 	}
 }
@@ -76,17 +80,23 @@ func (s *Server) SendShipment(ctx context.Context, in *api.GetShipmentRequest) (
 	}
 
 	informOrder := &api.OrderShipmentUpdate{OrderId: in.GetId()}
-	err = s.Nats.Publish("order.payment", informOrder)
+	err = s.Nats.Publish("order.shipment", informOrder)
 	if err != nil {
 		panic(err)
 	}
 	address := s.Shipment[in.GetId()].GetAddress()
-	// Get Adresse Customer
-	// Anbindung an API
+
+	// Hier würde die Anbindung an die API erfolgen
+	log.Printf("sucessfully send shipment: id: %v, articles: %v, address: %v", in.GetId(), in.GetArticles(), s.Shipment[s.ShipmentID].GetAddress())
+
+	err = s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("sucessfully send shipment: id: %v, articles: %v, address: %v", in.GetId(), in.GetArticles(), s.Shipment[s.ShipmentID].GetAddress())))
+	if err != nil {
+		panic(err)
+	}
 	return &api.ShipmentReply{Id: in.GetId(), Articles: in.GetArticles(), Ready: in.GetReady(), Address: address}, nil
 }
 
-func (s *Server) Cancellation(in *api.OrderID) {
+func (s *Server) CancelShipment(in *api.OrderID) {
 	log.Printf("received cancellation of shipment of: ID: %v", in.GetId())
 	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received cancellation of shipment of: ID: %v", in.GetId())))
 	if err != nil {
@@ -175,18 +185,3 @@ func (s *Server) getConnectionStock(in *api.ShipmentReadiness) *api.GetReply {
 
 	return stock_r
 }
-
-/*
-func (s *Server) ReturnedShipment(ctx context.Context, in *api.GetShipmentRequest) (*api.ShipmentReply, error) {
-	log.Printf("received return of shipment: id: %v, articles: %v, availability: %v", in.GetId(), in.GetArticles(), in.GetReady())
-
-	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received return of shipment: id: %v, articles: %v, availability: %v", in.GetId(), in.GetArticles(), in.GetReady())))
-	if err != nil {
-		panic(err)
-	}
-	// Artikel zurück zu Stock
-	// payment zu Order
-	// löschen?
-	return &api.ShipmentReply{Id: in.GetId(), Articles: in.GetArticles(), Ready: in.GetReady()}, nil
-}
-*/
