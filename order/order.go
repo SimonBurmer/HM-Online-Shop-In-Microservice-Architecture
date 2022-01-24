@@ -81,7 +81,7 @@ func (s *Server) NewOrder(ctx context.Context, in *api.NewOrderRequest) (*api.Or
 	}
 
 	log.Printf("successfully created new order with orderId: %v", s.OrderID)
-	return &api.OrderReply{OrderId: s.OrderID}, nil
+	return &api.OrderReply{OrderId: s.OrderID, TotalCost: float32(totalCost)}, nil
 }
 
 func (s *Server) OrderPaymentUpdate(in *api.OrderPaymentUpdate) {
@@ -188,21 +188,20 @@ func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
 	out := s.getOrder(in.GetOrderId())
 
 	// TODO: Überprüfen ob article teil der bestellung!!!
-		// TODO: Überprüfen ob article teil der bestellung!!!
-			// TODO: Überprüfen ob article teil der bestellung!!!
-				// TODO: Überprüfen ob article teil der bestellung!!!
-					// TODO: Überprüfen ob article teil der bestellung!!!
-						// TODO: Überprüfen ob article teil der bestellung!!!
-							// TODO: Überprüfen ob article teil der bestellung!!!
-								// TODO: Überprüfen ob article teil der bestellung!!!
-									// TODO: Überprüfen ob article teil der bestellung!!!
-										// TODO: Überprüfen ob article teil der bestellung!!!
-											// TODO: Überprüfen ob article teil der bestellung!!!
-												// TODO: Überprüfen ob article teil der bestellung!!!
-													// TODO: Überprüfen ob article teil der bestellung!!!
-														// TODO: Überprüfen ob article teil der bestellung!!!
-															// TODO: Überprüfen ob article teil der bestellung!!!
-
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
+	// TODO: Überprüfen ob article teil der bestellung!!!
 
 	// Rücksendung aus Bestellung löschen
 	delete(out.GetArticles(), in.GetArticleId())

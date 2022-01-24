@@ -96,6 +96,7 @@ message NewOrderRequest{
 }
 message OrderReply{
   uint32  orderId = 1;
+  float totalCost = 2;
 }
 message OrderPaymentUpdate{
   uint32  orderId = 1;
