@@ -105,7 +105,7 @@ func (s *Server) CancelShipment(in *api.CancelShipmentRequest) {
 		panic(err)
 	}
 	out := s.Shipment[in.GetId()]
-	for key, element := range out.GetArticles() {
+	for key, element := range out.GetReady() {
 		// Reservierung von nicht vorhandenen Artikeln löschen
 		cancelReserved := &api.CancelReservedRequest{ShipmentId: in.GetId(), Id: key}
 		err := s.Nats.Publish("stock.cancel", cancelReserved)
@@ -122,6 +122,7 @@ func (s *Server) CancelShipment(in *api.CancelShipmentRequest) {
 		}
 		log.Printf("Articles send to Stock: Id: %v, Amount: %v", key, element)
 
+		delete(s.Shipment[in.GetId()].Ready, key)
 	}
 
 }

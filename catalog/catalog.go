@@ -70,14 +70,13 @@ func (s *Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.C
 		log.Fatalf("no article with Id: %v", in.GetId())
 	}
 
-	log.Printf("successfully loaded catalog of: id: %v, name: %v, description: %v, price: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice())
-	err = s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("successfully loaded catalog of: id: %v, name: %v, description: %v, price: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice()), Subject: "Catalog.GetCatalogInfo"})
+	available := s.GetAvailability(in)
+
+	log.Printf("successfully loaded catalog of: id: %v, name: %v, description: %v, price: %v, availability: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice(), available)
+	err = s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("successfully loaded catalog of: id: %v, name: %v, description: %v, price: %v, availability: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice(), available), Subject: "Catalog.GetCatalogInfo"})
 	if err != nil {
 		panic(err)
 	}
-
-	available := s.GetAvailability(in)
-
 	return &api.CatalogReplyInfo{Id: s.CatalogID, Name: out.GetName(), Description: out.GetDescription(), Price: out.GetPrice(), Availability: available}, nil
 }
 
@@ -91,11 +90,6 @@ func (s *Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*ap
 
 	s.CatalogID = s.CatalogID + 1
 	s.Catalog[s.CatalogID] = in
-	log.Printf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice())
-	err = s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice()), Subject: "Catalog.NewCatalogArticle"})
-	if err != nil {
-		panic(err)
-	}
 
 	newStockEntry := &api.AddStockRequest{Id: s.CatalogID, Amount: 0}
 	err = s.Nats.Publish("stock.add", newStockEntry)
@@ -104,6 +98,11 @@ func (s *Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*ap
 	}
 	log.Printf("updated stock: Id:%v", newStockEntry.GetId())
 
+	log.Printf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice())
+	err = s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice()), Subject: "Catalog.NewCatalogArticle"})
+	if err != nil {
+		panic(err)
+	}
 	return &api.CatalogReply{Id: s.CatalogID, Name: in.GetName(), Description: in.GetDescription(), Price: in.GetPrice()}, nil
 }
 
