@@ -1,6 +1,6 @@
 version: "3"
 services:
-  # https://docs.docker.com/compose/compose-file/compose-file-v3/#environment
+
   # Dependencies
   redis:
     image: "redis"
@@ -20,10 +20,7 @@ services:
       - nats 
 
   customer-service:
-    build:
-      context: .
-      dockerfile: customer/service/Dockerfile
-    image: customer
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/customerservice
     depends_on:
       - redis
       - nats 
