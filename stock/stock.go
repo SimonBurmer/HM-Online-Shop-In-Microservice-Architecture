@@ -21,7 +21,7 @@ type Server struct {
 func (s *Server) AddStock(in *api.AddStockRequest) {
 	log.Printf("received new article(s) with: ID: %v, quantity: %v", in.GetId(), in.GetAmount())
 
-	err := s.Nats.Publish("log.stock", []byte(fmt.Sprintf("received new article(s) with: ID: %v, quantity: %v", in.GetId(), in.GetAmount())))
+	err := s.Nats.Publish("log.stock", api.Log{Message: fmt.Sprintf("received new article(s) with: ID: %v, quantity: %v", in.GetId(), in.GetAmount()), Subject: "Stock.AddStock"})
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +66,7 @@ func (s *Server) AddStock(in *api.AddStockRequest) {
 	}
 	out := s.Stock[in.GetId()].Amount
 	log.Printf("added new article(s) with: ID: %v, quantity: %v", in.GetId(), out)
-	err = s.Nats.Publish("log.stock", []byte(fmt.Sprintf("added new article(s) with: ID: %v, quantity: %v", in.GetId(), out)))
+	err = s.Nats.Publish("log.stock", api.Log{Message: fmt.Sprintf("added new article(s) with: ID: %v, quantity: %v", in.GetId(), out), Subject: "Stock.AddStock"})
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +75,7 @@ func (s *Server) AddStock(in *api.AddStockRequest) {
 func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetReply, error) {
 	log.Printf("received get article request of: id: %v, amount: %v, shipmentID: %v", in.GetId(), in.GetAmount(), in.GetShipmentId())
 
-	err := s.Nats.Publish("log.stock", []byte(fmt.Sprintf("received get article request of: id: %v, amount: %v, shipmentID: %v", in.GetId(), in.GetAmount(), in.GetShipmentId())))
+	err := s.Nats.Publish("log.stock", api.Log{Message: fmt.Sprintf("received get article request of: id: %v, amount: %v, shipmentID: %v", in.GetId(), in.GetAmount(), in.GetShipmentId()), Subject: "Stock.GetArticle"})
 	if err != nil {
 		panic(err)
 	}
@@ -86,7 +86,7 @@ func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetR
 	if articleAmount < 0 {
 
 		log.Printf("not enough stock available: id: %v, amount: %v", in.GetId(), in.GetAmount())
-		err = s.Nats.Publish("log.stock", []byte(fmt.Sprintf("not enough stock available: id: %v, amount: %v", in.GetId(), in.GetAmount())))
+		err = s.Nats.Publish("log.stock", api.Log{Message: fmt.Sprintf("not enough stock available: id: %v, amount: %v", in.GetId(), in.GetAmount()), Subject: "Stock.GetArticle"})
 		if err != nil {
 			panic(err)
 		}
@@ -116,7 +116,7 @@ func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetR
 func (s *Server) GetStock(ctx context.Context, in *api.ArticleID) (*api.GetStockReply, error) {
 	log.Printf("received get stock request with: id: %v", in.GetId())
 
-	err := s.Nats.Publish("log.stock", []byte(fmt.Sprintf("received get stock request with: id: %v", in.GetId())))
+	err := s.Nats.Publish("log.stock", api.Log{Message: fmt.Sprintf("received get stock request with: id: %v", in.GetId()), Subject: "Stock.GetStock"})
 	if err != nil {
 		panic(err)
 	}
@@ -124,7 +124,7 @@ func (s *Server) GetStock(ctx context.Context, in *api.ArticleID) (*api.GetStock
 	answer := true
 	_, ok := s.Stock[in.GetId()]
 	if !ok {
-		err = s.Nats.Publish("log.stock", []byte(fmt.Sprintf("no article with Id: %v", in.GetId())))
+		err = s.Nats.Publish("log.stock", api.Log{Message: fmt.Sprintf("no article with Id: %v", in.GetId()), Subject: "Stock.GetStock"})
 		if err != nil {
 			panic(err)
 		}

@@ -56,14 +56,14 @@ func (s *Server) GetAvailability(in *api.GetCatalog) (answer bool) {
 func (s *Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.CatalogReplyInfo, error) {
 	log.Printf("received request for the article with: id: %v", in.GetId())
 
-	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("received request for the article with: id: %v", in.GetId())))
+	err := s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("received request for the article with: id: %v", in.GetId()), Subject: "Catalog.GetCatalogInfo"})
 	if err != nil {
 		panic(err)
 	}
 
 	out, ok := s.Catalog[in.GetId()]
 	if !ok {
-		err = s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("no article with Id: %v", in.GetId())))
+		err = s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("no article with Id: %v", in.GetId()), Subject: "Catalog.GetCatalogInfo"})
 		if err != nil {
 			panic(err)
 		}
@@ -71,7 +71,7 @@ func (s *Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.C
 	}
 
 	log.Printf("successfully loaded catalog of: id: %v, name: %v, description: %v, price: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice())
-	err = s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("successfully loaded catalog of: id: %v, name: %v, description: %v, price: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice())))
+	err = s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("successfully loaded catalog of: id: %v, name: %v, description: %v, price: %v", in.GetId(), out.GetName(), out.GetDescription(), out.GetPrice()), Subject: "Catalog.GetCatalogInfo"})
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +84,7 @@ func (s *Server) GetCatalogInfo(ctx context.Context, in *api.GetCatalog) (*api.C
 func (s *Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*api.CatalogReply, error) {
 	log.Printf("received new catalog request of: name: %v, description: %v, price: %v", in.GetName(), in.GetDescription(), in.GetPrice())
 
-	err := s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("received new catalog request of: name: %v, description: %v, price: %v", in.GetName(), in.GetDescription(), in.GetPrice())))
+	err := s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("received new catalog request of: name: %v, description: %v, price: %v", in.GetName(), in.GetDescription(), in.GetPrice()), Subject: "Catalog.NewCatalogArticle"})
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +92,7 @@ func (s *Server) NewCatalogArticle(ctx context.Context, in *api.NewCatalog) (*ap
 	s.CatalogID = s.CatalogID + 1
 	s.Catalog[s.CatalogID] = in
 	log.Printf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice())
-	err = s.Nats.Publish("log.catalog", []byte(fmt.Sprintf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice())))
+	err = s.Nats.Publish("log.catalog", api.Log{Message: fmt.Sprintf("successfully created new catalog article: id: %v, name: %v, description: %v, price: %v", s.CatalogID, in.GetName(), in.GetDescription(), in.GetPrice()), Subject: "Catalog.NewCatalogArticle"})
 	if err != nil {
 		panic(err)
 	}
@@ -161,7 +161,15 @@ func (s *Server) First() {
 	log.Printf("filling stock: Id:%v", newStockEntry.GetId())
 
 	s.Catalog[3] = &api.NewCatalog{Name: "Microwave", Description: "Newest technology. Heats food up 10 times faster", Price: 63.99}
-	newStockEntry = &api.AddStockRequest{Id: 3, Amount: 1}
+	newStockEntry = &api.AddStockRequest{Id: 3, Amount: 0}
+	err = s.Nats.Publish("stock.add", newStockEntry)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("filling stock: Id:%v", newStockEntry.GetId())
+
+	s.Catalog[4] = &api.NewCatalog{Name: "Toaster", Description: "For the perfect toast", Price: 19.99}
+	newStockEntry = &api.AddStockRequest{Id: 4, Amount: 0}
 	err = s.Nats.Publish("stock.add", newStockEntry)
 	if err != nil {
 		panic(err)
