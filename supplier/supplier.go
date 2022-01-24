@@ -22,7 +22,7 @@ type Server struct {
 func (s *Server) OrderArticle(ctx context.Context, in *api.OrderArticleRequest) (*api.SupplierName, error) {
 
 	log.Printf("received order for ordering article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount())
-	err := s.Nats.Publish("log.supplier", []byte(fmt.Sprintf("received order for ordering article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount())))
+	err := s.Nats.Publish("log.supplier", api.Log{Message: fmt.Sprintf("received order for ordering article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount()), Subject: "Supplier.OrderArticle"})
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +34,7 @@ func (s *Server) OrderArticle(ctx context.Context, in *api.OrderArticleRequest) 
 func (s *Server) DeliveredArticle(ctx context.Context, in *api.NewArticles) (*api.GetSupplierReply, error) {
 	log.Printf("received new article(s) with: Order ID: %v, ID: %v, quantity: %v, Supplier name: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount(), in.GetNameSupplier())
 
-	err := s.Nats.Publish("log.supplier", []byte(fmt.Sprintf("received new article(s) with: Order ID: %v, ID: %v, quantity: %v, Supplier name: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount(), in.GetNameSupplier())))
+	err := s.Nats.Publish("log.supplier", api.Log{Message: fmt.Sprintf("received new article(s) with: Order ID: %v, ID: %v, quantity: %v, Supplier name: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount(), in.GetNameSupplier()), Subject: "Supplier.DeliveredArticle"})
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +52,7 @@ func (s *Server) DeliveredArticle(ctx context.Context, in *api.NewArticles) (*ap
 // asynchron aufgerufene Funktion
 func (s *Server) OrderSupplies(in *api.OrderArticleRequest) {
 	log.Printf("received order for article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount())
-	err := s.Nats.Publish("log.supplier", []byte(fmt.Sprintf("received order for article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount())))
+	err := s.Nats.Publish("log.supplier", api.Log{Message: fmt.Sprintf("received order for article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount()), Subject: "Supplier.OrderSupplies"})
 	if err != nil {
 		panic(err)
 	}
@@ -62,7 +62,6 @@ func (s *Server) OrderSupplies(in *api.OrderArticleRequest) {
 	s.Supplier[s.SupplierID] = &api.SupplierStorage{ArticleId: in.GetArticleId(), Amount: in.GetAmount()}
 	log.Printf("Article Id has been stored: %v", s.Supplier[s.SupplierID].GetArticleId())
 
-	// TODO
 	name, _ := s.OrderArticle(context.TODO(), in)
 	s.Supplier[s.SupplierID] = &api.SupplierStorage{NameSupplier: name.GetName()}
 	log.Printf("Sucessfully ordered article(s) with: id: %v, amount: %v, name supplier: %v", in.GetArticleId(), in.GetAmount(), name.GetName())

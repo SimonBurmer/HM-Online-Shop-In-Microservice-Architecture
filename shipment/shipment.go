@@ -22,7 +22,7 @@ type Server struct {
 
 func (s *Server) NewShipment(in *api.NewShipmentRequest) {
 	log.Printf("received new shipment request of: order ID: %v articles: %v, address: %v", in.GetOrderID(), in.GetArticles(), in.GetAddress())
-	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received new shipment request of: order ID: %v, articles: %v, address: %v", in.GetOrderID(), in.GetArticles(), in.GetAddress())))
+	err := s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("received new shipment request of: order ID: %v, articles: %v, address: %v", in.GetOrderID(), in.GetArticles(), in.GetAddress()), Subject: "Shipment.NewShipment"})
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +34,7 @@ func (s *Server) NewShipment(in *api.NewShipmentRequest) {
 	}
 	s.Shipment[s.ShipmentID] = &api.ShipmentStorage{Address: in.GetAddress(), Articles: in.GetArticles(), Ready: m}
 	log.Printf("successfully created new shipment: id: %v, order ID: %v, articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress())
-	err = s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("successfully created new shipment: id: %v, order ID: %v articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress())))
+	err = s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("successfully created new shipment: id: %v, order ID: %v articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress()), Subject: "Shipment.NewShipment"})
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +52,7 @@ func (s *Server) NewShipment(in *api.NewShipmentRequest) {
 
 func (s *Server) ShipmentReady(in *api.ShipmentReadiness) {
 	log.Printf("received shipment ready request of: order ID: %v article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())
-	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received shipment ready request of: order ID: %v article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())))
+	err := s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("received shipment ready request of: order ID: %v article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount()), Subject: "Shipment.ShipmentReady"})
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +74,7 @@ func (s *Server) ShipmentReady(in *api.ShipmentReadiness) {
 func (s *Server) SendShipment(ctx context.Context, in *api.GetShipmentRequest) (*api.ShipmentReply, error) {
 	log.Printf("received send shipment request: id: %v, articles: %v, availability: %v", in.GetId(), in.GetArticles(), in.GetReady())
 
-	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received send shipment request: id: %v, articles: %v, availability: %v", in.GetId(), in.GetArticles(), in.GetReady())))
+	err := s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("received send shipment request: id: %v, articles: %v, availability: %v", in.GetId(), in.GetArticles(), in.GetReady()), Subject: "Shipment.SendShipment"})
 	if err != nil {
 		panic(err)
 	}
@@ -89,7 +89,7 @@ func (s *Server) SendShipment(ctx context.Context, in *api.GetShipmentRequest) (
 	// Hier würde die Anbindung an die API erfolgen
 	log.Printf("sucessfully send shipment: id: %v, articles: %v, address: %v", in.GetId(), in.GetArticles(), s.Shipment[s.ShipmentID].GetAddress())
 
-	err = s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("sucessfully send shipment: id: %v, articles: %v, address: %v", in.GetId(), in.GetArticles(), s.Shipment[s.ShipmentID].GetAddress())))
+	err = s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("sucessfully send shipment: id: %v, articles: %v, address: %v", in.GetId(), in.GetArticles(), s.Shipment[s.ShipmentID].GetAddress()), Subject: "Shipment.SendShipment"})
 	if err != nil {
 		panic(err)
 	}
@@ -98,7 +98,7 @@ func (s *Server) SendShipment(ctx context.Context, in *api.GetShipmentRequest) (
 
 func (s *Server) CancelShipment(in *api.CancelShipmentRequest) {
 	log.Printf("received cancellation of shipment of: ID: %v", in.GetId())
-	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received cancellation of shipment of: ID: %v", in.GetId())))
+	err := s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("received cancellation of shipment of: ID: %v", in.GetId()), Subject: "Shipment.CancelShipment"})
 	if err != nil {
 		panic(err)
 	}
@@ -127,7 +127,7 @@ func (s *Server) CancelShipment(in *api.CancelShipmentRequest) {
 func (s *Server) ReturnDefectArticle(ctx context.Context, in *api.ShipmentReturnRequest) (*api.ReturnReply, error) {
 
 	log.Printf("received return of defect article: ID: %v, article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())
-	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received return of defect article: ID: %v, article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())))
+	err := s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("received return of defect article: ID: %v, article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount()), Subject: "Shipment.ReturnDefectArticle"})
 	if err != nil {
 		panic(err)
 	}
@@ -142,7 +142,7 @@ func (s *Server) ReturnDefectArticle(ctx context.Context, in *api.ShipmentReturn
 
 func (s *Server) Refund(ctx context.Context, in *api.ShipmentReturnRequest) (*api.ReturnReply, error) {
 	log.Printf("received refund request of: order ID: %v article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())
-	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received refund request of: order ID: %v article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount())))
+	err := s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("received refund request of: order ID: %v article ID: %v, amount: %v", in.GetId(), in.GetArticleId(), in.GetAmount()), Subject: "Shipment.Refund"})
 	if err != nil {
 		panic(err)
 	}
