@@ -21,14 +21,15 @@ type Server struct {
 // orders articles from the Supplier API
 func (s *Server) OrderArticle(ctx context.Context, in *api.OrderArticleRequest) (*api.SupplierName, error) {
 
-	log.Printf("received order for ordering article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount())
-	err := s.Nats.Publish("log.supplier", api.Log{Message: fmt.Sprintf("received order for ordering article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount()), Subject: "Supplier.OrderArticle"})
+	log.Printf("received order for ordering article(s) from outside suppliers: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount())
+	err := s.Nats.Publish("log.supplier", api.Log{Message: fmt.Sprintf("received order for ordering article(s) from outside suppliers: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount()), Subject: "Supplier.OrderArticle"})
 	if err != nil {
 		panic(err)
 	}
-	// TODO
-	// return name supplier??
-	return &api.SupplierName{Name: "yes"}, nil
+	// return name  of standard supplier bc there's no API
+	name := "Amazon"
+	log.Printf("Sucessfully ordered article(s) with: id: %v, amount: %v, name supplier: %v", in.GetArticleId(), in.GetAmount(), name)
+	return &api.SupplierName{Name: name}, nil
 }
 
 func (s *Server) DeliveredArticle(ctx context.Context, in *api.NewArticles) (*api.GetSupplierReply, error) {
@@ -45,49 +46,25 @@ func (s *Server) DeliveredArticle(ctx context.Context, in *api.NewArticles) (*ap
 		panic(err)
 	}
 	log.Printf("Articles send to Stock: Id: %v, Amount: %v", in.GetArticleId(), in.GetAmount())
-
+	err = s.Nats.Publish("log.supplier", api.Log{Message: fmt.Sprintf("Articles send to Stock: Id: %v, Amount: %v", in.GetArticleId(), in.GetAmount())})
+	if err != nil {
+		panic(err)
+	}
 	return &api.GetSupplierReply{OrderId: in.GetOrderId(), ArticleId: in.GetArticleId(), Amount: in.GetAmount(), NameSupplier: in.GetNameSupplier()}, nil
 }
 
 // asynchron aufgerufene Funktion
 func (s *Server) OrderSupplies(in *api.OrderArticleRequest) {
-	log.Printf("received order for article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount())
-	err := s.Nats.Publish("log.supplier", api.Log{Message: fmt.Sprintf("received order for article(s) with: Order ID: %v, ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount()), Subject: "Supplier.OrderSupplies"})
+	log.Printf("received order for article(s) with: order ID: %v, article ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount())
+	err := s.Nats.Publish("log.supplier", api.Log{Message: fmt.Sprintf("received order for article(s) with: order ID: %v, article ID: %v, quantity: %v", in.GetOrderId(), in.GetArticleId(), in.GetAmount()), Subject: "Supplier.OrderSupplies"})
 	if err != nil {
 		panic(err)
 	}
 
 	s.SupplierID = s.SupplierID + 1
-	log.Printf("new supplier ID")
 	s.Supplier[s.SupplierID] = &api.SupplierStorage{ArticleId: in.GetArticleId(), Amount: in.GetAmount()}
-	log.Printf("Article Id has been stored: %v", s.Supplier[s.SupplierID].GetArticleId())
+	log.Printf("Sucessfully created new supplier order: supplierId:%v, articleId:%v, amount:%v", s.SupplierID, in.GetArticleId(), in.GetAmount())
 
 	name, _ := s.OrderArticle(context.TODO(), in)
 	s.Supplier[s.SupplierID] = &api.SupplierStorage{NameSupplier: name.GetName()}
-	log.Printf("Sucessfully ordered article(s) with: id: %v, amount: %v, name supplier: %v", in.GetArticleId(), in.GetAmount(), name.GetName())
-
 }
-
-/*
-stock_redisVal := s.Redis.Get(context.TODO(), "stock")
-	if stock_redisVal == nil {
-		log.Fatal("service not registered")
-	}
-	stock_address, err := stock_redisVal.Result()
-	if err != nil {
-		log.Fatalf("error while trying to get the result %v", err)
-	}
-	stock_conn, err := grpc.Dial(stock_address, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer stock_conn.Close()
-	stock := api.NewStockClient(stock_conn)
-	stock_ctx, stock_cancel := context.WithTimeout(context.Background(), time.Second)
-	defer stock_cancel()
-
-	stock_r, stock_err := stock.AddStock(stock_ctx, &api.AddStockRequest{Id: in.GetArticleId(), Amount: int32(in.GetAmount())})
-	if stock_err != nil {
-		log.Fatalf("Direct communication with stock failed: %v", stock_r)
-	}
-*/

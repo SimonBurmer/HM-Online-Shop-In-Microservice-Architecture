@@ -570,6 +570,8 @@ func (c *Client) scenario3() {
 	}
 	log.Printf("Payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
 
+	time.Sleep(5 * time.Second)
+
 	// Order stornieren
 	cancelOrder := &api.CancelOrderRequest{OrderId: 1}
 	err = c.Nats.Publish("order.cancel", cancelOrder)

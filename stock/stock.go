@@ -40,6 +40,7 @@ func (s *Server) AddStock(in *api.AddStockRequest) {
 					if err != nil {
 						panic(err)
 					}
+					log.Printf("Articles have been sent to shipment: shipmentId:%v, amount:%v", key, value)
 					amount = amount - int32(value)
 					delete(s.Stock[in.GetId()].GetReserved(), key)
 				} else {
@@ -49,6 +50,7 @@ func (s *Server) AddStock(in *api.AddStockRequest) {
 					if err != nil {
 						panic(err)
 					}
+					log.Printf("Articles have been sent to shipment: shipmentId:%v, amount:%v", key, amount)
 					s.Stock[in.GetId()].Reserved[key] = value
 					amount = 0
 					break
@@ -56,7 +58,7 @@ func (s *Server) AddStock(in *api.AddStockRequest) {
 			}
 
 		}
-		// Rest in Stock
+		// Reststückzahlen in Stock
 		s.Stock[in.GetId()].Amount = val.Amount + amount
 	} else {
 		// article is not in DB
@@ -94,7 +96,7 @@ func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetR
 		m := make(map[uint32]uint32)
 		m[in.GetShipmentId()] = (uint32(in.GetAmount()) - uint32(out.GetAmount()))
 		s.Stock[in.GetId()] = &api.NewStockRequest{Amount: 0, Reserved: m}
-		log.Printf("reserved: %v", s.Stock[in.GetId()].GetReserved())
+		log.Printf("reserved not available articles: shipmentId:%v, amount:%v", in.GetShipmentId(), s.Stock[in.GetId()].Reserved[in.GetShipmentId()])
 
 		// Bestellung der fehlenden Artikel beim Supplier
 		neededAmount := articleAmount * (-1)
@@ -109,7 +111,12 @@ func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetR
 	}
 
 	s.Stock[in.GetId()].Amount = articleAmount
+	log.Printf("amount of currently available stock: id: %v, amount: %v", in.GetId(), in.GetAmount())
 
+	err = s.Nats.Publish("log.stock", api.Log{Message: fmt.Sprintf("amount of currently available stock: id: %v, amount: %v", in.GetId(), in.GetAmount()), Subject: "Stock.GetArticle"})
+	if err != nil {
+		panic(err)
+	}
 	return &api.GetReply{Amount: in.GetAmount()}, nil
 }
 
@@ -134,9 +141,16 @@ func (s *Server) GetStock(ctx context.Context, in *api.ArticleID) (*api.GetStock
 	if s.Stock[in.GetId()].GetAmount() <= 0 {
 		answer = false
 	}
+	log.Printf("Is article available: %v", answer)
 	return &api.GetStockReply{Answer: answer}, nil
 }
 
 func (s *Server) CancelReserved(in *api.CancelReservedRequest) {
+	log.Printf("Request for deleting reservation for articles: articleId: %v, shipmentId: %v, reserved: %v", in.GetId(), in.GetShipmentId(), s.Stock[in.GetId()].GetReserved())
+	err := s.Nats.Publish("log.stock", api.Log{Message: fmt.Sprintf("Request for deleting reservation for articles: articleId: %v, shipmentId: %v, reserved: %v", in.GetId(), in.GetShipmentId(), s.Stock[in.GetId()].GetReserved()), Subject: "Stock.CancelReserved"})
+	if err != nil {
+		panic(err)
+	}
+
 	delete(s.Stock[in.GetId()].GetReserved(), in.GetShipmentId())
 }
