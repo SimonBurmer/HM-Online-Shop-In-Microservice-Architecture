@@ -33,16 +33,18 @@ func (s *Server) NewShipment(in *api.NewShipmentRequest) {
 		m[key] = 0
 	}
 	s.Shipment[s.ShipmentID] = &api.ShipmentStorage{Address: in.GetAddress(), Articles: in.GetArticles(), Ready: m}
-	log.Printf("successfully created new shipment: id: %v, order ID: %v, articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress())
-	err = s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("successfully created new shipment: id: %v, order ID: %v articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress()), Subject: "Shipment.NewShipment"})
-	if err != nil {
-		panic(err)
-	}
+
 	for index, element := range in.GetArticles() {
 		// Artikel aus Stock ausbuchen
 		log.Printf("Get articles from Stock: id:%v, amount:%v", index, element)
 		stock := s.getConnectionStock(&api.ShipmentReadiness{Id: s.ShipmentID, ArticleId: index, Amount: element})
 		s.Shipment[s.ShipmentID].Ready[index] = uint32(stock.GetAmount())
+	}
+
+	log.Printf("successfully created new shipment: id: %v, order ID: %v, articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress())
+	err = s.Nats.Publish("log.shipment", api.Log{Message: fmt.Sprintf("successfully created new shipment: id: %v, order ID: %v articles: %v, availability: %v, address: %v", s.ShipmentID, in.GetOrderID(), in.GetArticles(), s.Shipment[s.ShipmentID].GetReady(), in.GetAddress()), Subject: "Shipment.NewShipment"})
+	if err != nil {
+		panic(err)
 	}
 	// Überprüfen ob Shipment schon versendet werden kann
 	ready := &api.ShipmentReadiness{Id: s.ShipmentID}
@@ -131,10 +133,12 @@ func (s *Server) ReturnDefectArticle(ctx context.Context, in *api.ShipmentReturn
 	if err != nil {
 		panic(err)
 	}
-
-	s.Shipment[in.GetId()].Ready[in.GetArticleId()] = s.Shipment[in.GetId()].Articles[in.GetArticleId()] - in.GetAmount()
+	m := make(map[uint32]uint32)
+	m[in.GetArticleId()] = in.GetAmount()
+	s.Shipment[in.GetId()] = &api.ShipmentStorage{Articles: m, Ready: m}
+	s.Shipment[in.GetId()].Ready[in.GetArticleId()] = 0
 	stock := s.getConnectionStock(&api.ShipmentReadiness{Id: in.GetId(), ArticleId: in.GetArticleId(), Amount: in.GetAmount()})
-	s.Shipment[s.ShipmentID].Ready[in.GetArticleId()] = uint32(stock.GetAmount())
+	s.Shipment[s.ShipmentID].Ready[in.GetArticleId()] = s.Shipment[s.ShipmentID].Ready[in.GetArticleId()] + uint32(stock.GetAmount())
 	ready := &api.ShipmentReadiness{Id: s.ShipmentID}
 	s.ShipmentReady(ready)
 	return &api.ReturnReply{Id: in.GetId(), ArticleId: in.GetArticleId(), Amount: in.GetAmount()}, nil
