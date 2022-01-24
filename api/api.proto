@@ -280,7 +280,7 @@ message ShipmentReadiness {
   uint32 amount = 3;
 }
 
-message OrderID {
+message CancelShipmentRequest {
   uint32 id = 1;
 }
 

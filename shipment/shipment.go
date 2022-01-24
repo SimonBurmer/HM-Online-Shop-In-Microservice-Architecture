@@ -96,7 +96,7 @@ func (s *Server) SendShipment(ctx context.Context, in *api.GetShipmentRequest) (
 	return &api.ShipmentReply{Id: in.GetId(), Articles: in.GetArticles(), Ready: in.GetReady(), Address: address}, nil
 }
 
-func (s *Server) CancelShipment(in *api.OrderID) {
+func (s *Server) CancelShipment(in *api.CancelShipmentRequest) {
 	log.Printf("received cancellation of shipment of: ID: %v", in.GetId())
 	err := s.Nats.Publish("log.shipment", []byte(fmt.Sprintf("received cancellation of shipment of: ID: %v", in.GetId())))
 	if err != nil {
