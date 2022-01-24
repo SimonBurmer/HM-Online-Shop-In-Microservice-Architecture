@@ -93,7 +93,8 @@ func (s *Server) GetArticle(ctx context.Context, in *api.TakeArticle) (*api.GetR
 
 		m := make(map[uint32]uint32)
 		m[in.GetShipmentId()] = (uint32(in.GetAmount()) - uint32(out.GetAmount()))
-		s.Stock[s.StockID] = &api.NewStockRequest{Amount: 0, Reserved: m}
+		s.Stock[in.GetId()] = &api.NewStockRequest{Amount: 0, Reserved: m}
+		log.Printf("reserved: %v", s.Stock[in.GetId()].GetReserved())
 
 		// Bestellung der fehlenden Artikel beim Supplier
 		neededAmount := articleAmount * (-1)
