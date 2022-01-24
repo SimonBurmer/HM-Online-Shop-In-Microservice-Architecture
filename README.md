@@ -13,17 +13,16 @@ Kommandozeile:
 
 ## Verantwortlichkeiten 
 
-customer-Service: Simon
-order-Service: Simon 
-payment-Service:  Simon
+- Customer-Service: Simon
+- Order-Service: Simon 
+- Payment-Service:  Simon
 
-catalog-Service: Anna
-stock-Service: Anna
-shipment-Service: Anna
-supplier-Service: Anna
+- Catalog-Service: Anna
+- Stock-Service: Anna
+- Shipment-Service: Anna
+- Supplier-Service: Anna
 
-Client-Service: Beide
+- Client-Service: Beide
 
-Dokumentation: Jeder seine 
-
+- Dokumentation: Jeder seine 
 Die Architektur und Planung des Shops wurde gemeinsam umgesetzt.
