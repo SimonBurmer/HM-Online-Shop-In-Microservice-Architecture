@@ -47,7 +47,7 @@ services:
     depends_on:
       - redis
       - nats
-      - customer-service
+      - logger-service 
       - stock-service
     
   stock-service:
@@ -58,6 +58,7 @@ services:
     depends_on:
       - redis
       - nats 
+      - logger-service 
 
   order-service:
     build:
@@ -80,7 +81,7 @@ services:
     depends_on:
       - redis
       - nats 
-      - order-service
+      - logger-service 
       - stock-service
 
   supplier-service:
@@ -91,6 +92,7 @@ services:
     depends_on:
       - redis
       - nats 
+      - logger-service 
       - stock-service
 
   client:
