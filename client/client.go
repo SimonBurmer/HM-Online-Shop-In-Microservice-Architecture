@@ -43,7 +43,23 @@ func (c *Client) Scenarios(scenario string) {
 	}
 }
 
-// 1. Bestellung lagernder Produkte durch einen Neukunden bis zum Verschicken.
+func (c *Client) getConnection(connectTo string) *grpc.ClientConn {
+	redisVal := c.Redis.Get(context.TODO(), connectTo)
+	if redisVal == nil {
+		log.Fatalf("service %v not registered", connectTo)
+	}
+	address, err := redisVal.Result()
+	if err != nil {
+		log.Fatalf("error while trying to get the result %v", err)
+	}
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	return conn
+}
+
+
 // 2. Bestellung von drei Produkten, von denen nur eines auf Lager ist, bis zum Verschicken.
 //      Die beiden nicht lagernden Produkte werden zu verschiedenen Zeit- punkten, durch verschiedene Zulieferer, geliefert.
 // 3.  Stornieren einer Bestellung, die noch nicht verschickt wurde.
@@ -300,6 +316,72 @@ func (c *Client) test() {
 }
 
 func (c *Client) scenario1() {
+	// 1. Bestellung lagernder Produkte durch einen Neukunden bis zum Verschicken.
+	log.Printf("Scenario1: Bestellung lagernder Produkte durch einen Neukunden bis zum Verschicken")
+	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario 1: Bestellung lagernder Produkte durch einen Neukunden bis zum Verschicken"), Subject: "Client.Scenario1"})
+	if err != nil {
+		panic(err)
+	}
+
+	// Verbindung zu Customer-Service aufbauen
+	catalog_con := c.getConnection("catalog")
+	catalog := api.NewCatalogClient(catalog_con)
+	catalog_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer catalog_con.Close()
+	defer cancel()
+
+
+	// - Neuen Artikel hinzufügen
+	catalog_r1, catalog_err := catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Printer123", Description: "Very good printer!", Price: 102.50})
+	if catalog_err != nil {
+		log.Fatalf("Direct communication with catalog failed: %v", catalog_r1)
+	}
+	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r1.GetName(), catalog_r1.GetDescription(), catalog_r1.GetPrice(), catalog_r1.GetId())
+	catalog_r2, catalog_err := catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Lamp", Description: "Lights up the room", Price: 42.00})
+	if catalog_err != nil {
+		log.Fatalf("Direct communication with catalog failed: %v", catalog_r2)
+	}
+	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r2.GetName(), catalog_r2.GetDescription(), catalog_r2.GetPrice(), catalog_r2.GetId())
+
+
+	// - Bestand einbuchen
+	addActicle := &api.AddStockRequest{Id: catalog_r1.Id, Amount: 3}
+	err = c.Nats.Publish("stock.add", addActicle)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("Added amount %v to stock of article %v", 3,catalog_r1.GetId())
+	addActicle = &api.AddStockRequest{Id: catalog_r2.Id, Amount: 5}
+	err = c.Nats.Publish("stock.add", addActicle)
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("Added amount %v to stock of article %v", 5,catalog_r2.GetId())
+
+
+	// Verbindung zu Customer-Service aufbauen
+	customer_con := c.getConnection("customer")
+	customer := api.NewCustomerClient(customer_con)
+	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer customer_con.Close()
+	defer cancel()
+
+	
+	customer_r, customer_err := customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Simon", Address: "Munich"})
+	if customer_err != nil {
+		log.Fatalf("Direct communication with customer failed: %v", customer_r)
+	}
+	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
+
+	customer_r, customer_err = customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Max", Address: "Berlin"})
+	if customer_err != nil {
+		log.Fatalf("Direct communication with customer failed: %v", customer_r)
+	}
+	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
+
+
+
+
 
 }
 func (c *Client) scenario2() {
