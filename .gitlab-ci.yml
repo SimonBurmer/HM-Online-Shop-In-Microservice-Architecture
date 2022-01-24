@@ -1,6 +1,6 @@
 lint:
   image: golangci/golangci-lint
-  stage: lint
+  stage: test
   script:
     - echo "No lint activated"
 
