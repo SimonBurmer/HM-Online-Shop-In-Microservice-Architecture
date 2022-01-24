@@ -11,7 +11,6 @@ services:
     image: nats
 
   # App
-  # TODO: EXPOSE IN DOCKERFILE LÖschen!
   logger-service:
     build:
       context: .
@@ -71,6 +70,7 @@ services:
       - logger-service 
       - payment-service
       - catalog-service
+      - shipment-service
 
   shipment-service:
     build:

@@ -5,5 +5,4 @@ RUN go build -o payment/service/paymentservice payment/service/main.go
 
 FROM alpine
 COPY --from=builder /app/payment/service/paymentservice /app/paymentservice
-EXPOSE 8091
 ENTRYPOINT [ "/app/paymentservice" ]
