@@ -19,7 +19,6 @@ type Client struct {
 }
 
 func (c *Client) Scenarios(scenario string) {
-	
 	log.Printf("Run scenario: %s ", scenario)
 	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("run scenario: %s", scenario), Subject: "Client.Scenarios"})
 	if err != nil {
