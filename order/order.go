@@ -74,8 +74,8 @@ func (s *Server) NewOrder(ctx context.Context, in *api.NewOrderRequest) (*api.Or
 	s.Orders[s.OrderID] = &api.OrderStorage{CustomerID: in.CustomerID, Articles: in.Articles, TotalCost: float32(totalCost), Payed: false, Shipped: false, Canceled: false}
 
 	// Neues Payment erstellen
-	NewPayment := &api.NewPaymentRequest{OrderId: s.OrderID, Value: float32(totalCost)}
-	err = s.Nats.Publish("payment.new", NewPayment)
+	newPayment := &api.NewPaymentRequest{OrderId: s.OrderID, Value: float32(totalCost)}
+	err = s.Nats.Publish("payment.new", newPayment)
 	if err != nil {
 		panic(err)
 	}
@@ -96,12 +96,25 @@ func (s *Server) OrderPaymentUpdate(in *api.OrderPaymentUpdate) {
 	out.Payed = true
 	s.Orders[in.GetOrderId()] = out
 
+	// - Verbindung zu Customer-Service aufbauen
+	customer_con := s.getConnection("customer")
+	customer := api.NewCustomerClient(customer_con)
+	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer customer_con.Close()
+	defer cancel()
+
+	// - Kunden-Informationen holen
+	customer_r, customer_err := customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: out.GetCustomerID()})
+	if customer_err != nil {
+		log.Fatalf("could not get customer of: customerId: %v", out.GetCustomerID())
+	}
+
 	// Neues Shipment erstellen
-	//NewPayment := &api.NewPaymentRequest{OrderId: s.OrderID, Value: float32(totalCost)}
-	//err = s.Nats.Publish("payment.new", NewPayment)
-	//if err != nil {
-	//	panic(err)
-	//}
+	newShipment := &api.NewShipmentRequest{OrderID: in.GetOrderId(), Articles: out.GetArticles(), Address: customer_r.GetAddress()}
+	err = s.Nats.Publish("shipment.new", newShipment)
+	if err != nil {
+		panic(err)
+	}
 
 	log.Printf("order with orderId %v has been payed!", in.GetOrderId())
 }
@@ -150,12 +163,12 @@ func (s *Server) CancelOrderRequest(in *api.CancelOrderRequest) {
 		panic(err)
 	}
 
-	// shipment der Order stornieren
-	//cancelPayment := &api.CancelPaymentRequest{OrderId: in.GetOrderId()}
-	//err = s.Nats.Publish("payment.cancel", cancelPayment)
-	//if err != nil {
-	//	panic(err)
-	//}
+	// Shipment der Order stornieren
+	cancelShipment := &api.CancelShipmentRequest{Id: in.GetOrderId()}
+	err = s.Nats.Publish("shipment.cancel", cancelShipment)
+	if err != nil {
+		panic(err)
+	}
 
 	// Order als storniert markieren
 	out.Canceled = true
@@ -175,6 +188,21 @@ func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
 	out := s.getOrder(in.GetOrderId())
 
 	// TODO: Überprüfen ob article teil der bestellung!!!
+		// TODO: Überprüfen ob article teil der bestellung!!!
+			// TODO: Überprüfen ob article teil der bestellung!!!
+				// TODO: Überprüfen ob article teil der bestellung!!!
+					// TODO: Überprüfen ob article teil der bestellung!!!
+						// TODO: Überprüfen ob article teil der bestellung!!!
+							// TODO: Überprüfen ob article teil der bestellung!!!
+								// TODO: Überprüfen ob article teil der bestellung!!!
+									// TODO: Überprüfen ob article teil der bestellung!!!
+										// TODO: Überprüfen ob article teil der bestellung!!!
+											// TODO: Überprüfen ob article teil der bestellung!!!
+												// TODO: Überprüfen ob article teil der bestellung!!!
+													// TODO: Überprüfen ob article teil der bestellung!!!
+														// TODO: Überprüfen ob article teil der bestellung!!!
+															// TODO: Überprüfen ob article teil der bestellung!!!
+
 
 	// Rücksendung aus Bestellung löschen
 	delete(out.GetArticles(), in.GetArticleId())

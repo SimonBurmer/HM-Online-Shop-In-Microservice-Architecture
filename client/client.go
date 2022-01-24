@@ -59,7 +59,6 @@ func (c *Client) getConnection(connectTo string) *grpc.ClientConn {
 	return conn
 }
 
-
 // 2. Bestellung von drei Produkten, von denen nur eines auf Lager ist, bis zum Verschicken.
 //      Die beiden nicht lagernden Produkte werden zu verschiedenen Zeit- punkten, durch verschiedene Zulieferer, geliefert.
 // 3.  Stornieren einer Bestellung, die noch nicht verschickt wurde.
@@ -330,7 +329,6 @@ func (c *Client) scenario1() {
 	defer catalog_con.Close()
 	defer cancel()
 
-
 	// - Neuen Artikel hinzufügen
 	catalog_r1, catalog_err := catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Printer123", Description: "Very good printer!", Price: 102.50})
 	if catalog_err != nil {
@@ -343,21 +341,19 @@ func (c *Client) scenario1() {
 	}
 	log.Printf("Created catalog entry: Name:%v, Description:%v, Price:%v, Id:%v", catalog_r2.GetName(), catalog_r2.GetDescription(), catalog_r2.GetPrice(), catalog_r2.GetId())
 
-
 	// - Bestand einbuchen
 	addActicle := &api.AddStockRequest{Id: catalog_r1.Id, Amount: 3}
 	err = c.Nats.Publish("stock.add", addActicle)
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("Added amount %v to stock of article %v", 3,catalog_r1.GetId())
+	log.Printf("Added amount %v to stock of article %v", 3, catalog_r1.GetId())
 	addActicle = &api.AddStockRequest{Id: catalog_r2.Id, Amount: 5}
 	err = c.Nats.Publish("stock.add", addActicle)
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("Added amount %v to stock of article %v", 5,catalog_r2.GetId())
-
+	log.Printf("Added amount %v to stock of article %v", 5, catalog_r2.GetId())
 
 	// Verbindung zu Customer-Service aufbauen
 	customer_con := c.getConnection("customer")
@@ -366,22 +362,12 @@ func (c *Client) scenario1() {
 	defer customer_con.Close()
 	defer cancel()
 
-	
-	customer_r, customer_err := customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Simon", Address: "Munich"})
+	// Neuen Customer anlegen
+	customer_r, customer_err := customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Max", Address: "Berlin"})
 	if customer_err != nil {
 		log.Fatalf("Direct communication with customer failed: %v", customer_r)
 	}
 	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
-
-	customer_r, customer_err = customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Max", Address: "Berlin"})
-	if customer_err != nil {
-		log.Fatalf("Direct communication with customer failed: %v", customer_r)
-	}
-	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
-
-
-
-
 
 }
 func (c *Client) scenario2() {
