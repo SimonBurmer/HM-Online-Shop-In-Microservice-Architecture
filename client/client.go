@@ -19,7 +19,7 @@ type Client struct {
 }
 
 func (c *Client) Scenarios(scenario string) {
-	
+
 	log.Printf("Run scenario: %s ", scenario)
 	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("run scenario: %s", scenario), Subject: "Client.Scenarios"})
 	if err != nil {
@@ -411,6 +411,90 @@ func (c *Client) scenario1() {
 }
 
 func (c *Client) scenario2() {
+
+	log.Printf("Scenario2: Bestellung von drei Produkten, von denen nur eines auf Lager ist, bis zum Verschicken")
+	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario 2: Bestellung von drei Produkten, von denen nur eines auf Lager ist, bis zum Verschicken"), Subject: "Client.Scenario2"})
+	if err != nil {
+		panic(err)
+	}
+	// Daten in Stock und Catalog füllen
+	err = c.Nats.Publish("catalog.first", "")
+	if err != nil {
+		panic(err)
+	}
+
+	customer_con := c.getConnection("customer")
+	customer := api.NewCustomerClient(customer_con)
+	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer customer_con.Close()
+	defer cancel()
+
+	customer_r, customer_err := customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Simon", Address: "Munich"})
+	if customer_err != nil {
+		log.Fatalf("Direct communication with customer failed: %v", customer_r)
+	}
+	log.Printf("Created customer: Name:%v, Address:%v, Id:%v", customer_r.GetName(), customer_r.GetAddress(), customer_r.GetId())
+
+	////
+	// Verbindung zu Order-Service aufbauen
+	////
+	order_con := c.getConnection("order")
+	order := api.NewOrderClient(order_con)
+	order_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer order_con.Close()
+	defer cancel()
+
+	// Neue Order anlegen
+	// Bestellung von Artikel 1, 3, 4
+	articles := make(map[uint32]uint32)
+	articles[1] = uint32(1)
+	articles[3] = uint32(1)
+	articles[4] = uint32(1)
+
+	order_r, order_err := order.NewOrder(order_ctx, &api.NewOrderRequest{CustomerID: customer_r.GetId(), Articles: articles})
+	if order_err != nil {
+		log.Fatalf("Direct communication with order failed: %v", order_r)
+	}
+	log.Printf("created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
+
+	////
+	// Verbindung zu Payment-Service aufbauen
+	////
+	payment_con := c.getConnection("payment")
+	payment := api.NewPaymentClient(payment_con)
+	payment_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer payment_con.Close()
+	defer cancel()
+
+	// Payment bezahlen
+	payment_r, payment_err := payment.PayPayment(payment_ctx, &api.PayPaymentRequest{OrderId: order_r.GetOrderId(), Value: order_r.GetTotalCost()})
+	if payment_err != nil {
+		log.Fatalf("Direct communication with payment failed: %v", payment_r)
+	}
+	log.Printf("payed payment: orderId:%v, value:%v", payment_r.GetOrderId(), order_r.GetTotalCost())
+
+	////
+	// Verbindung zu Supplier-Service aufbauen
+	////
+	supplier_con := c.getConnection("supplier")
+	supplier := api.NewSupplierClient(supplier_con)
+	supplier_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer supplier_con.Close()
+	defer cancel()
+
+	// Lieferung
+	supplier_r, supplier_err := supplier.DeliveredArticle(supplier_ctx, &api.NewArticles{OrderId: order_r.GetOrderId(), ArticleId: 3, Amount: 1, NameSupplier: "Supplier1"})
+	if supplier_err != nil {
+		log.Fatalf("Direct communication with supplier failed: %v", supplier_r)
+	}
+	log.Printf("delivered articles: orderId:%v, articleId:%v, amount:%v, name supplier:%v", supplier_r.GetOrderId(), supplier_r.GetArticleId(), supplier_r.GetAmount(), supplier_r.GetNameSupplier())
+
+	// Lieferung
+	supplier_r, supplier_err = supplier.DeliveredArticle(supplier_ctx, &api.NewArticles{OrderId: order_r.GetOrderId(), ArticleId: 4, Amount: 1, NameSupplier: "Supplier2"})
+	if supplier_err != nil {
+		log.Fatalf("Direct communication with supplier failed: %v", supplier_r)
+	}
+	log.Printf("delivered articles: orderId:%v, articleId:%v, amount:%v, name supplier:%v", supplier_r.GetOrderId(), supplier_r.GetArticleId(), supplier_r.GetAmount(), supplier_r.GetNameSupplier())
 
 }
 func (c *Client) scenario3() {
