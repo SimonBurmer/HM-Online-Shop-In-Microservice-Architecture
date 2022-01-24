@@ -417,17 +417,21 @@ func (c *Client) scenario1() {
 
 func (c *Client) scenario2() {
 
-	log.Printf("Scenario2: Bestellung von drei Produkten, von denen nur eines auf Lager ist, bis zum Verschicken")
-	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario 2: Bestellung von drei Produkten, von denen nur eines auf Lager ist, bis zum Verschicken"), Subject: "Client.Scenario2"})
+	log.Printf("Scenario2: Ordering three products, only one of which is in stock")
+	err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("Scenario2: Ordering three products, only one of which is in stock"), Subject: "Client.Scenario2"})
 	if err != nil {
 		panic(err)
 	}
+
 	// Daten in Stock und Catalog füllen
 	err = c.Nats.Publish("catalog.first", "")
 	if err != nil {
 		panic(err)
 	}
 
+	////
+	// Verbindung zu Customer-Service aufbauen
+	////
 	customer_con := c.getConnection("customer")
 	customer := api.NewCustomerClient(customer_con)
 	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -487,14 +491,14 @@ func (c *Client) scenario2() {
 	defer supplier_con.Close()
 	defer cancel()
 
-	// Lieferung
+	// Lieferung des Artikels der nicht mehr vorrätig war
 	supplier_r, supplier_err := supplier.DeliveredArticle(supplier_ctx, &api.NewArticles{OrderId: order_r.GetOrderId(), ArticleId: 3, Amount: 1, NameSupplier: "Supplier1"})
 	if supplier_err != nil {
 		log.Fatalf("Direct communication with supplier failed: %v", supplier_r)
 	}
 	log.Printf("delivered articles: orderId:%v, articleId:%v, amount:%v, name supplier:%v", supplier_r.GetOrderId(), supplier_r.GetArticleId(), supplier_r.GetAmount(), supplier_r.GetNameSupplier())
 
-	// Lieferung
+	// Lieferung des Artikels der nicht mehr vorrätig war
 	supplier_r, supplier_err = supplier.DeliveredArticle(supplier_ctx, &api.NewArticles{OrderId: order_r.GetOrderId(), ArticleId: 4, Amount: 1, NameSupplier: "Supplier2"})
 	if supplier_err != nil {
 		log.Fatalf("Direct communication with supplier failed: %v", supplier_r)
