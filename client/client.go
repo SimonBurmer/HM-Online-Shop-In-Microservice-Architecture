@@ -32,6 +32,12 @@ func (c *Client) Scenarios(scenario string) {
 		c.scenario1()
 	case "s2":
 		c.scenario2()
+	case "s3":
+		c.scenario3()
+	case "s4":
+		c.scenario4()
+	case "s5":
+		c.scenario5()
 
 	default:
 		err := c.Nats.Publish("log", api.Log{Message: fmt.Sprintf("no scenario called: %s", scenario), Subject: "Client.Scenarios"})
@@ -413,6 +419,16 @@ func (c *Client) scenario2() {
 
 }
 func (c *Client) scenario3() {
+
+	time.Sleep(3 * time.Second)
+
+}
+func (c *Client) scenario4() {
+
+	time.Sleep(3 * time.Second)
+
+}
+func (c *Client) scenario5() {
 
 	time.Sleep(3 * time.Second)
 
