@@ -10,20 +10,16 @@ Kommandozeile:
 - make run5
 - Alle Szenarien starten: make run
 
-
 ## Verantwortlichkeiten 
 
-customer-Service: Simon
-order-Service: Simon 
-payment-Service:  Simon
-
-catalog-Service: Anna
-stock-Service: Anna
-shipment-Service: Anna
-supplier-Service: Anna
-
-Client-Service: Beide
-
-Dokumentation: Jeder seine 
+- Customer-Service: Simon
+- Order-Service: Simon 
+- Payment-Service: Simon
+- Catalog-Service: Anna
+- Stock-Service: Anna
+- Shipment-Service: Anna
+- Supplier-Service: Anna
+- Client-Service: Beide
+- Dokumentation: Jeder seine 
 
 Die Architektur und Planung des Shops wurde gemeinsam umgesetzt.
