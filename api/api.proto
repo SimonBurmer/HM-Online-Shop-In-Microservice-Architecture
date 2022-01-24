@@ -252,8 +252,13 @@ service Shipment {
 message NewShipmentRequest {
   uint32 orderID = 1;
   map<uint32, uint32> articles = 2;
-  map<uint32, uint32> ready = 3;
-  string address = 4;
+  string address = 3;
+}
+
+message ShipmentStorage {
+  map<uint32, uint32> articles = 1;
+  map<uint32, uint32> ready = 2;
+  string address = 3;
 }
 
 message ShipmentReply {

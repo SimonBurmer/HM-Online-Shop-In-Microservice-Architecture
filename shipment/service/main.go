@@ -54,7 +54,7 @@ func main() {
 	}
 
 	// Erzeugt den fertigen service
-	shipmentServer := shipment.Server{Nats: c, Redis: rdb, Shipment: make(map[uint32]*api.NewShipmentRequest), ShipmentID: 0}
+	shipmentServer := shipment.Server{Nats: c, Redis: rdb, Shipment: make(map[uint32]*api.ShipmentStorage), ShipmentID: 0}
 	api.RegisterShipmentServer(s, &shipmentServer)
 
 	// Subscribed to NATS Channels
