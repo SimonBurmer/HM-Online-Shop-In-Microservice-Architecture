@@ -28,7 +28,7 @@ func main() {
 	// Verbindung zu Redis
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "redis:6379",
-		Password: "", // no password set
+		Password: "", 
 	})
 
 	// Registration im Redis
@@ -58,7 +58,7 @@ func main() {
 	orderServer := order.Server{Nats: c, Redis: rdb, Orders: make(map[uint32]*api.OrderStorage), OrderID: 0}
 	api.RegisterOrderServer(s, &orderServer)
 
-	// Subscribt einen Nats Channel
+	// Subscriben von Nats Channel
 	paymentUpdateSubscription, err := c.Subscribe("order.payment", func(msg *api.OrderPaymentUpdate) {
 		orderServer.OrderPaymentUpdate(msg)
 	})

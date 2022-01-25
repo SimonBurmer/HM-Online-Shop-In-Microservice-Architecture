@@ -68,31 +68,19 @@ func (c *Client) test() {
 	// Testen der einzelnen Komponenten
 	// 1. Customer service
 	// 2. Payment service
-	// 3. Order service
-	// 4. Catalog service
+	// 3. Catalog service
+	// 4. Order service
 
 	////////////////////////////
 	// Kommunikation mit Customer:
 	////////////////////////////
 
 	// Mithilfe von Redis Verbindung zu Customer aufbauen
-	customer_redisVal := c.Redis.Get(context.TODO(), "customer")
-	if customer_redisVal == nil {
-		log.Fatal("service not registered")
-	}
-	customer_address, err := customer_redisVal.Result()
-	if err != nil {
-		log.Fatalf("error while trying to get the result %v", err)
-	}
-	customer_conn, err := grpc.Dial(customer_address, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer customer_conn.Close()
-
-	customer := api.NewCustomerClient(customer_conn)
-	customer_ctx, customer_cancel := context.WithTimeout(context.Background(), time.Second)
-	defer customer_cancel()
+	customer_con := c.getConnection("customer")
+	customer := api.NewCustomerClient(customer_con)
+	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer customer_con.Close()
+	defer cancel()
 
 	// - Neuen Kunden erstellen
 	customer_r, customer_err := customer.NewCustomer(customer_ctx, &api.NewCustomerRequest{Name: "Simon", Address: "Munich"})
@@ -130,28 +118,17 @@ func (c *Client) test() {
 	////////////////////////////
 	// Kommunikation mit Payment:
 	////////////////////////////
-	// Mithilfe von Redis Verbindung zu Payment aufbauen
 
-	payment_redisVal := c.Redis.Get(context.TODO(), "payment")
-	if payment_redisVal == nil {
-		log.Fatal("service not registered")
-	}
-	payment_address, err := payment_redisVal.Result()
-	if err != nil {
-		log.Fatalf("error while trying to get the result %v", err)
-	}
-	payment_conn, err := grpc.Dial(payment_address, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer payment_conn.Close()
-	payment := api.NewPaymentClient(payment_conn)
-	payment_ctx, payment_cancel := context.WithTimeout(context.Background(), time.Second)
-	defer payment_cancel()
+	// Mithilfe von Redis Verbindung zu Payment aufbauen
+	payment_con := c.getConnection("payment")
+	payment := api.NewPaymentClient(payment_con)
+	payment_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer payment_con.Close()
+	defer cancel()
 
 	// - Neues Payment erstellen
 	newPayment := &api.NewPaymentRequest{OrderId: 1, TotalCost: 33.33}
-	err = c.Nats.Publish("payment.new", newPayment)
+	err := c.Nats.Publish("payment.new", newPayment)
 	if err != nil {
 		panic(err)
 	}
@@ -173,7 +150,7 @@ func (c *Client) test() {
 	log.Printf("cancel payment: orderId:%v", cancelPayment.GetOrderId())
 
 	// -  Payment zurückerstatten
-	refundPayment := &api.RefundPaymentRequest{OrderId: 1, Value: 33.33}
+	refundPayment := &api.RefundPaymentRequest{OrderId: 1, CustomerName: customer_r.GetName(), CustomerAddress: customer_r.GetAddress(), Value: 33.33}
 	err = c.Nats.Publish("payment.refund", refundPayment)
 	if err != nil {
 		panic(err)
@@ -183,25 +160,13 @@ func (c *Client) test() {
 	////////////////////////////
 	// Kommunikation mit Catalog:
 	////////////////////////////
+
 	// Mithilfe von Redis Verbindung zu Catalog aufbauen
-
-	catalog_redisVal := c.Redis.Get(context.TODO(), "catalog")
-	if catalog_redisVal == nil {
-		log.Fatal("service not registered")
-	}
-	catalog_address, err := catalog_redisVal.Result()
-	if err != nil {
-		log.Fatalf("error while trying to get the result %v", err)
-	}
-	catalog_conn, err := grpc.Dial(catalog_address, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer catalog_conn.Close()
-
-	catalog := api.NewCatalogClient(catalog_conn)
-	catalog_ctx, catalog_cancel := context.WithTimeout(context.Background(), time.Second)
-	defer catalog_cancel()
+	catalog_con := c.getConnection("catalog")
+	catalog := api.NewCatalogClient(catalog_con)
+	catalog_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer catalog_con.Close()
+	defer cancel()
 
 	// - Neuen Artikel hinzufügen
 	catalog_r, catalog_err := catalog.NewCatalogArticle(catalog_ctx, &api.NewCatalog{Name: "Printer123", Description: "Very good printer!", Price: 102.50})
@@ -229,23 +194,13 @@ func (c *Client) test() {
 	////////////////////////////
 	// Kommunikation mit Order:
 	////////////////////////////
-	order_redisVal := c.Redis.Get(context.TODO(), "order")
-	if order_redisVal == nil {
-		log.Fatal("service not registered")
-	}
-	order_address, err := order_redisVal.Result()
-	if err != nil {
-		log.Fatalf("error while trying to get the result %v", err)
-	}
-	order_conn, err := grpc.Dial(order_address, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer order_conn.Close()
 
-	order := api.NewOrderClient(order_conn)
-	order_ctx, order_cancel := context.WithTimeout(context.Background(), time.Second)
-	defer order_cancel()
+	// Mithilfe von Redis Verbindung zu Order aufbauen
+	order_con := c.getConnection("order")
+	order := api.NewOrderClient(order_con)
+	order_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer catalog_con.Close()
+	defer cancel()
 
 	m := make(map[uint32]uint32)
 	m[uint32(1)] = uint32(2)
@@ -296,16 +251,10 @@ func (c *Client) test() {
 	}
 	log.Printf("refund article of: orderId:%v, articleID: %v", refundArticle.GetOrderId(), refundArticle.GetArticleId())
 
+	time.Sleep(3 * time.Second)
+
 	// Order stornieren 1
 	cancelOrder := &api.CancelOrderRequest{OrderId: 1}
-	err = c.Nats.Publish("order.cancel", cancelOrder)
-	if err != nil {
-		panic(err)
-	}
-	log.Printf("canceled order: orderId:%v", cancelOrder.GetOrderId())
-
-	// Order stornieren 2
-	cancelOrder = &api.CancelOrderRequest{OrderId: 1}
 	err = c.Nats.Publish("order.cancel", cancelOrder)
 	if err != nil {
 		panic(err)
@@ -398,7 +347,7 @@ func (c *Client) scenario1() {
 	payment_con := c.getConnection("payment")
 	payment := api.NewPaymentClient(payment_con)
 	payment_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer catalog_con.Close()
+	defer payment_con.Close()
 	defer cancel()
 
 	// Payment bezahlen
@@ -712,7 +661,7 @@ func (c *Client) scenario5() {
 		log.Fatalf("Direct communication with order failed: %v", order_r)
 	}
 	log.Printf("Created order: OrderId:%v OrderCost: %v", order_r.GetOrderId(), order_r.GetTotalCost())
-	
+
 	////
 	// Verbindung zu Payment-Service aufbauen
 	////

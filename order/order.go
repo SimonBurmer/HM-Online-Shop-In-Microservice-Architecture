@@ -81,6 +81,10 @@ func (s *Server) NewOrder(ctx context.Context, in *api.NewOrderRequest) (*api.Or
 	}
 
 	log.Printf("successfully created new order with orderId: %v", s.OrderID)
+	err = s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("successfully created new order with orderId: %v", s.OrderID), Subject: "Order.NewOrder"})
+	if err != nil {
+		panic(err)
+	}
 	return &api.OrderReply{OrderId: s.OrderID, TotalCost: float32(totalCost)}, nil
 }
 
@@ -94,16 +98,15 @@ func (s *Server) OrderPaymentUpdate(in *api.OrderPaymentUpdate) {
 	// Order laden und auf bezahlt setzen
 	out := s.getOrder(in.GetOrderId())
 	out.Payed = true
-	s.Orders[in.GetOrderId()] = out
 
-	// - Verbindung zu Customer-Service aufbauen
+	// Verbindung zu Customer-Service aufbauen
 	customer_con := s.getConnection("customer")
 	customer := api.NewCustomerClient(customer_con)
 	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer customer_con.Close()
 	defer cancel()
 
-	// - Kunden-Informationen holen
+	// Kunden-Informationen holen
 	customer_r, customer_err := customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: out.GetCustomerID()})
 	if customer_err != nil {
 		log.Fatalf("could not get customer of: customerId: %v", out.GetCustomerID())
@@ -129,7 +132,7 @@ func (s *Server) OrderShipmentUpdate(in *api.OrderShipmentUpdate) {
 	// Order laden und auf verschickt setzen
 	out := s.getOrder(in.GetOrderId())
 	out.Shipped = true
-	s.Orders[in.GetOrderId()] = out
+
 	log.Printf("order with orderId %v has been shipped!", in.GetOrderId())
 }
 
@@ -140,17 +143,17 @@ func (s *Server) CancelOrderRequest(in *api.CancelOrderRequest) {
 		panic(err)
 	}
 
-	// Order laden (checken ob Order mit gegebener Id existiert)
+	// Order laden (+checken ob Order mit gegebener Id existiert)
 	out := s.getOrder(in.GetOrderId())
 
-	// - Verbindung zu Customer-Service aufbauen
+	// Verbindung zu Customer-Service aufbauen
 	customer_con := s.getConnection("customer")
 	customer := api.NewCustomerClient(customer_con)
 	customer_ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer customer_con.Close()
 	defer cancel()
 
-	// - Kunden-Informationen holen
+	// Kunden-Informationen holen
 	customer_r, customer_err := customer.GetCustomer(customer_ctx, &api.GetCustomerRequest{Id: out.GetCustomerID()})
 	if customer_err != nil {
 		log.Fatalf("could not get customer of: customerId: %v", out.GetCustomerID())
@@ -172,9 +175,12 @@ func (s *Server) CancelOrderRequest(in *api.CancelOrderRequest) {
 
 	// Order als storniert markieren
 	out.Canceled = true
-	s.Orders[in.GetOrderId()] = out
 
 	log.Printf("successfully canceled order with orderId: %v", in.GetOrderId())
+	err = s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("successfully canceled order with orderId: %v", in.GetOrderId()), Subject: "Order.CancelOrderRequest"})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
@@ -205,10 +211,7 @@ func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
 	}
 
 	// - Preis der Bestellung neu berechnen und abspeichern
-	log.Printf("%v", s.getOrder(in.GetOrderId()).GetTotalCost())
 	out.TotalCost = out.TotalCost - float32(article.GetPrice())
-	s.Orders[in.GetOrderId()] = out
-	log.Printf("%v", s.getOrder(in.GetOrderId()).GetTotalCost())
 
 	// - Verbindung zu Customer-Service aufbauen
 	customer_con := s.getConnection("customer")
@@ -231,6 +234,10 @@ func (s *Server) RefundArticleRequest(in *api.RefundArticleRequest) {
 	}
 
 	log.Printf("successfully refund articleID: %v of orderId: %v", in.GetArticleId(), in.GetOrderId())
+	err = s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("successfully refund articleID: %v of orderId: %v", in.GetArticleId(), in.GetOrderId()), Subject: "Order.RefundArticleRequest"})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (s *Server) getConnection(connectTo string) *grpc.ClientConn {

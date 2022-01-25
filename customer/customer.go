@@ -20,8 +20,6 @@ type Server struct {
 
 func (s *Server) NewCustomer(ctx context.Context, in *api.NewCustomerRequest) (*api.CustomerReply, error) {
 	log.Printf("received new customer request of: name: %v, address: %v", in.GetName(), in.GetAddress())
-
-	// Indirekte Kommunikation über NATS (Stellt Logger einer Nachricht rein)
 	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received new customer request of: name: %v, address: %v", in.GetName(), in.GetAddress()), Subject: "Customer.NewCustomer"})
 	if err != nil {
 		panic(err)
@@ -29,14 +27,13 @@ func (s *Server) NewCustomer(ctx context.Context, in *api.NewCustomerRequest) (*
 
 	s.CustomerID = s.CustomerID + 1
 	s.Customers[s.CustomerID] = in
-	log.Printf("successfully created new customer: id: %v, name: %v, address: %v", s.CustomerID, in.GetName(), in.GetAddress())
 
+	log.Printf("successfully created new customer: id: %v, name: %v, address: %v", s.CustomerID, in.GetName(), in.GetAddress())
 	return &api.CustomerReply{Id: s.CustomerID, Name: in.GetName(), Address: in.GetAddress()}, nil
 }
 
 func (s *Server) GetCustomer(ctx context.Context, in *api.GetCustomerRequest) (*api.CustomerReply, error) {
 	log.Printf("received get customer request of: id: %v", in.GetId())
-
 	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received get customer request of: id: %v", in.GetId()), Subject: "Customer.GetCustomer"})
 	if err != nil {
 		panic(err)

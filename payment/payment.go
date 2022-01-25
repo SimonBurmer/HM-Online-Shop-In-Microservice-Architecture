@@ -33,8 +33,8 @@ func (s *Server) NewPayment(in *api.NewPaymentRequest) {
 }
 
 func (s *Server) PayPayment(ctx context.Context, in *api.PayPaymentRequest) (*api.PayPaymentReply, error) {
-	log.Printf("received pay payment request of: orderId: %v", in.GetOrderId())
-	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received pay payment request of: orderId: %v", in.GetOrderId()), Subject: "Payment.PayPayment"})
+	log.Printf("received pay payment request of: orderId: %v, value: %v", in.GetOrderId(), in.GetValue())
+	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received pay payment request of: orderId: %v, value: %v", in.GetOrderId(), in.GetValue()), Subject: "Payment.PayPayment"})
 	if err != nil {
 		panic(err)
 	}
@@ -42,8 +42,9 @@ func (s *Server) PayPayment(ctx context.Context, in *api.PayPaymentRequest) (*ap
 	// Payment laden und bezahlen
 	out := s.getPayment(in.GetOrderId())
 	payed := out.GetPayed() + in.GetValue()
-	s.Payments[in.GetOrderId()] = &api.PaymentStorage{OrderId: out.OrderId, TotalCost: out.TotalCost, Payed: payed, Canceled: false}
+	out.Payed = payed
 	StillToPay := out.GetTotalCost() - payed
+	log.Printf("New values for payed: %v", payed)
 
 	// Überprüfen ob Payment vollständig bezahlt wurde
 	if StillToPay <= 0 {
@@ -67,6 +68,7 @@ func (s *Server) PayPayment(ctx context.Context, in *api.PayPaymentRequest) (*ap
 			panic(err)
 		}
 	}
+
 	return &api.PayPaymentReply{OrderId: out.GetOrderId(), StillToPay: StillToPay}, nil
 }
 
@@ -88,7 +90,6 @@ func (s *Server) CancelPayment(in *api.CancelPaymentRequest) {
 
 	// Payment als storniert markieren
 	out.Canceled = true
-	s.Payments[in.GetOrderId()] = out
 
 	log.Printf("successfully canceled payment of: orderId: %v", in.GetOrderId())
 	err = s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("successfully canceled payment of: orderId: %v", in.GetOrderId()), Subject: "Payment.CancelPayment"})
@@ -98,8 +99,8 @@ func (s *Server) CancelPayment(in *api.CancelPaymentRequest) {
 }
 
 func (s *Server) RefundPayment(in *api.RefundPaymentRequest) {
-	log.Printf("received refund payment request of: orderId: %v", in.GetOrderId())
-	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received refund payment request of: orderId: %v", in.GetOrderId()), Subject: "Payment.RefundPayment"})
+	log.Printf("received refund payment request of: orderId: %v, value: %v", in.GetOrderId(), in.GetValue())
+	err := s.Nats.Publish("log", api.Log{Message: fmt.Sprintf("received refund payment request of: orderId: %v, value: %v", in.GetOrderId(), in.GetValue()), Subject: "Payment.RefundPayment"})
 	if err != nil {
 		panic(err)
 	}
@@ -108,7 +109,9 @@ func (s *Server) RefundPayment(in *api.RefundPaymentRequest) {
 	out := s.getPayment(in.GetOrderId())
 	newTotalCost := out.GetTotalCost() - in.GetValue()
 	newPayed := out.GetPayed() - in.GetValue()
-	s.Payments[in.GetOrderId()] = &api.PaymentStorage{OrderId: out.OrderId, TotalCost: newTotalCost, Payed: newPayed, Canceled: false}
+	out.TotalCost = newTotalCost
+	out.Payed = newPayed
+	log.Printf("New values for totalCost:%v, payed: %v", newTotalCost, newPayed)
 
 	// Refund-Betrag zurückzahlen
 	log.Printf("successfully refund value: %v to customer %v %v of orderID: %v", in.GetValue(), in.GetCustomerName(), in.GetCustomerAddress(), in.GetOrderId())

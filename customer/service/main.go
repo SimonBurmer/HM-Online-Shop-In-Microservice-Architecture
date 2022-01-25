@@ -28,7 +28,7 @@ func main() {
 	// Verbindung zu Redis
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "redis:6379",
-		Password: "", // no password set
+		Password: "", 
 	})
 
 	// Registration im Redis
