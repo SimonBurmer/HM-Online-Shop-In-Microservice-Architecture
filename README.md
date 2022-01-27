@@ -1,11 +1,11 @@
 # Online-Shop
 
-## Szenarien starten
+## How to use: 
 
-Kommandozeile:
+cmd commands:
 - make run1
 - make run2
 - make run3
 - make run4
 - make run5
-- Alle Szenarien starten: make run
+- make run
