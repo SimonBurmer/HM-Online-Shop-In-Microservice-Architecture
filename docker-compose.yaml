@@ -1,0 +1,88 @@
+version: "3"
+services:
+
+  # Dependencies
+  redis:
+    image: "redis"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  nats:
+    image: nats
+
+  # App
+  logger-service:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/loggerservice
+    depends_on:
+      - nats 
+
+  customer-service:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/customerservice
+    depends_on:
+      - redis
+      - nats 
+      - logger-service
+
+  payment-service:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/paymentservice
+    depends_on:
+      - redis
+      - nats
+      - logger-service 
+          
+  catalog-service:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/catalogservice
+    depends_on:
+      - redis
+      - nats
+      - logger-service 
+      - stock-service
+    
+  stock-service:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/stockservice
+    depends_on:
+      - redis
+      - nats 
+      - logger-service 
+
+  order-service:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/orderservice
+    depends_on:
+      - redis
+      - nats
+      - logger-service 
+      - payment-service
+      - catalog-service
+      - shipment-service
+
+  shipment-service:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/shipmentservice
+    depends_on:
+      - redis
+      - nats 
+      - logger-service 
+      - stock-service
+
+  supplier-service:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/supplierservice
+    depends_on:
+      - redis
+      - nats 
+      - logger-service 
+      - stock-service
+
+  client:
+    image: gitlab.lrz.de:5005/vss/semester/ob-21ws/blatt-2/blatt2-gruppe14/clientservice
+    depends_on:
+      - redis
+      - nats
+      - logger-service 
+      - customer-service
+      - catalog-service
+      - order-service
+      - payment-service
+      - stock-service
+      - shipment-service
+      - supplier-service
+
+

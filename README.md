@@ -1,8 +1,25 @@
 # Online-Shop
 
-In dieser Datei beschreiben Sie, wie die Szenarien gestartet werden können.
-Fügen Sie für jedes Szenario eine Kommandozeile ein, die ich komplett kopieren
-und in ein Terminal einfügen kann, um es zu starten.
+## Szenarien starten
 
-Beschreiben Sie hier außerdem wer was gemacht hat bzw. wer für welchen
-Teil verantwortlich ist.
+Kommandozeile:
+- make run1
+- make run2
+- make run3
+- make run4
+- make run5
+- Alle Szenarien starten: make run
+
+## Verantwortlichkeiten 
+
+- Customer-Service: Simon
+- Order-Service: Simon 
+- Payment-Service: Simon
+- Catalog-Service: Anna
+- Stock-Service: Anna
+- Shipment-Service: Anna
+- Supplier-Service: Anna
+- Client-Service: Beide
+- Dokumentation: Jeder seine 
+
+Die Architektur und Planung des Shops wurde gemeinsam umgesetzt.
