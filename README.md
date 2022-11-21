@@ -114,11 +114,11 @@ Datenhaltung:
 
 
 Abhängigkeiten:
-Stock-Service -> Shipment-Service:
-- Asynchrone Kommunikation, um neu eingetroffene Produkte zu den benötigten Warenauslieferungen zu bringen. Asynchron, da Stock-Service nicht unbedingt eine Antwort benötigt.
+- Stock-Service -> Shipment-Service:
+-   Asynchrone Kommunikation, um neu eingetroffene Produkte zu den benötigten Warenauslieferungen zu bringen. Asynchron, da Stock-Service nicht unbedingt eine Antwort benötigt.
 
-Stock-Service -> Supplier-Service:
-- Asynchrone Kommunikation, um Artikel nachzubestellen. Asynchron, da Stock-Service nicht unbedingt eine Antwort benötigt und die Bestätigung, dass der Artikel beim Zulieferer bestellt wurde, relativ lange dauert.
+- Stock-Service -> Supplier-Service:
+-   Asynchrone Kommunikation, um Artikel nachzubestellen. Asynchron, da Stock-Service nicht unbedingt eine Antwort benötigt und die Bestätigung, dass der Artikel beim Zulieferer bestellt wurde, relativ lange dauert.
 
 
 ## Supplier-Service:
