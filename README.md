@@ -1,6 +1,5 @@
 
-
-
+![ShopArchitecture](doc/ShopArchitecture.drawio.png)
 
 
 Achtung: die in dem Diagramm dargestellten Kommunikationsbeschreibungen entsprechen nicht der Methoden-Benennung im Code!
