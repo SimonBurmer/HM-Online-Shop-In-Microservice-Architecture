@@ -9,7 +9,7 @@ Achtung: die in dem Diagramm dargestellten Kommunikationsbeschreibungen entsprec
 ## Customer-Service:
 
 Beschreibung:
-- Microservice zur Verwaltung der Kundendaten.
+Microservice zur Verwaltung der Kundendaten.
 
 Datenhaltung:
 - Kundennummer
