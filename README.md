@@ -4,6 +4,18 @@
 
 Achtung: die in dem Diagramm dargestellten Kommunikationsbeschreibungen entsprechen nicht der Methoden-Benennung im Code!
 
+
+# How to use: 
+
+cmd commands:
+- make run1
+- make run2
+- make run3
+- make run4
+- make run5
+- make run
+
+
 # Beschreibung der Microservices:
 
 ## Customer-Service:
@@ -153,14 +165,3 @@ Datenhaltung:
 Abhängigkeiten:
 - Catalog-Service -> Stock-Service:
     - Synchrone Kommunikation, um die Verfügbarkeit von Artikeln zu überprüfen. Bei einer Just-in-Time Lagerhaltung ändern sich die Zustände des Lagers mit großer Wahrscheinlichkeit häufiger als Kunden etwas bestellen (synchron ist weniger Kommunikation nötig als asynchron und gecached).
-
-
-# How to use: 
-
-cmd commands:
-- make run1
-- make run2
-- make run3
-- make run4
-- make run5
-- make run
